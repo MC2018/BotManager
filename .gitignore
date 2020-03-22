@@ -40,3 +40,6 @@ Thumbs.db
 Display.java
 SpeedrunGamesListScraper.java
 BotManager.jar
+build/libs/BotManager.jar
+*.bin
+*.lock
