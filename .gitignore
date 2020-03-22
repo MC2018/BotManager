@@ -43,3 +43,4 @@ BotManager.jar
 build/libs/BotManager.jar
 *.bin
 *.lock
+build/libs/BotManager.jar
