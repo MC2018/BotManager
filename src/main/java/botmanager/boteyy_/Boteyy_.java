@@ -175,7 +175,14 @@ public class Boteyy_ extends BotBase {
 
     @Override
     public Boteyy_CommandBase[] getCommands() {
-        return (Boteyy_CommandBase[]) super.getCommands();
+        ICommand[] commands = super.getCommands();
+        Boteyy_CommandBase[] newCommands = new Boteyy_CommandBase[commands.length];
+        
+        for (int i = 0; i < commands.length; i++) {
+            newCommands[i] = (Boteyy_CommandBase) commands[i];
+        }
+        
+        return newCommands;
     }
     
 }

@@ -37,7 +37,6 @@ Thumbs.db
 
 # Files I specifically don't want in #
 ######################################
-Display.java
 SpeedrunGamesListScraper.java
 BotManager.jar
 build/libs/BotManager.jar
