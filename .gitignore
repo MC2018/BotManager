@@ -45,4 +45,4 @@ build/libs/BotManager.jar
 *.lock
 build/libs/BotManager.jar
 .nb-gradle/private/cache/BotManager-d41d8cd98f00b204e9800998ecf8427e
-build/*
+build/
