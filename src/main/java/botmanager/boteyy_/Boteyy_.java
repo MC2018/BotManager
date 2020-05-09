@@ -12,7 +12,7 @@ import botmanager.boteyy_.commands.GiveCommand;
 import botmanager.boteyy_.commands.HelpCommand;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.boteyy_.generic.IBoteyy_Command;
+import botmanager.boteyy_.generic.Boteyy_CommandBase;
 import java.io.File;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,7 +21,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import botmanager.generic.ICommand;
-import net.dv8tion.jda.api.JDA;
 
 //idea: encrypter(s) built in?
 /**
@@ -32,10 +31,10 @@ public class Boteyy_ extends BotBase {
 
     public Boteyy_(String botToken, String name) {
         super(botToken, name);
-        JDA.getPresence().setActivity(Activity.playing(">help for commands!"));
+        getJDA().getPresence().setActivity(Activity.playing(">help for commands!"));
 
-        prefix = ">";
-        commands = new ICommand[]{
+        setPrefix(">");
+        setCommands(new ICommand[] {
             new MoneyCommand(this),
             new HelpCommand(this),
             new BalanceCommand(this),
@@ -46,25 +45,25 @@ public class Boteyy_ extends BotBase {
             new GambleCommand(this),
             new CoinflipCommand(this),
             new PMRepeaterCommand(this)
-        };
+        });
     }
 
     @Override
     public void onGuildMessageReceived​(GuildMessageReceivedEvent event) {
-        for (ICommand command : commands) {
+        for (ICommand command : getCommands()) {
             command.run(event);
         }
     }
     
     @Override
     public void onPrivateMessageReceived​(PrivateMessageReceivedEvent event) {
-        for (ICommand command : commands) {
+        for (ICommand command : getCommands()) {
             command.run(event);
         }
     }
     
     public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + name + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
 
         if (!file.exists()) {
             return "";
@@ -74,7 +73,7 @@ public class Boteyy_ extends BotBase {
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + name + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
         String data = Utilities.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
@@ -151,7 +150,7 @@ public class Boteyy_ extends BotBase {
     }
 
     public void updateJackpot(Guild guild, int jackpotCap, int jackpotBalance) {
-        Utilities.write(new File("data/" + name + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
+        Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
     public int getUserDaily(Guild guild, User user) {
@@ -173,21 +172,10 @@ public class Boteyy_ extends BotBase {
     public void setUserDaily(Member member, int date) {
         setUserDaily(member.getGuild(), member.getUser(), date);
     }
-    
-    public String getPrefix() {
-        return prefix;
-    }
 
-    public IBoteyy_Command[] getCommands() {
-        return (IBoteyy_Command[]) commands;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JDA getJDA() {
-        return JDA;
+    @Override
+    public Boteyy_CommandBase[] getCommands() {
+        return (Boteyy_CommandBase[]) super.getCommands();
     }
     
 }

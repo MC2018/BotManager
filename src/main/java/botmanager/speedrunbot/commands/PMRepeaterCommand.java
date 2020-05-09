@@ -5,7 +5,7 @@ import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import botmanager.generic.ICommand;
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 
 /**
@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class PMRepeaterCommand extends ISpeedrunBotCommand {
+public class PMRepeaterCommand extends SpeedrunBotCommandBase {
 
     public PMRepeaterCommand(BotBase bot) {
         super(bot);

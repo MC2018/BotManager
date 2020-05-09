@@ -14,14 +14,14 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class RunCommand extends ISpeedrunBotCommand {
+public class RunCommand extends SpeedrunBotCommandBase {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "run",

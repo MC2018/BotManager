@@ -10,14 +10,14 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.boteyy_.generic.IBoteyy_Command;
+import botmanager.boteyy_.generic.Boteyy_CommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class JackpotCommand extends IBoteyy_Command {
+public class JackpotCommand extends Boteyy_CommandBase {
 
     public boolean calculatingWinner = false;
     public final String[] KEYWORDS = {

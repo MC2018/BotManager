@@ -3,7 +3,7 @@ package botmanager.speedrunbot.commands;
 import botmanager.Utilities;
 import botmanager.generic.BotBase;
 import botmanager.speedrunbot.SpeedrunBot;
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import com.tsunderebug.speedrun4j.game.Category;
 import com.tsunderebug.speedrun4j.game.Game;
 import com.tsunderebug.speedrun4j.game.Leaderboard;
@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class InfoCommand extends ISpeedrunBotCommand {
+public class InfoCommand extends SpeedrunBotCommandBase {
 
     public final String[] KEYWORDS = {
         "info",

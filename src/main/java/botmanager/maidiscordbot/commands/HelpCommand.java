@@ -2,16 +2,15 @@ package botmanager.maidiscordbot.commands;
 
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.generic.ICommand;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.maidiscordbot.generic.IMaiDiscordBotCommand;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class HelpCommand extends IMaiDiscordBotCommand {
+public class HelpCommand extends MaiDiscordBotCommandBase {
 
     public HelpCommand(BotBase bot) {
         super(bot);
@@ -32,7 +31,7 @@ public class HelpCommand extends IMaiDiscordBotCommand {
         words = event.getMessage().getContentRaw().split(" ");
         
         if (words.length > 0 && words[0].equals(bot.getPrefix() + "help")) {
-            for (IMaiDiscordBotCommand command : bot.getCommands()) {
+            for (MaiDiscordBotCommandBase command : bot.getCommands()) {
                 String info = command.info();
                 
                 if (info != null && command instanceof MoneyCommand) {

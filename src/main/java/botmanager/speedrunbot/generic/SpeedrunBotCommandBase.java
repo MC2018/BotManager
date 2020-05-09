@@ -17,11 +17,11 @@ import net.dv8tion.jda.internal.utils.tuple.Pair;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public abstract class ISpeedrunBotCommand implements ICommand {
+public abstract class SpeedrunBotCommandBase implements ICommand {
 
     protected SpeedrunBot bot;
     
-    public ISpeedrunBotCommand(BotBase bot) {
+    public SpeedrunBotCommandBase(BotBase bot) {
         this.bot = (SpeedrunBot) bot;
     }
     

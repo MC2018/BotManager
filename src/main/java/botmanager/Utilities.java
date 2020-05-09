@@ -190,7 +190,11 @@ public class Utilities {
     }
     
     public static boolean hasRole(Member member, String roleName) {
-        return member.getRoles().stream().anyMatch((role) -> (role.getName().equals(roleName)));
+        try {
+            return member.getRoles().stream().anyMatch((role) -> (role.getName().equals(roleName)));
+        } catch (Exception e) {
+            return false;
+        }
     }
     
     public static GuildChannel findChannelByName(Guild guild, String name) {

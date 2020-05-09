@@ -8,13 +8,13 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.boteyy_.generic.IBoteyy_Command;
+import botmanager.boteyy_.generic.Boteyy_CommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class BalanceTopCommand extends IBoteyy_Command {
+public class BalanceTopCommand extends Boteyy_CommandBase {
 
     final String[] KEYWORDS = {
         "baltop",

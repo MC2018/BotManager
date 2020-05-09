@@ -5,13 +5,13 @@ import botmanager.Utilities;
 import botmanager.boteyy_.Boteyy_;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.boteyy_.generic.IBoteyy_Command;
+import botmanager.boteyy_.generic.Boteyy_CommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class GiveCommand extends IBoteyy_Command {
+public class GiveCommand extends Boteyy_CommandBase {
     
     public GiveCommand(BotBase bot) {
         super(bot);

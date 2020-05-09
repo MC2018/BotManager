@@ -4,14 +4,14 @@ import botmanager.generic.BotBase;
 import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-import botmanager.maidiscordbot.generic.IMaiDiscordBotCommand;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class PMRepeaterCommand extends IMaiDiscordBotCommand {
+public class PMRepeaterCommand extends MaiDiscordBotCommandBase {
 
     public PMRepeaterCommand(BotBase bot) {
         super(bot);

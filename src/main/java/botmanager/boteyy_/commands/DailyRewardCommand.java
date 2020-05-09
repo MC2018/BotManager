@@ -7,14 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.boteyy_.generic.IBoteyy_Command;
+import botmanager.boteyy_.generic.Boteyy_CommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class DailyRewardCommand extends IBoteyy_Command {
+public class DailyRewardCommand extends Boteyy_CommandBase {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy");
     SimpleDateFormat hours = new SimpleDateFormat("HH");

@@ -5,14 +5,14 @@ import botmanager.Utilities;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.maidiscordbot.generic.IMaiDiscordBotCommand;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import botmanager.maidiscordbot.MaiDiscordBot;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class GambleCommand extends IMaiDiscordBotCommand {
+public class GambleCommand extends MaiDiscordBotCommandBase {
 
     public final String[] KEYWORDS = {
         bot.getPrefix() + "gamble",

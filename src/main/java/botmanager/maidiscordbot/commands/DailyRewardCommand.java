@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.maidiscordbot.generic.IMaiDiscordBotCommand;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import botmanager.maidiscordbot.MaiDiscordBot;
 
 /**
@@ -14,7 +14,7 @@ import botmanager.maidiscordbot.MaiDiscordBot;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class DailyRewardCommand extends IMaiDiscordBotCommand {
+public class DailyRewardCommand extends MaiDiscordBotCommandBase {
 
     SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy");
     SimpleDateFormat hours = new SimpleDateFormat("HH");

@@ -22,7 +22,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import botmanager.generic.ICommand;
-import botmanager.maidiscordbot.generic.IMaiDiscordBotCommand;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import net.dv8tion.jda.api.JDA;
 
 //idea: encrypter(s) built in?
@@ -34,10 +34,10 @@ public class MaiDiscordBot extends BotBase {
 
     public MaiDiscordBot(String botToken, String name) {
         super(botToken, name);
-        JDA.getPresence().setActivity(Activity.watching(" you lose money :)"));
+        getJDA().getPresence().setActivity(Activity.watching(" you lose money :)"));
 
-        prefix = "~";
-        commands = new ICommand[]{
+        setPrefix("~");
+        setCommands(new ICommand[]{
             new MoneyCommand(this),
             new HelpCommand(this),
             new BalanceCommand(this),
@@ -50,25 +50,25 @@ public class MaiDiscordBot extends BotBase {
             new DeadCommand(this),
             new PMRepeaterCommand(this),
             new AlltimeBaltopCommand(this)
-        };
+        });
     }
 
     @Override
     public void onGuildMessageReceived​(GuildMessageReceivedEvent event) {
-        for (ICommand command : commands) {
+        for (ICommand command : getCommands()) {
             command.run(event);
         }
     }
 
     @Override
     public void onPrivateMessageReceived​(PrivateMessageReceivedEvent event) {
-        for (ICommand command : commands) {
+        for (ICommand command : getCommands()) {
             command.run(event);
         }
     }
     
     public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + name + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
 
         if (!file.exists()) {
             return "";
@@ -78,7 +78,7 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + name + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
         String data = Utilities.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
@@ -148,7 +148,7 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void updateJackpot(Guild guild, int jackpotCap, int jackpotBalance) {
-        Utilities.write(new File("data/" + name + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
+        Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
     public int getUserDaily(Guild guild, User user) {
@@ -205,20 +205,9 @@ public class MaiDiscordBot extends BotBase {
         }
     }*/
     
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public IMaiDiscordBotCommand[] getCommands() {
-        return (IMaiDiscordBotCommand[]) commands;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JDA getJDA() {
-        return JDA;
+    @Override
+    public MaiDiscordBotCommandBase[] getCommands() {
+        return (MaiDiscordBotCommandBase[]) super.getCommands();
     }
     
 }

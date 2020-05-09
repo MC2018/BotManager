@@ -12,13 +12,13 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import botmanager.maidiscordbot.generic.IMaiDiscordBotCommand;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class MoneyCommand extends IMaiDiscordBotCommand {
+public class MoneyCommand extends MaiDiscordBotCommandBase {
 
     TimerTask task;
     Timer timer;

@@ -3,7 +3,7 @@ package botmanager.speedrunbot.commands;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
 import botmanager.speedrunbot.SpeedrunBot;
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import com.tsunderebug.speedrun4j.game.Category;
 import com.tsunderebug.speedrun4j.game.Game;
 import com.tsunderebug.speedrun4j.game.Leaderboard;
@@ -21,7 +21,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class WorldRecordCommand extends ISpeedrunBotCommand {
+public class WorldRecordCommand extends SpeedrunBotCommandBase {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "worldrecord",
@@ -137,6 +137,27 @@ public class WorldRecordCommand extends ISpeedrunBotCommand {
             eb.addField(leaderboards.get(i).category, result, false);
         }
 
+        Category[] categories;
+        String categoryList;
+        
+        try {
+            categories = game.getCategories().getCategories();
+            categoryList = "";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return getConnectionFailureEmbed();
+        }
+
+        for (int i = 0; i < categories.length; i++) {
+            categoryList += categories[i].getName();
+
+            if (i + 1 < categories.length) {
+                categoryList += ", ";
+            }
+        }
+
+        eb.addField("Category List", categoryList, false);
+        
         return eb.build();
     }
 

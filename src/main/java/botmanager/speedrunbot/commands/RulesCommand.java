@@ -4,7 +4,7 @@ import botmanager.Utilities;
 import botmanager.generic.BotBase;
 import botmanager.speedrunbot.SpeedrunBot;
 import net.dv8tion.jda.api.events.Event;
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import com.tsunderebug.speedrun4j.game.Game;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class RulesCommand extends ISpeedrunBotCommand {
+public class RulesCommand extends SpeedrunBotCommandBase {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "rules",

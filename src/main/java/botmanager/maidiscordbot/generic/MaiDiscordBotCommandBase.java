@@ -9,11 +9,11 @@ import botmanager.maidiscordbot.MaiDiscordBot;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public abstract class IMaiDiscordBotCommand implements ICommand {
+public abstract class MaiDiscordBotCommandBase implements ICommand {
 
     protected MaiDiscordBot bot;
     
-    public IMaiDiscordBotCommand(BotBase bot) {
+    public MaiDiscordBotCommandBase(BotBase bot) {
         this.bot = (MaiDiscordBot) bot;
     }
 

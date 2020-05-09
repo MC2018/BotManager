@@ -12,18 +12,18 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  */
 public abstract class BotBase extends ListenerAdapter {
     
-    protected final JDA JDA;
-    protected final String BOT_TOKEN;
-    protected String name;
-    protected String prefix;
-    protected ICommand[] commands;
+    private final JDA JDA_INSTANCE;
+    private final String BOT_TOKEN;
+    private String name;
+    private String prefix;
+    private ICommand[] commands;
     
     public BotBase(String botToken, String name) {
         BOT_TOKEN = botToken;
         this.name = name;
         
         try {
-            JDA = new JDABuilder(AccountType.BOT)
+            JDA_INSTANCE = new JDABuilder(AccountType.BOT)
                     .addEventListeners(this)
                     .setToken(BOT_TOKEN)
                     .build();
@@ -33,7 +33,39 @@ public abstract class BotBase extends ListenerAdapter {
     }
     
     public void shutdown() {
-        JDA.shutdown();
+        JDA_INSTANCE.shutdown();
+    }
+    
+    public JDA getJDA() {
+        return JDA_INSTANCE;
+    }
+    
+    public String getBotToken() {
+        return BOT_TOKEN;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String getPrefix() {
+        return prefix;
+    }
+    
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+    
+    public ICommand[] getCommands() {
+        return commands;
+    }
+    
+    public void setCommands(ICommand[] commands) {
+        this.commands = commands;
     }
     
 }

@@ -8,7 +8,7 @@ import botmanager.speedrunbot.commands.WorldRecordCommand;
 import botmanager.speedrunbot.commands.HelpCommand;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import com.tsunderebug.speedrun4j.game.Category;
 import com.tsunderebug.speedrun4j.game.Game;
 import com.tsunderebug.speedrun4j.game.Leaderboard;
@@ -33,7 +33,6 @@ import botmanager.generic.ICommand;
 import botmanager.speedrunbot.webdriver.WebDriverManager;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import net.dv8tion.jda.api.JDA;
 
 //idea: encrypter(s) built in?
 /**
@@ -55,17 +54,17 @@ public final class SpeedrunBot extends BotBase {
     //idea: keep top 10-100 most frequented games always queued up? refresh every day perhaps
     public SpeedrunBot(String botToken, String name) {
         super(botToken, name);
-        prefix = "$";
-        JDA.getPresence().setActivity(Activity.playing(prefix + "help for info"));
+        setPrefix("$");
+        getJDA().getPresence().setActivity(Activity.playing(getPrefix() + "help for info"));
         
-        commands = new ISpeedrunBotCommand[] {
+        setCommands(new SpeedrunBotCommandBase[] {
             new LeaderboardCommand(this),
             new WorldRecordCommand(this),
             new PlaceCommand(this),
             new RunCommand(this),
             new HelpCommand(this),
             new PMRepeaterCommand(this)
-        };
+        });
         
         buildHashMap(Utilities.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
         
@@ -83,7 +82,7 @@ public final class SpeedrunBot extends BotBase {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                for (ICommand command : commands) {
+                for (ICommand command : getCommands()) {
                     command.run(event);
                 }
             }
@@ -97,7 +96,7 @@ public final class SpeedrunBot extends BotBase {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                for (ICommand command : commands) {
+                for (ICommand command : getCommands()) {
                     command.run(event);
                 }
             }
@@ -115,7 +114,7 @@ public final class SpeedrunBot extends BotBase {
         }
         
         try {
-            JDA.shutdown();
+            getJDA().shutdown();
         } catch (Exception e) {
             
         }
@@ -181,7 +180,7 @@ public final class SpeedrunBot extends BotBase {
     }
     
     public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + name + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
 
         if (!file.exists()) {
             return "";
@@ -191,7 +190,7 @@ public final class SpeedrunBot extends BotBase {
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + name + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
         String data = Utilities.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
@@ -478,7 +477,9 @@ public final class SpeedrunBot extends BotBase {
         double bestSimilarity = -1;
 
         try {
-            for (Category category : game.getCategories().getCategories()) {
+            Category[] categories = game.getCategories().getCategories();
+            
+            for (Category category : categories) {
                 double similarity = similarity(simplify(name), simplify(category.getName()));
 
                 if (similarity > bestSimilarity) {
@@ -634,10 +635,6 @@ public final class SpeedrunBot extends BotBase {
         return String.valueOf(chars);
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-    
     public String getSeparator() {
         return separator;
     }
@@ -646,16 +643,9 @@ public final class SpeedrunBot extends BotBase {
         return errorUrl;
     }
 
-    public ISpeedrunBotCommand[] getCommands() {
-        return (ISpeedrunBotCommand[]) commands;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public JDA getJDA() {
-        return JDA;
+    @Override
+    public SpeedrunBotCommandBase[] getCommands() {
+        return (SpeedrunBotCommandBase[]) super.getCommands();
     }
     
 }

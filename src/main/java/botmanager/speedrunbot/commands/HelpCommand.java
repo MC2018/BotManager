@@ -1,6 +1,6 @@
 package botmanager.speedrunbot.commands;
 
-import botmanager.speedrunbot.generic.ISpeedrunBotCommand;
+import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class HelpCommand extends ISpeedrunBotCommand {
+public class HelpCommand extends SpeedrunBotCommandBase {
 
     public HelpCommand(BotBase bot) {
         super(bot);
@@ -35,7 +35,7 @@ public class HelpCommand extends ISpeedrunBotCommand {
         words = event.getMessage().getContentRaw().split(" ");
         
         if (words.length > 0 && words[0].equals(bot.getPrefix() + "help")) {
-            for (ISpeedrunBotCommand command : bot.getCommands()) {
+            for (SpeedrunBotCommandBase command : bot.getCommands()) {
                 Field field = command.info();
                 
                 if (field != null) {
