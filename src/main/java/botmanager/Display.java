@@ -1,9 +1,12 @@
 package botmanager;
 
+import static botmanager.Utilities.readLines;
 import botmanager.generic.BotBase;
 import botmanager.boteyy_.Boteyy_;
 import botmanager.maidiscordbot.MaiDiscordBot;
 import botmanager.speedrunbot.SpeedrunBot;
+import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -11,14 +14,17 @@ import botmanager.speedrunbot.SpeedrunBot;
  */
 public class Display extends javax.swing.JFrame {
 
-    BotBase[] bots = new BotBase[] {
-        new MaiDiscordBot("MzA4NTQ2NzI2OTAwMjY5MDY2.XgaoeQ.ZsPLEuPFFd5-WZSq4g4kKAAEynY", "MaiDiscordBot"),
-        new Boteyy_("MzY0Nzg4MTAwNjA3NjM5NTUy.Xhp_oA.JqOitDROM89nyXVEaj50jG_wZu4", "Boteyy_"),
-        new SpeedrunBot("NjY4MDk1OTIzMjA5MTA5NTE0.Xj7kRA.CC_wjXZT8tCx8rCERy5TCK3_IA4", "Speedrun Bot")
-    };
+    BotBase[] bots;
     
     public Display() {
         initComponents();
+        List<String> tokens = readLines(new File("data/tokens.txt"));
+        
+        bots = new BotBase[] {
+            new MaiDiscordBot(tokens.get(0), "MaiDiscordBot"),
+            new Boteyy_(tokens.get(1), "Boteyy_"),
+            new SpeedrunBot(tokens.get(2), "Speedrun Bot")
+        };
     }
 
     /**
