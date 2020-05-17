@@ -50,5 +50,4 @@ data/Boteyy_/
 data/tokens.txt
 .gradle
 #git rm --cached .gradle -r
-.nb-gradle/private/cache/BotManager-d41d8cd98f00b204e9800998ecf8427e (1)
-.nb-gradle/profiles/private/aux-config
+.nb-gradle/
