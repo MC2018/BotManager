@@ -88,7 +88,7 @@ public class GambleCommand extends MaiDiscordBotCommandBase {
                     + "100x Multiplier\n"
                     + "\n"
                     + "-============-**\n";
-        } else if (random / 10 >= 99) {
+        } else if (random % 100 == 0) {
             reward = bet * 5;
             result += "**5x Multiplier**\n";
         } else if (random / 10 >= 92) {
