@@ -79,7 +79,7 @@ public class CoinflipCommand extends MaiDiscordBotCommandBase {
             return;
         }
         
-        if (random > 490) {
+        if (random < 490) {
             result = event.getMember().getEffectiveName() + " flipped heads and won $" + bet + "!";
             reward = bet;
         } else {
