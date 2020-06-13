@@ -18,7 +18,7 @@ public class Display extends javax.swing.JFrame {
     
     public Display() {
         initComponents();
-        List<String> tokens = readLines(new File("data/tokens.txt"));
+        List<String> tokens = readLines(new File("data/botmanager_tokens.txt"));
         
         bots = new BotBase[] {
             new MaiDiscordBot(tokens.get(0), "MaiDiscordBot"),

@@ -22,7 +22,7 @@ dependencies {
 }
 
 task(debug, dependsOn: 'classes', type: JavaExec) {
-    main = 'botmanager.Display.java'
+    main = 'botmanager.Display'
     classpath = sourceSets.main.runtimeClasspath
     args 'server'
     debug true

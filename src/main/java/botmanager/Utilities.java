@@ -8,7 +8,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
@@ -92,12 +94,24 @@ public class Utilities {
     
     public static String findUserId(Guild guild, String potentialName) {
         ArrayList<Member> names = new ArrayList<>();
+        User potentialUser;
+        
         names.addAll(guild.getMembersByName(potentialName, true));
         names.addAll(guild.getMembersByEffectiveName(potentialName, true));
         names.addAll(guild.getMembersByNickname(potentialName, true));
         
         if (names.size() > 0) {
             return names.get(0).getUser().getId();
+        }
+        
+        try {
+            potentialUser = guild.getJDA().getUserById(potentialName);
+            
+            if (potentialUser != null) {
+                return potentialUser.getId();
+            }
+        } catch (Exception e) {
+            
         }
         
         return null;
@@ -207,6 +221,19 @@ public class Utilities {
         }
         
         return null;
+    }
+    
+    // "MMMMM d, yyyy"
+    public static String getFormattedUserTimeJoined(Member member, String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        Date date = Date.from(member.getTimeJoined().toInstant());
+        return sdf.format(date);
+    }
+    
+    public static String getFormattedUserTimeCreated(User user, String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        Date date = Date.from(user.getTimeCreated().toInstant());
+        return sdf.format(date);
     }
     
     public static void addReaction(Message message, String emoteName) {

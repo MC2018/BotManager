@@ -24,17 +24,20 @@ public class GambleCommand extends MaiDiscordBotCommandBase {
     public GambleCommand(BotBase bot) {
         super(bot);
     }
-//35*2+4*3+5+0.1*100
-    //make it slow, ...typing, editing previous message to add tension? make sure gambling value is set before waiting
+    
     @Override
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent event;
         String message;
         String result = "";
+        int[] weightedOdds = {1, 10, 100, 270, 0};
+        int[] rewardMultipliers = {100, 5, 3, 2, 0};
+        int noRewardOdds = 0;
+        int rewardMultiplier = 0;
         int bet;
         int balance;
         int reward;
-        int random = (int) (Math.random() * 1000) + 1;
+        int random = 1000;
         boolean found = false;
         
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
@@ -81,37 +84,57 @@ public class GambleCommand extends MaiDiscordBotCommandBase {
             return;
         }
         
-        if (random == 1000) {
-            reward = bet * 100;
-            result = "**-===========-\n"
-                    + "\n"
-                    + "100x Multiplier\n"
-                    + "\n"
-                    + "-============-**\n";
-        } else if (random % 100 == 0) {
-            reward = bet * 5;
-            result += "**5x Multiplier**\n";
-        } else if (random / 10 >= 92) {
-            reward = bet * 3;
-            result += "__3x Multiplier__\n";
-        } else if (random / 10 >= 62) {
-            reward = bet * 2;
-            result += "*2x Multiplier*\n";
-        } else {
-            reward = 0;
-            result += "*Bad luck, no turnout this time.*\n";
+        for (int i = 0; i < weightedOdds.length; i++) {
+            noRewardOdds += weightedOdds[i];
         }
         
-        result += event.getMember().getEffectiveName() + " bet $" + bet;
+        weightedOdds[weightedOdds.length - 1] = random - noRewardOdds;
+        random = (int) (Math.random() * random) + 1;
         
-        if (random / 10 >= 62) {
-            result += " and got back $" + reward + ".";
-        } else {
-            result += " and lost it all.";
+        for (int i = 0; i < weightedOdds.length; i++) {
+            int odds = 0;
+            
+            for (int j = 0; j <= i; j++) {
+                odds += weightedOdds[j];
+            }
+            
+            if (odds >= random) {
+                rewardMultiplier = rewardMultipliers[i];
+                break;
+            }
         }
         
-        reward -= bet;
-        bot.addUserBalance(event.getMember(), reward);
+        if (rewardMultipliers.length != 5) {
+            result = "There seemed to be a problem with the gamble command, send me or my developer a message to have it fixed.";
+        } else {
+            if (rewardMultiplier == rewardMultipliers[0]) {
+                result = "**-===========-\n"
+                        + "\n"
+                        + rewardMultiplier + "x Multiplier\n"
+                        + "\n"
+                        + "-============-**\n";
+            } else if (rewardMultiplier == rewardMultipliers[1]) {
+                result += "**" + rewardMultiplier + "x Multiplier**\n";
+            } else if (rewardMultiplier == rewardMultipliers[2]) {
+                result += "__" + rewardMultiplier + "x Multiplier__\n";
+            } else if (rewardMultiplier == rewardMultipliers[3]) {
+                result += "*" + rewardMultiplier + "x Multiplier*\n";
+            } else if (rewardMultiplier == rewardMultipliers[4]) {
+                result += "*Bad luck, no turnout this time.*\n";
+            }
+            
+            reward = bet * rewardMultiplier;
+            result += event.getMember().getEffectiveName() + " bet $" + bet;
+
+            if (rewardMultiplier != 0) {
+                result += " and got back $" + reward + ".";
+            } else {
+                result += " and lost it all.";
+            }
+
+            reward -= bet;
+            bot.addUserBalance(event.getMember(), reward);
+        }
         
         Utilities.sendGuildMessage(event.getChannel(), result);
     }

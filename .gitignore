@@ -45,9 +45,7 @@ build/libs/BotManager.jar
 build/libs/BotManager.jar
 .nb-gradle/private/cache/BotManager-d41d8cd98f00b204e9800998ecf8427e
 build/
-data/MaiDiscordBot/
-data/Boteyy_/
-data/tokens.txt
+data/
 .gradle
 #git rm --cached .gradle -r
 .nb-gradle/
