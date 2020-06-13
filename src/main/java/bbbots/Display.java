@@ -175,7 +175,7 @@ public class Display extends javax.swing.JFrame {
         
         active = true;
         
-        List<String> tokens = readLines(new File("data/botmanager_tokens.txt"));
+        List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
         
         bots = new BotBase[] {
             new NSFWPolice(tokens.get(0), "NSFW Police"),
