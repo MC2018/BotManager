@@ -1,6 +1,7 @@
 package bbbots.bulletbot;
 
 import bbbots.bulletbot.commands.BirthDateCommand;
+import bbbots.bulletbot.commands.InfoCommand;
 import bbbots.bulletbot.commands.JoinDateCommand;
 import bbbots.bulletbot.commands.NewbieCommand;
 import bbbots.bulletbot.generic.BulletBotCommandBase;
@@ -23,7 +24,8 @@ public class BulletBot extends BotBase {
         setCommands(new BulletBotCommandBase[] {
             new NewbieCommand(this),
             new BirthDateCommand(this),
-            new JoinDateCommand(this)
+            new JoinDateCommand(this),
+            new InfoCommand(this)
         });
     }
     
