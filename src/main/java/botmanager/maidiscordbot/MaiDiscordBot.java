@@ -23,7 +23,6 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import botmanager.generic.ICommand;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
-import net.dv8tion.jda.api.JDA;
 
 //idea: encrypter(s) built in?
 /**
