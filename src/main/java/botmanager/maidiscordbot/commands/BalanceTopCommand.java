@@ -61,6 +61,7 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
                 
                 if (size > 20) {
                     result += "Limiting the search to the top 20 members.\n\n";
+                    size = 20;
                 }
             } catch (Exception e) {
             }
