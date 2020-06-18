@@ -1,7 +1,6 @@
 package bbbots;
 
 import bbbots.bulletbot.BulletBot;
-import bbbots.jigsaw.Jigsaw;
 import bbbots.nsfwpolice.NSFWPolice;
 import bbbots.suggestionbox.SuggestionBox;
 import static botmanager.Utilities.readLines;
@@ -179,7 +178,9 @@ public class Display extends javax.swing.JFrame {
         List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
         
         bots = new BotBase[] {
-            new Jigsaw(tokens.get(0), "Jigsaw")
+            new NSFWPolice(tokens.get(0), "NSFW Police"),
+            new SuggestionBox(tokens.get(1), "Suggestion Box"),
+            new BulletBot(tokens.get(2), "BulletBot")
         };
         
         task = new TimerTask() {
