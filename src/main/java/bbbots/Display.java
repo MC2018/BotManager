@@ -1,6 +1,7 @@
 package bbbots;
 
 import bbbots.bulletbot.BulletBot;
+import bbbots.jigsaw.Jigsaw;
 import bbbots.nsfwpolice.NSFWPolice;
 import bbbots.suggestionbox.SuggestionBox;
 import static botmanager.Utilities.readLines;
@@ -39,10 +40,10 @@ public class Display extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
         pressLabel = new javax.swing.JLabel();
         lastLabel = new javax.swing.JLabel();
-        jPanel1 = new MotionPanel(this);
+        dragPanel = new MotionPanel(this);
         minimizeLabel = new javax.swing.JLabel();
         closeLabel = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -51,7 +52,7 @@ public class Display extends javax.swing.JFrame {
         setUndecorated(true);
         setResizable(false);
 
-        panel.setBackground(new java.awt.Color(73, 0, 110));
+        mainPanel.setBackground(new java.awt.Color(73, 0, 110));
 
         try {
             pressLabel.setIcon(new ImageIcon(ImageIO.read(getClass().getClassLoader().getResource("images/press.png"))));
@@ -69,7 +70,7 @@ public class Display extends javax.swing.JFrame {
         lastLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lastLabel.setText("<html><div style=\"text-align: center\">The name and time of the person who last attempted to add NSFW tag will appear here.</div></html>");
 
-        jPanel1.setBackground(new java.awt.Color(43, 0, 66));
+        dragPanel.setBackground(new java.awt.Color(43, 0, 66));
 
         try {
             minimizeLabel.setIcon(new ImageIcon(ImageIO.read(getClass().getClassLoader().getResource("images/min.png"))));
@@ -98,11 +99,11 @@ public class Display extends javax.swing.JFrame {
         jLabel1.setText("BulletBarry Bot Manager");
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout dragPanelLayout = new javax.swing.GroupLayout(dragPanel);
+        dragPanel.setLayout(dragPanelLayout);
+        dragPanelLayout.setHorizontalGroup(
+            dragPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dragPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -110,34 +111,34 @@ public class Display extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(closeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        dragPanelLayout.setVerticalGroup(
+            dragPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dragPanelLayout.createSequentialGroup()
+                .addGroup(dragPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(minimizeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(closeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
-        panel.setLayout(panelLayout);
-        panelLayout.setHorizontalGroup(
-            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(panelLayout.createSequentialGroup()
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(dragPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pressLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                         .addComponent(lastLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-        panelLayout.setVerticalGroup(
-            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addComponent(dragPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lastLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
@@ -149,11 +150,11 @@ public class Display extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -163,25 +164,30 @@ public class Display extends javax.swing.JFrame {
         TimerTask task;
         Timer timer;
         
-        try {
-            pressLabel.setIcon(new ImageIcon(ImageIO.read(getClass().getClassLoader().getResource("images/press_hard.png"))));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         if (active) {
             return;
         }
         
         active = true;
         
-        List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
+        try {
+            pressLabel.setIcon(new ImageIcon(ImageIO.read(getClass().getClassLoader().getResource("images/press_hard.png"))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
-        bots = new BotBase[] {
-            new NSFWPolice(tokens.get(0), "NSFW Police"),
-            new SuggestionBox(tokens.get(1), "Suggestion Box"),
-            new BulletBot(tokens.get(2), "BulletBot")
-        };
+        try {
+            List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
+            
+            bots = new BotBase[] {
+                new NSFWPolice(tokens.get(0), "NSFW Police"),
+                new SuggestionBox(tokens.get(1), "Suggestion Box"),
+                new BulletBot(tokens.get(2), "BulletBot"),
+                new Jigsaw(tokens.get(3), "Jigsaw")
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
         task = new TimerTask() {
             @Override
@@ -240,26 +246,15 @@ public class Display extends javax.swing.JFrame {
                 new Display().setVisible(true);
             }
         });
-        
-        
-        
-        /*
-        List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
-        
-        BotBase[] bots = new BotBase[] {
-            new NSFWPolice(tokens.get(0), "NSFW Police"),
-            new SuggestionBox(tokens.get(1), "Suggestion Box"),
-            new BulletBot(tokens.get(2), "BulletBot")
-        };*/
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel closeLabel;
+    private javax.swing.JPanel dragPanel;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lastLabel;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JLabel minimizeLabel;
-    private javax.swing.JPanel panel;
     private javax.swing.JLabel pressLabel;
     // End of variables declaration//GEN-END:variables
 }
