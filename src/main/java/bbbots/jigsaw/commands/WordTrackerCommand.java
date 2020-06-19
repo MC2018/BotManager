@@ -2,6 +2,7 @@ package bbbots.jigsaw.commands;
 
 import bbbots.jigsaw.Jigsaw;
 import bbbots.jigsaw.generic.JigsawCommandBase;
+import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -49,7 +50,7 @@ public class WordTrackerCommand extends JigsawCommandBase {
             }
         }
         
-        if (!found) {
+        if (!found || Utilities.hasRole(event.getMember(), "Mod")) {
             return;
         }
         
