@@ -117,6 +117,10 @@ public class Utilities {
         return null;
     }
     
+    public static String getTrueFileName(File file) {
+        return file.getName().split("\\.")[0];
+    }
+    
     public static void sendGuildMessage(TextChannel channel, String message) {
         if (message.length() > 1950) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
