@@ -23,6 +23,8 @@ import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
  */
 public class MaiDiscordBot extends BotBase {
 
+    public Set<Member> planters = new HashSet<>();
+    
     public MaiDiscordBot(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.watching(" you lose money :)"));
@@ -149,8 +151,6 @@ public class MaiDiscordBot extends BotBase {
             return 0;
         }
     }
-
-    public Set<Member> planters = new HashSet<>();
 
     public int getUserPlant(Member member) {
         return getUserPlant(member.getGuild(), member.getUser());
