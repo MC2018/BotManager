@@ -1,20 +1,12 @@
 package botmanager.maidiscordbot;
 
-import botmanager.maidiscordbot.commands.GambleCommand;
-import botmanager.maidiscordbot.commands.DeadCommand;
-import botmanager.maidiscordbot.commands.PMRepeaterCommand;
-import botmanager.maidiscordbot.commands.DailyRewardCommand;
-import botmanager.maidiscordbot.commands.JackpotCommand;
-import botmanager.maidiscordbot.commands.GiveCommand;
-import botmanager.maidiscordbot.commands.MoneyCommand;
-import botmanager.maidiscordbot.commands.HelpCommand;
-import botmanager.maidiscordbot.commands.AlltimeBaltopCommand;
-import botmanager.maidiscordbot.commands.CoinflipCommand;
-import botmanager.maidiscordbot.commands.BalanceTopCommand;
-import botmanager.maidiscordbot.commands.BalanceCommand;
+import botmanager.maidiscordbot.commands.*;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -48,6 +40,8 @@ public class MaiDiscordBot extends BotBase {
             new JackpotCommand(this),
             new DeadCommand(this),
             new PMRepeaterCommand(this),
+            new HarvestCommand(this),
+            new PlantCommand(this),
             new AlltimeBaltopCommand(this)
         });
     }
@@ -150,6 +144,56 @@ public class MaiDiscordBot extends BotBase {
         Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
+    public int getUserPlant(Guild guild, User user) {
+        try {
+            return Integer.parseInt(getUserCSVAtIndex(guild, user, 4));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public Set<Member> planters = new HashSet<>();
+
+    public int getUserPlant(Member member) {
+        return getUserPlant(member.getGuild(), member.getUser());
+    }
+
+    public void setUserPlant(Guild guild, User user, int amount) {
+        setUserCSVAtIndex(guild, user, 4, String.valueOf(amount));
+    }
+
+    public void setUserPlant(Member member, int amount) {
+        setUserPlant(member.getGuild(), member.getUser(), amount);
+    }
+
+    public void updatePlant(Guild guild, int plantBalance) {
+        Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/plant.csv"), String.valueOf(plantBalance));
+    }
+
+    public int getTotalPlant(Guild guild) {
+
+        try {
+            String info = Utilities.read(new File("data/" + getName() + "/" + guild.getId() + "/plant.csv"));
+            return Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
+        } catch (NumberFormatException e) {
+            updatePlant(guild, 0);
+            return 0;
+        }
+
+    }
+
+    public void growPlants() {
+
+        for (Member planter : planters) {
+            setUserPlant(planter, (int) Math.ceil(getUserPlant(planter) * 1.01));
+        }
+
+    }
+
+    public void removePlanterCache() {
+        planters.clear();
+    }
+
     public int getUserDaily(Guild guild, User user) {
         try {
             return Integer.parseInt(getUserCSVAtIndex(guild, user, 2));
@@ -215,5 +259,4 @@ public class MaiDiscordBot extends BotBase {
         
         return newCommands;
     }
-    
 }
