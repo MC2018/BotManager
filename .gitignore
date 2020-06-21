@@ -35,6 +35,11 @@
 ehthumbs.db
 Thumbs.db
 
+# Collaborative #
+#################
+.idea
+src/main/java/botmanager/addict
+
 # Files I specifically don't want in #
 ######################################
 SpeedrunGamesListScraper.java

@@ -40,7 +40,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
 
     private void growPlants() {
 
-        bot.growPlants();
+        bot.growPlants(guild);
 
     }
 
@@ -67,7 +67,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
                 message = message.replaceFirst(keyword + " ", "");
                 found = true;
                 break;
-            } else if (message.startsWith(keyword)) {
+            } else if (message.startsWith(keyword) && message.endsWith(keyword)) {
                 message = message.replaceFirst(keyword, "");
                 found = true;
                 break;
@@ -92,7 +92,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
             result = "$" + totalPlantAmount + " is planted right now.\n";
 
             if (message.equals("")) {
-                result += event.getMember().getEffectiveName() + " has $" + userExistingPlantAmount + " in the pot.";
+                result += event.getMember().getEffectiveName() + " has $" + userExistingPlantAmount + " planted.";
             } else {
                 result += "\n" + getNameOutput(event.getGuild());
             }

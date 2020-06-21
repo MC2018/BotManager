@@ -182,16 +182,27 @@ public class MaiDiscordBot extends BotBase {
 
     }
 
-    public void growPlants() {
+    public void growPlants(Guild guild) {
+
+        int total = 0;
 
         for (Member planter : planters) {
-            setUserPlant(planter, (int) Math.ceil(getUserPlant(planter) * 1.01));
+            int planterPlantAmount = (int) Math.ceil(getUserPlant(planter) * 1.01);
+            setUserPlant(planter, planterPlantAmount);
+            total += planterPlantAmount;
         }
+
+        updatePlant(guild, total);
 
     }
 
-    public void removePlanterCache() {
-        planters.clear();
+    public void resetPlanters(Guild guild) {
+        for (Member planter : planters) {
+            if (planter.getGuild().equals(guild)) {
+                setUserPlant(planter, 0);
+            }
+        }
+        planters.removeAll(guild.getMembers());
     }
 
     public int getUserDaily(Guild guild, User user) {

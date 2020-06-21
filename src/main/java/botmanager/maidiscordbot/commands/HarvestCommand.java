@@ -10,11 +10,6 @@ import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class HarvestCommand extends MaiDiscordBotCommandBase {
 
@@ -51,7 +46,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
                 message = message.replaceFirst(keyword + " ", "");
                 found = true;
                 break;
-            } else if (message.startsWith(keyword)) {
+            } else if (message.startsWith(keyword) && message.endsWith(keyword)) {
                 message = message.replaceFirst(keyword, "");
                 found = true;
                 break;
@@ -65,20 +60,20 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
         userExistingPlantAmount = bot.getUserPlant(event.getMember());
         totalPlantAmount = bot.getTotalPlant(event.getGuild());
 
-        if (message.equals("") || message.equalsIgnoreCase("info")) {
+        if (message.equalsIgnoreCase("info")) {
             result = "$" + totalPlantAmount + " is planted right now.\n";
-
-            if (message.equals("")) {
-                result += event.getMember().getEffectiveName() + " has $" + userExistingPlantAmount + " in the pot.";
-            } else {
-                result += "\n" + getNameOutput(event.getGuild());
-            }
+            result += "\n" + getNameOutput(event.getGuild());
 
             Utilities.sendGuildMessage(event.getChannel(), result);
             return;
         }
 
-        if (Math.random() * 2 < 1 + userExistingPlantAmount / totalPlantAmount) {
+        if (totalPlantAmount == 0) {
+            result += "Nothing's planted, you bottomfeeder.";
+
+            Utilities.sendGuildMessage(event.getChannel(), result);
+            return;
+        } else if (Math.random() * 2 < 1 + userExistingPlantAmount / totalPlantAmount) {
             result += event.getMember().getEffectiveName() + " harvested $" + totalPlantAmount + " at a " + clean(chanceOfSuccess) + " chance of success!";
             bot.addUserBalance(event.getMember(), totalPlantAmount);
         } else {
@@ -87,7 +82,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
 
         Utilities.sendGuildMessage(event.getChannel(), result);
 
-        bot.removePlanterCache();
+        bot.resetPlanters(event.getGuild());
         bot.updatePlant(event.getGuild(), 0);
 
     }
@@ -131,7 +126,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
             plantAmount = bot.getUserPlant(guild, user);
 
             if (plantAmount != 0) {
-                result += name + ": $" + plantAmount + "(" + clean(chance(member, guild)) + ")\n";
+                result += name + ": $" + plantAmount + " (" + clean(chance(member, guild)) + ")\n";
             }
         }
 
