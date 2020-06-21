@@ -8,13 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class HarvestCommand extends MaiDiscordBotCommandBase {
 
@@ -97,9 +91,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
     }
 
     private String clean(double chanceOfSuccess) {
-
         return String.format("%.1f", 100 * chanceOfSuccess) + "%";
-
     }
 
     public String getNameOutput(Guild guild) {
