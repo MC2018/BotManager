@@ -32,9 +32,11 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
         GuildMessageReceivedEvent event;
         Guild guild;
         File[] files;
-        String result;
+        String message = null;
+        String result = "";
+        int size = 5;
         boolean found = false;
-
+        
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
             return;
         }
@@ -43,6 +45,7 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
 
         for (String keyword : KEYWORDS) {
             if (event.getMessage().getContentRaw().startsWith(bot.getPrefix() + keyword)) {
+                message = event.getMessage().getContentRaw().replace(bot.getPrefix() + keyword, "").replaceAll(" ", "");
                 found = true;
                 break;
             }
@@ -52,17 +55,32 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
             return;
         }
 
+        if (!message.isEmpty()) {
+            try {
+                size = Integer.parseInt(message);
+                
+                if (size > 20) {
+                    result += "Limiting the search to the top 20 members.\n\n";
+                    size = 20;
+                }
+            } catch (Exception e) {
+            }
+        }
+        
         guild = event.getGuild();
         files = new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/").listFiles();
 
-        int[] baltop = {0, 0, 0, 0, 0};
-        String[] baltopNames = new String[5];
-
+        int[] baltop = new int[size];
+        String[] baltopNames = new String[size];
+        
+        for (int i = 0; i < baltop.length; i++) {
+            baltop[i] = 0;
+        }
+        
         for (File file : files) {
             try {
                 Member member = guild.getMemberById(file.getName().replace(".csv", ""));
-                String memberName;// = member.getEffectiveName();
-                //int balance = bot.getUserBalance(member);
+                String memberName;
                 int balance;
 
                 if (member == null) {
@@ -90,14 +108,17 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
                     }
                 }
             } catch (Exception e) {
-                
             }
         }
         
-        result = "Balance Top:\n";
+        result += "__**Balance Top:**__\n";
         
         for (int i = 0; i < baltop.length; i++) {
-            result += getNumericalSuffix(i) + ": " + baltopNames[i] + " with $" + baltop[i] + "\n";
+            if (baltopNames[i] == null) {
+                i = baltop.length;
+            } else {
+                result += getNumericalSuffix(i) + ": " + baltopNames[i] + " with $" + baltop[i] + "\n";
+            }
         }
         
         Utilities.sendGuildMessage(event.getChannel(), result);
@@ -105,7 +126,9 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
 
     @Override
     public String info() {
-        return "**" + bot.getPrefix() + "baltop** - shows the richest people on the server";
+        return ""
+                + "**" + bot.getPrefix() + "baltop** - shows the richest people on the server\n"
+                + "**" + bot.getPrefix() + "baltop AMOUNT** - shows a set number of the richest people on the server";
     }
     
     public String getNumericalSuffix(int index) {
