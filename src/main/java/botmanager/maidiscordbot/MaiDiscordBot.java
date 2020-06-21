@@ -4,9 +4,11 @@ import botmanager.maidiscordbot.commands.*;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -23,6 +25,11 @@ import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
  */
 public class MaiDiscordBot extends BotBase {
 
+    TimerTask timerTask;
+    Timer timer = new Timer();
+
+    private HashMap<Guild, Boolean> harvesting = new HashMap<>();
+    private static final int PLANT_GROWTH_MAX = 500000;
     public Set<Member> planters = new HashSet<>();
     
     public MaiDiscordBot(String botToken, String name) {
@@ -42,8 +49,36 @@ public class MaiDiscordBot extends BotBase {
             new JackpotCommand(this),
             new DeadCommand(this),
             new PMRepeaterCommand(this),
-            new AlltimeBaltopCommand(this)
+            new AlltimeBaltopCommand(this),
+            new PlantCommand(this),
+            new HarvestCommand(this)
         });
+
+        generateTimer();
+
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+
+        exec.schedule(new Runnable() {
+            public void run() {
+                generatePlanterCache();
+            }
+        }, 1, TimeUnit.SECONDS);
+
+    }
+
+    public void generateTimer() {
+        timerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+
+                growPlants();
+
+            }
+
+        };
+
+        timer.schedule(timerTask, 60000, 60000);
     }
 
     @Override
@@ -144,6 +179,66 @@ public class MaiDiscordBot extends BotBase {
         Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
+    public File[] getGuildFolders() {
+        File[] dataFiles = new File("data/" + getName()).listFiles();
+
+        List<File> guildFolders = new ArrayList();
+        File[] array;
+
+        for (File dataFile : dataFiles) {
+            if (dataFile.isDirectory()) {
+
+                String folderName = dataFile.getName();
+
+                try {
+                    Long.parseLong(folderName);
+                    guildFolders.add(dataFile);
+                } catch (NumberFormatException e) {
+                }
+            }
+        }
+
+        array = new File[guildFolders.size()];
+        guildFolders.toArray(array);
+        return array;
+    }
+
+    private void generatePlanterCache() {
+
+        File[] guildFolders = getGuildFolders();
+
+        for (File guildFolder : guildFolders) {
+
+            String guildId = guildFolder.getName();
+
+            File[] userFiles = guildFolder.listFiles();
+            for (File userFile : userFiles) {
+                String userId = userFile.getName().replace(".csv", "");
+                System.out.println(userId);
+
+                try {
+                    Long.parseLong(userId);
+                    Member member = memberFromIds(guildId, userId);
+                    if (member != null) planters.add(member);
+                    else System.out.println("null member");
+                } catch (NumberFormatException e) {
+                }
+            }
+
+        }
+
+        for (Member member : planters) {
+            System.out.println("member:" + member.getEffectiveName());
+        }
+    }
+
+    private Member memberFromIds(String guildId, String userId) {
+        JDA jda = getJDA();
+        Guild guild = jda.getGuildById(Long.parseLong(guildId));
+        User user = jda.getUserById(userId);
+        return guild.getMember(user);
+    }
+
     public int getUserPlant(Guild guild, User user) {
         try {
             return Integer.parseInt(getUserCSVAtIndex(guild, user, 4));
@@ -180,16 +275,23 @@ public class MaiDiscordBot extends BotBase {
 
     public void growPlants() {
 
-		//must be per guild.
-        int total = 0;
+        HashMap<Guild, Integer> totals = new HashMap<>();
 		
         for (Member planter : planters) {
+            if (isHarvesting(planter.getGuild())) {
+                continue;
+            }
             int planterPlantAmount = (int) Math.ceil(getUserPlant(planter) * 1.01);
+            if (planterPlantAmount > PLANT_GROWTH_MAX && getUserPlant(planter) <= PLANT_GROWTH_MAX) {
+                planterPlantAmount = PLANT_GROWTH_MAX;
+            }
             setUserPlant(planter, planterPlantAmount);
-            total += planterPlantAmount;
+            totals.put(planter.getGuild(), totals.getOrDefault(planter, 0) + planterPlantAmount);
         }
 
-        updatePlant(guild, total);
+        for (Guild guild : totals.keySet()) {
+            updatePlant(guild, totals.get(guild));
+        }
     }
 
     public void resetPlanters(Guild guild) {
@@ -199,6 +301,14 @@ public class MaiDiscordBot extends BotBase {
             }
         }
         planters.removeAll(guild.getMembers());
+    }
+
+    public boolean isHarvesting(Guild guild) {
+        return harvesting.getOrDefault(guild, false);
+    }
+
+    public void setHarvesting(Guild guild, boolean harvesting) {
+        this.harvesting.put(guild, harvesting);
     }
 
     public int getUserDaily(Guild guild, User user) {

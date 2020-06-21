@@ -146,7 +146,7 @@ public class Jigsaw extends BotBase {
                 String folderName = dataFile.getName();
                 
                 try {
-                    Integer.parseInt(folderName);
+                    Long.parseLong(folderName);
                     guildFolders.add(dataFile);
                 } catch (Exception e) {
                 }

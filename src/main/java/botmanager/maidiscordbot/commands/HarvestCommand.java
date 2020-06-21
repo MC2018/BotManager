@@ -56,6 +56,13 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
             return;
         }
 
+        if (bot.isHarvesting(event.getGuild())) {
+            result = "Someone else beat you to it!\n";
+
+            Utilities.sendGuildMessage(event.getChannel(), result);
+            return;
+        }
+
         userExistingPlantAmount = bot.getUserPlant(event.getMember());
         totalPlantAmount = bot.getTotalPlant(event.getGuild());
 
@@ -72,17 +79,22 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
 
             Utilities.sendGuildMessage(event.getChannel(), result);
             return;
-        } else if (Math.random() * 2 < 1 + userExistingPlantAmount / totalPlantAmount) {
-            result += event.getMember().getEffectiveName() + " harvested $" + totalPlantAmount + " at a " + clean(chanceOfSuccess) + " chance of success!";
-            bot.addUserBalance(event.getMember(), totalPlantAmount);
         } else {
-            result += event.getMember().getEffectiveName() + " botched a harvest of $" + totalPlantAmount + " with a " + clean(chanceOfSuccess) + " chance of success...";
+            bot.setHarvesting(event.getGuild(), true);
+            if (Math.random() * 2 < 1 + userExistingPlantAmount / totalPlantAmount) {
+                result += event.getMember().getEffectiveName() + " harvested $" + totalPlantAmount + " at a " + clean(chanceOfSuccess) + " chance of success!";
+                bot.addUserBalance(event.getMember(), totalPlantAmount);
+            } else {
+                result += event.getMember().getEffectiveName() + " botched a harvest of $" + totalPlantAmount + " with a " + clean(chanceOfSuccess) + " chance of success...";
+            }
         }
 
         Utilities.sendGuildMessage(event.getChannel(), result);
 
         bot.resetPlanters(event.getGuild());
         bot.updatePlant(event.getGuild(), 0);
+
+        bot.setHarvesting(event.getGuild(),false);
 
     }
 
