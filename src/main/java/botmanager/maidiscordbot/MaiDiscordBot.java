@@ -23,6 +23,8 @@ import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
  */
 public class MaiDiscordBot extends BotBase {
 
+    public Set<Member> planters = new HashSet<>();
+    
     public MaiDiscordBot(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.watching(" you lose money :)"));
@@ -40,8 +42,6 @@ public class MaiDiscordBot extends BotBase {
             new JackpotCommand(this),
             new DeadCommand(this),
             new PMRepeaterCommand(this),
-            new HarvestCommand(this),
-            new PlantCommand(this),
             new AlltimeBaltopCommand(this)
         });
     }
@@ -152,8 +152,6 @@ public class MaiDiscordBot extends BotBase {
         }
     }
 
-    public Set<Member> planters = new HashSet<>();
-
     public int getUserPlant(Member member) {
         return getUserPlant(member.getGuild(), member.getUser());
     }
@@ -171,7 +169,6 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public int getTotalPlant(Guild guild) {
-
         try {
             String info = Utilities.read(new File("data/" + getName() + "/" + guild.getId() + "/plant.csv"));
             return Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
@@ -179,13 +176,13 @@ public class MaiDiscordBot extends BotBase {
             updatePlant(guild, 0);
             return 0;
         }
-
     }
 
-    public void growPlants(Guild guild) {
+    public void growPlants() {
 
+		//must be per guild.
         int total = 0;
-
+		
         for (Member planter : planters) {
             int planterPlantAmount = (int) Math.ceil(getUserPlant(planter) * 1.01);
             setUserPlant(planter, planterPlantAmount);
@@ -193,7 +190,6 @@ public class MaiDiscordBot extends BotBase {
         }
 
         updatePlant(guild, total);
-
     }
 
     public void resetPlanters(Guild guild) {
