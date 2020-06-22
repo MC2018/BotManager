@@ -14,30 +14,15 @@ import java.util.TimerTask;
 
 public class PlantCommand extends MaiDiscordBotCommandBase {
 
+    private static final int PLANT_MAX = 250000;
     public final String[] KEYWORDS = {
             bot.getPrefix() + "plant",
             bot.getPrefix() + "pl",
             bot.getPrefix() + "p"
     };
-    private final TimerTask task;
-    private final Timer timer;
 
     public PlantCommand(BotBase bot) {
         super(bot);
-
-        task = new TimerTask() {
-            @Override
-            public void run() {
-                growPlants();
-            }
-        };
-
-        timer = new Timer();
-        timer.schedule(task, 60000, 60000);
-    }
-
-    private void growPlants() {
-        bot.growPlants();
     }
 
     @Override
@@ -63,7 +48,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
                 message = message.replaceFirst(keyword + " ", "");
                 found = true;
                 break;
-            } else if (message.startsWith(keyword)) {
+            } else if (message.startsWith(keyword) && message.endsWith(keyword)) {
                 message = message.replaceFirst(keyword, "");
                 found = true;
                 break;
@@ -71,6 +56,13 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
         }
 
         if (!found) {
+            return;
+        }
+
+        if (bot.isHarvesting(event.getGuild())) {
+            result = "Someone else is harvesting right now.\n";
+
+            Utilities.sendGuildMessage(event.getChannel(), result);
             return;
         }
 
@@ -88,7 +80,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
             result = "$" + totalPlantAmount + " is planted right now.\n";
 
             if (message.equals("")) {
-                result += event.getMember().getEffectiveName() + " has $" + userExistingPlantAmount + " in the pot.";
+                result += event.getMember().getEffectiveName() + " has $" + userExistingPlantAmount + " planted.";
             } else {
                 result += "\n" + getNameOutput(event.getGuild());
             }
@@ -110,6 +102,16 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
         } else if (userNewPlantAmount <= 0) {
             Utilities.sendGuildMessage(event.getChannel(), userNewPlantAmount + " is too small of a number.");
             return;
+        }
+
+        if (userNewPlantAmount >= PLANT_MAX) {
+            result += "You can't plant any more than that!";
+            Utilities.sendGuildMessage(event.getChannel(), result);
+            return;
+        } else if (userNewPlantAmount + userExistingPlantAmount > PLANT_MAX) {
+            result += "That would make your plant too big!"
+                    + "bringing the plant down from $" + userNewPlantAmount + " to $" + (userNewPlantAmount = PLANT_MAX - userExistingPlantAmount) + ".\n";
+
         }
 
         totalPlantAmount += userNewPlantAmount;
