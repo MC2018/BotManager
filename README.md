@@ -1,2 +1,2 @@
 # BotManager
-A manager of Discord bots that I develop and manage. MaiDiscordBot is a personal bot for my friends' Discord guilds, Boteyy_ is for a YouTuber, and SpeedrunBot is for the speedrunning community.
+A manager of Discord bots that I develop and manage. MaiDiscordBot is a personal bot for my friends' Discord guilds, Boteyy_ is for a YouTuber, SpeedrunBot is for the speedrunning community, and 4 of the bots (BulletBot, Jigsaw, NSFWPolice, and Suggestion Box) are for another YouTuber's server.
