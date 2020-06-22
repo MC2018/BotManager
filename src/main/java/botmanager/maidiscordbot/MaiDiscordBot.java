@@ -27,7 +27,6 @@ public class MaiDiscordBot extends BotBase {
 
     TimerTask timerTask;
     Timer timer = new Timer();
-
     private HashMap<Guild, Boolean> harvesting = new HashMap<>();
     private static final int PLANT_GROWTH_MAX = 500000;
     public Set<Member> planters = new HashSet<>();
@@ -35,9 +34,9 @@ public class MaiDiscordBot extends BotBase {
     public MaiDiscordBot(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.watching(" you lose money :)"));
-
         setPrefix("~");
-        setCommands(new ICommand[]{
+        generatePlantTimer();
+        setCommands(new ICommand[] {
             new MoneyCommand(this),
             new HelpCommand(this),
             new BalanceCommand(this),
@@ -53,32 +52,24 @@ public class MaiDiscordBot extends BotBase {
             new PlantCommand(this),
             new HarvestCommand(this)
         });
+    }
 
-        generateTimer();
-
+    public void generatePlantTimer() {
         ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        timerTask = new TimerTask() {
 
+            @Override
+            public void run() {
+                growPlants();
+            }
+        };
+
+        timer.schedule(timerTask, 60000, 60000);
         exec.schedule(new Runnable() {
             public void run() {
                 generatePlanterCache();
             }
         }, 1, TimeUnit.SECONDS);
-
-    }
-
-    public void generateTimer() {
-        timerTask = new TimerTask() {
-
-            @Override
-            public void run() {
-
-                growPlants();
-
-            }
-
-        };
-
-        timer.schedule(timerTask, 60000, 60000);
     }
 
     @Override
@@ -204,39 +195,27 @@ public class MaiDiscordBot extends BotBase {
     }
 
     private void generatePlanterCache() {
-
         File[] guildFolders = getGuildFolders();
 
         for (File guildFolder : guildFolders) {
-
-            String guildId = guildFolder.getName();
-
             File[] userFiles = guildFolder.listFiles();
+            String guildId = guildFolder.getName();
+            Guild guild = getJDA().getGuildById(Long.parseLong(guildId));
+            
             for (File userFile : userFiles) {
-                String userId = userFile.getName().replace(".csv", "");
-                System.out.println(userId);
+                String userId = Utilities.getTrueFileName(userFile);
 
                 try {
                     Long.parseLong(userId);
-                    Member member = memberFromIds(guildId, userId);
-                    if (member != null) planters.add(member);
-                    else System.out.println("null member");
+                    Member member = guild.getMemberById(userId);
+                    
+                    if (member != null) {
+                        planters.add(member);
+                    }
                 } catch (NumberFormatException e) {
                 }
             }
-
         }
-
-        for (Member member : planters) {
-            System.out.println("member:" + member.getEffectiveName());
-        }
-    }
-
-    private Member memberFromIds(String guildId, String userId) {
-        JDA jda = getJDA();
-        Guild guild = jda.getGuildById(Long.parseLong(guildId));
-        User user = jda.getUserById(userId);
-        return guild.getMember(user);
     }
 
     public int getUserPlant(Guild guild, User user) {
@@ -274,17 +253,17 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void growPlants() {
-
         HashMap<Guild, Integer> totals = new HashMap<>();
 		
         for (Member planter : planters) {
+            int planterPlantAmount = (int) Math.ceil(getUserPlant(planter) * 1.01);
+            
             if (isHarvesting(planter.getGuild())) {
                 continue;
-            }
-            int planterPlantAmount = (int) Math.ceil(getUserPlant(planter) * 1.01);
-            if (planterPlantAmount > PLANT_GROWTH_MAX && getUserPlant(planter) <= PLANT_GROWTH_MAX) {
+            } else if (planterPlantAmount > PLANT_GROWTH_MAX && getUserPlant(planter) <= PLANT_GROWTH_MAX) {
                 planterPlantAmount = PLANT_GROWTH_MAX;
             }
+            
             setUserPlant(planter, planterPlantAmount);
             totals.put(planter.getGuild(), totals.getOrDefault(planter, 0) + planterPlantAmount);
         }
@@ -300,6 +279,7 @@ public class MaiDiscordBot extends BotBase {
                 setUserPlant(planter, 0);
             }
         }
+        
         planters.removeAll(guild.getMembers());
     }
 

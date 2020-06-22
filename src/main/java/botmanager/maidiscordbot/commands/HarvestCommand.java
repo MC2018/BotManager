@@ -26,11 +26,9 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
         GuildMessageReceivedEvent event;
         String message;
         String result = "";
-        boolean found = false;
-
-        //variables here
-        int userExistingPlantAmount, totalPlantAmount;
         double chanceOfSuccess;
+        int userExistingPlantAmount, totalPlantAmount;
+        boolean found = false;
 
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
             return;
@@ -38,7 +36,6 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
 
         event = (GuildMessageReceivedEvent) genericEvent;
         message = event.getMessage().getContentRaw();
-        chanceOfSuccess = chance(event.getMember(), event.getGuild());
 
         for (String keyword : KEYWORDS) {
             if (message.startsWith(keyword + " ")) {
@@ -57,9 +54,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
         }
 
         if (bot.isHarvesting(event.getGuild())) {
-            result = "Someone else beat you to it!\n";
-
-            Utilities.sendGuildMessage(event.getChannel(), result);
+            Utilities.sendGuildMessage(event.getChannel(), "Someone else beat you to it!");
             return;
         }
 
@@ -69,18 +64,12 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
         if (message.equalsIgnoreCase("info")) {
             result = "$" + totalPlantAmount + " is planted right now.\n";
             result += "\n" + getNameOutput(event.getGuild());
-
-            Utilities.sendGuildMessage(event.getChannel(), result);
-            return;
-        }
-
-        if (totalPlantAmount == 0) {
+        } else if (totalPlantAmount == 0) {
             result += "Nothing's planted, you bottomfeeder.";
-
-            Utilities.sendGuildMessage(event.getChannel(), result);
-            return;
         } else {
+            chanceOfSuccess = chance(event.getMember(), event.getGuild());
             bot.setHarvesting(event.getGuild(), true);
+            
             if (Math.random() * 2 < 1 + userExistingPlantAmount / totalPlantAmount) {
                 result += event.getMember().getEffectiveName() + " harvested $" + totalPlantAmount + " at a " + clean(chanceOfSuccess) + " chance of success!";
                 bot.addUserBalance(event.getMember(), totalPlantAmount);
@@ -93,7 +82,6 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
 
         bot.resetPlanters(event.getGuild());
         bot.updatePlant(event.getGuild(), 0);
-
         bot.setHarvesting(event.getGuild(),false);
 
     }

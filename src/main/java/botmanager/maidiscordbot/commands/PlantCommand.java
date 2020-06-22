@@ -30,10 +30,8 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
         GuildMessageReceivedEvent event;
         String message;
         String result = "";
-        boolean found = false;
-
-        //variables here
         int balance, userExistingPlantAmount, userNewPlantAmount, totalPlantAmount;
+        boolean found = false;
 
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
             return;
@@ -41,7 +39,6 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
 
         event = (GuildMessageReceivedEvent) genericEvent;
         message = event.getMessage().getContentRaw();
-        balance = bot.getUserBalance(event.getMember());
 
         for (String keyword : KEYWORDS) {
             if (message.startsWith(keyword + " ")) {
@@ -96,6 +93,8 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
             return;
         }
 
+        balance = bot.getUserBalance(event.getMember());
+        
         if (balance < userNewPlantAmount) {
             Utilities.sendGuildMessage(event.getChannel(), "You only have $" + balance + ", ntnt.");
             return;
