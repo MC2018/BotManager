@@ -73,14 +73,14 @@ public class MaiDiscordBot extends BotBase {
     }
 
     @Override
-    public void onGuildMessageReceived​(GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
     }
 
     @Override
-    public void onPrivateMessageReceived​(PrivateMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
