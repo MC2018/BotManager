@@ -64,6 +64,10 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
         if (message.equalsIgnoreCase("info")) {
             result = "$" + totalPlantAmount + " is planted right now.\n";
             result += "\n" + getNameOutput(event.getGuild());
+
+            Utilities.sendGuildMessage(event.getChannel(), result);
+
+            return;
         } else if (totalPlantAmount == 0) {
             result += "Nothing's planted, you bottomfeeder.";
         } else {
@@ -126,6 +130,8 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
                 result += name + ": $" + plantAmount + " (" + clean(chance(member, guild)) + ")\n";
             }
         }
+
+        result += "*Others: 50%*";
 
         return result;
     }
