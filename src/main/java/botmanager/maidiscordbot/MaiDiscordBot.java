@@ -70,7 +70,7 @@ public class MaiDiscordBot extends BotBase {
             }
         };
 
-        timer.schedule(timerTask, 60000, 60000);
+        timer.schedule(timerTask, 180000, 180000);
         exec.schedule(new Runnable() {
             public void run() {
                 generatePlanterCache();
@@ -262,7 +262,10 @@ public class MaiDiscordBot extends BotBase {
         HashMap<Guild, Integer> totals = new HashMap<>();
 		
         for (Member planter : planters) {
-            int planterPlantAmount = (int) Math.ceil(getUserPlant(planter) * 1.01);
+            int planterPlantAmount = getUserPlant(planter);
+            boolean roundingChance = (planterPlantAmount % 100) > (Math.random() * 100);
+            
+            planterPlantAmount = (int) (planterPlantAmount * 1.01) + (roundingChance ? 1 : 0);
             
             if (isHarvesting(planter.getGuild())) {
                 continue;
