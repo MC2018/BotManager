@@ -72,7 +72,6 @@ public final class SpeedrunBot extends BotBase {
             @Override
             public void run() {
                 shutdown();
-                System.out.println("get dunked on");
             }
         });
     }
@@ -145,9 +144,8 @@ public final class SpeedrunBot extends BotBase {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Problem: " + problem);
             e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException("Problem: " + problem);
         }
         
         gameSynonyms = map;

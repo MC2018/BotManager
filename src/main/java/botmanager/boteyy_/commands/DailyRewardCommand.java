@@ -2,7 +2,6 @@ package botmanager.boteyy_.commands;
 
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.boteyy_.Boteyy_;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import net.dv8tion.jda.api.events.Event;

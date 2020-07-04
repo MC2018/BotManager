@@ -5,7 +5,6 @@ import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.boteyy_.generic.Boteyy_CommandBase;
-import botmanager.generic.ICommand;
 
 /**
  *

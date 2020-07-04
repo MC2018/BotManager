@@ -1,6 +1,5 @@
 package botmanager.boteyy_.commands;
 
-import botmanager.boteyy_.Boteyy_;
 import botmanager.generic.BotBase;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

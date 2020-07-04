@@ -7,7 +7,6 @@ import java.util.Date;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
-import botmanager.maidiscordbot.MaiDiscordBot;
 
 /**
  *

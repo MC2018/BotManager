@@ -2,7 +2,6 @@ package botmanager.boteyy_.commands;
 
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.boteyy_.Boteyy_;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.boteyy_.generic.Boteyy_CommandBase;

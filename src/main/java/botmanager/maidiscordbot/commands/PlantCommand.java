@@ -9,8 +9,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.io.File;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class PlantCommand extends MaiDiscordBotCommandBase {
 

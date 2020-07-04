@@ -1,22 +1,28 @@
 package botmanager.maidiscordbot;
 
-import botmanager.maidiscordbot.commands.*;
-import botmanager.generic.BotBase;
 import botmanager.Utilities;
+import botmanager.generic.BotBase;
+import botmanager.generic.ICommand;
+import botmanager.maidiscordbot.commands.*;
+import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-import botmanager.generic.ICommand;
-import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
+
+
 
 //idea: encrypter(s) built in?
 /**

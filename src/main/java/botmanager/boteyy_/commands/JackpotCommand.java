@@ -2,7 +2,6 @@ package botmanager.boteyy_.commands;
 
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.boteyy_.Boteyy_;
 import java.io.File;
 import java.util.Random;
 import net.dv8tion.jda.api.entities.Guild;
