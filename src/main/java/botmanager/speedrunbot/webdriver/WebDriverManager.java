@@ -11,11 +11,13 @@ public class WebDriverManager {
 
     private static boolean propertiesInit = false;
 
-    private final int SIZE = 10;
+    private final int SIZE;
     private volatile ArrayList<CustomChromeDriver> webDrivers = new ArrayList<>();
 
     //add queue eventually
-    public WebDriverManager() {
+    public WebDriverManager(int size) {
+        SIZE = size;
+        
         if (!propertiesInit) {
             System.setProperty("webdriver.chrome.driver", "C:\\selenium\\chromedriver.exe");
             System.setProperty("webdriver.chrome.silentOutput", "true");
@@ -40,11 +42,12 @@ public class WebDriverManager {
     public String getPageSource(String url) {
         return getPageSource(url, 0);
     }
-
+    
     private String getPageSource(String url, int attempts) {
         try {
             System.out.println(webDrivers.stream().filter(wd -> !wd.isOccupied()).count());
             CustomChromeDriver usableDriver = webDrivers.stream().filter(wd -> !wd.isOccupied()).findFirst().get();
+            
             return usableDriver.getPageSource(url);
         } catch (Exception e) {
             e.printStackTrace();

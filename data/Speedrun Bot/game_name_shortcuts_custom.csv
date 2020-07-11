@@ -91,6 +91,7 @@ portal 2 speedrun mod,p2sm
 portal 2 speedrun,p2sm
 pokemon sword and shield,pkmnswordshield
 pokemon sword shield,pkmnswordshield
+pokmon sword shield,pkmnswordshield
 pokemon sword,pkmnswordshield
 pokemon shield,pkmnswordshield
 destiny two,destiny2
@@ -145,6 +146,7 @@ pokemon red and blue,pkmnredblue
 pokemon red blue,pkmnredblue
 pokemon red,pkmnredblue
 pokemon blue,pkmnredblue
+pokmonredblue,pkmnredblue
 super mario bros three,smb3
 mario bros three,smb3
 mario three,smb3
@@ -342,6 +344,7 @@ mario 2 us,smb2
 mario 2,smb2
 smb2u,smb2
 smb2,smb2
+super mario bros. the lost levels,smbtll
 super mario bros the lost levels,smbtll
 super mario the lost levels,smbtll
 mario bros the lost levels,smbtll
@@ -359,6 +362,7 @@ super mario 2 j,smbtll
 mario 2 japan,smbtll
 mario 2 j,smbtll
 smb2j,smbtll
+smbtll,smbtll
 contra,contra
 donkey kong,donkey_kong
 super mario world 2 yoshis island,yi
@@ -464,7 +468,9 @@ five nights at freddys 1,fnaf1
 five nights at freddys,fnaf1
 fnaf,fnaf1
 pokemon snap,pkmnsnap
+pokmon snap,pkmnsnap
 terraria,terraria
+call of duty 4 modern warfare,cod4
 call of duty modern warfare,cod4
 cod modern warfare,cod4
 cod mw,cod4
@@ -487,21 +493,25 @@ nier automata,na
 world of warcraft,wow
 minesweeper,minesweeper
 the binding of isaac afterbirth plus,afterbirthplus
+the binding of isaac afterbirth and,afterbirthplus
 binding of isaac afterbirth plus,afterbirthplus
 afterbirth plus,afterbirthplus
 splatoon two,splatoon2
 splatoon 2,splatoon2
 pokemon yellow,pkmnyellow
+pokmon yellow,pkmnyellow
 wizard of legend,wizard_of_legend
 the legend of zelda twilight princess,tp
 legend of zelda twilight princess,tp
 zelda twilight princess,tp
 twilight princess,tp
+super smash bros. ultimate,ssbu
 super smash brothers ultimate,ssbu
 super smash bros ultimate,ssbu
 smash bros ultimate, ssbu
 smash ultimate,ssbu
 ssb ultimate,ssbu
+zelda_ii_the_adventure_of_link,zelda_ii_the_adventure_of_link
 zelda two the adventure of link,zelda_ii_the_adventure_of_link
 zelda two adventure of link,zelda_ii_the_adventure_of_link
 zelda adventure of link,zelda_ii_the_adventure_of_link
@@ -531,6 +541,7 @@ limbo,limbo
 final fantasy one,ff1
 final fantasy 1,ff1
 final fantasy,ff1
+yu-gi-oh forbidden memories,yugiohfm
 yugioh forbidden memories,yugiohfm
 wii sports,wiisports
 castlevania symphony of the night,sotn
@@ -569,7 +580,7 @@ destiny,destiny
 the binding of isaac rebirth,isaacrebirth
 binding of isaac rebirth,isaacrebirth
 isaac rebirth,isaacrebirth
-octopath traveller,octopath
+octopath traveler,octopath
 octopath,octopath
 kingdom hearts birth by sleep final mix hd,khbbsfmhd
 birth by sleep final mix hd,khbbsfmhd
@@ -582,11 +593,15 @@ toontown rewritten,ttr
 super mario bros 64 ds,sm64ds
 super mario 64 ds,sm64ds
 mario 64 ds,sm64ds
+the elder scrolls five skyrim,skyrim
+the elder scrolls v skyrim,skyrim
+the elder scrolls 5 skyrim,skyrim
 the elder scrolls skyrim,skyrim
 the elder scrolls five,skyrim
 the elder scrolls 5,skyrim
 skyrim,skyrim
 pokemon gold and silver,pkmngoldsilver
+pokmon gold silver,pkmngoldsilver
 pokemon gold silver,pkmngoldsilver
 pokemon gold,pkmngoldsilver
 pokemon silver,pkmngoldsilver
@@ -608,7 +623,7 @@ the little mermaid,littlemermaidnes
 little mermaid,littlemermaidnes
 papers please,pp
 final fantasy nine,ff9
-final tantasy ix,ff9
+final fantasy ix,ff9
 final fantasy 9,ff9
 call of duty black ops three,call_of_duty_black_ops_iii
 cod black ops three,call_of_duty_black_ops_iii
@@ -841,7 +856,7 @@ fetch-a-fruit,fetch-a-fruit
 fetch a fruit,fetch-a-fruit
 google quick draw,google_quick_draw
 quick draw,google_quick_draw
-the end is high,tein
+the end is nigh,tein
 god of war three,gow3
 god of war iii,gow3
 god of war 3,gow3
@@ -852,6 +867,9 @@ aladdin snes,aladdin_snes
 a story about my uncle,asamu
 slither.io,slither.io
 slitherio,slither.io
+lego star wars the complete saga pc console,ltwtcs
+lego star wars the complete saga console,ltwtcs
+lego star wars the complete saga pc,ltwtcs
 lego star wars the complete saga,lswtcs
 lego star wars complete saga,lswtcs
 lego star wars,lswtcs
@@ -1102,3 +1120,984 @@ hypixel_bw,hypixel_bw
 bfbbce,bfbbce
 mhw,mhw
 ff4,ff4
+resident evil three 2020,re3r
+resident evil three remake,re3r
+resident evil 3 2020,re3r
+resident evil 3 remake,re3r
+re3 2020,re3r
+re3 remake,re3r
+re3r,re3r
+bhop pro,bhop_pro
+bunny hop pro,bhop_pro
+roblox piggy,piggy
+piggy,piggy
+sly cooper and the thievius raccoonus,sly1
+sly cooper and the thief raccoon,sly1
+sly cooper and the raccoon,sly1
+sly cooper thievius raccoonus,sly1
+sly cooper raccoonus,sly1
+sly cooper one,sly1
+sly and the thievius raccoonus,sly1
+sly and the thief raccoon,sly1
+sly and the raccoon,sly1
+sly thievius raccoonus,sly1
+sly raccoonus,sly1
+sly one,sly1
+ratchet and clank going commando,rac2
+ratchet and clank commando,rac2
+ratchet and clank two,rac2
+ratchet and clank 2,rac2
+rac going commando,rac2
+rac commando,rac2
+rac two,rac2
+spongebob squarepants battle for bikini bottom rehydrated,rehydrated
+spongebob battle for bikini bottom rehydrated,rehydrated
+spongebob squarepants bfbb rehydrated,rehydrated
+spongebob bfbb rehydrated,rehydrated
+battle for bikini bottom rehydrated,rehydrated
+bfbb rehydrated,rehydrated
+bfbbr,rehydrated
+the talos principle,talos_principle
+talos principle,talos_principle
+streets of rage two,sor2
+streets of rage 2,sor2
+sor two,sor2
+plants vs. zombies,pvz
+plants vs zombies,pvz
+plants v zombies,pvz
+the spongebob squarepants movie,tssm
+spongebob squarepants movie,tssm
+spongebob movie,tssm
+ratchet and clank up your arsenal,rac3
+ratchet and clank arsenal,rac3
+rac up your arsenal,rac3
+rac arsenal,rac3
+rac three,rac3
+tony hawks underground one,thug1
+tony hawks underground 1,thug1
+tony hawks underground,thug1
+thug one,thug1
+dustforce dx,dustforce_dx
+fallout nv,fallout_nv
+ori and the blind forest,ori
+ori blind forest,ori
+pokemon puzzle league,pokemon_puzzle_league
+pokmon puzzle league,pokemon_puzzle_league
+pkmn puzzle league,pokemon_puzzle_league
+paper mario and the thousand-year door,ttyd
+paper mario the thousand-year door,ttyd
+paper mario thousand-year door,ttyd
+paper mario thousand year door,ttyd
+paper mario thousand door,ttyd
+paper mario year door,ttyd
+the thousand-year door,ttyd
+the thousand year door,ttyd
+minecraft bedrock edition,mcbe
+minecraft bedrock,mcbe
+mc bedrock edition,mcbe
+mc bedrock,mcbe
+scooby-doo night of 100 frights,n100f
+scooby doo night of 100 frights,n100f
+scooby doo night of one hundred frights,n100f
+scooby doo night of frights,n100f
+scooby doo night 100 frights,n100f
+scooby doo night one hundred frights,n100f
+scooby doo night hundred frights,n100f
+scooby doo 100 frights,n100f
+scooby doo one hundred frights,n100f
+scooby doo hundred frights,n100f
+scooby night of 100 frights,n100f
+scooby night of one hundred frights,n100f
+scooby night of frights,n100f
+scooby night 100 frights,n100f
+scooby night one hundred frights,n100f
+scooby night hundred frights,n100f
+scooby 100 frights,n100f
+scooby one hundred frights,n100f
+scooby hundred frights,n100f
+night of 100 frights,n100f
+night of one hundred frights,n100f
+night of frights,n100f
+night 100 frights,n100f
+night one hundred frights,n100f
+night hundred frights,n100f
+lego harry potter years 1 through 4,lhp1-4
+lego harry potter 1 through 4,lhp1-4
+lego harry years 1 through 4,lhp1-4
+lego harry 1 through 4,lhp1-4
+lhp years 1 through 4,lhp1-4
+lhp 1 through 4,lhp1-4
+lego harry potter years 1 thru 4,lhp1-4
+lego harry potter 1 thru 4,lhp1-4
+lego harry years 1 thru 4,lhp1-4
+lego harry 1 thru 4,lhp1-4
+lhp years 1 thru 4,lhp1-4
+lhp 1 thru 4,lhp1-4
+lego harry potter years 1-4,lhp1-4
+lego harry potter 1-4,lhp1-4
+lego harry years 1-4,lhp1-4
+lego harry 1-4,lhp1-4
+lhp years 1-4,lhp1-4
+lhp 1-4,lhp1-4
+lego harry potter years one through four,lhpone-four
+lego harry potter one through four,lhpone-four
+lego harry years one through four,lhpone-four
+lego harry one through four,lhpone-four
+lhp years one through four,lhpone-four
+lhp one through four,lhpone-four
+lego harry potter years one thru four,lhpone-four
+lego harry potter one thru four,lhpone-four
+lego harry years one thru four,lhpone-four
+lego harry one thru four,lhpone-four
+lhp years one thru four,lhpone-four
+lhp one thru four,lhpone-four
+lego harry potter years one-four,lhpone-four
+lego harry potter one-four,lhpone-four
+lego harry years one-four,lhpone-four
+lego harry one-four,lhpone-four
+lhp years one-four,lhpone-four
+lhp one-four,lhpone-four
+alien isolation,ai
+super castlevania four,csv4
+super castlevania iv,csv4
+super castlevania 4,csv4
+castlevania four,csv4
+castlevania iv,csv4
+castlevania 4,csv4
+csv four,csv4
+csv iv,csv4
+yooka-laylee,yl
+yooka laylee,yl
+castlevania aria of sorrow,aos
+castlevania sorrow,aos
+csv aria of sorrow,aos
+csv sorrow,aos
+aria of sorrow,aos
+star wars jedi knight jedi academy,jka
+star wars jedi academy,jka
+star wars jedi knight academy,jka
+jedi knight academy,jka
+jedi knight jedi academy,jka
+batman arkham city,arkhamcity
+arkham city,arkhamcity
+batman ac,arkhamcity
+jak two,jak2
+jak ii,jak2
+jak ll,jak2
+jak 2,jak2
+the legend of zelda skyward sword,lozss
+legend of zelda skyward sword,lozss
+zelda skyward sword,lozss
+skyward sword,lozss
+loz skyward sword,lozss
+penumbra black plague,pbp
+penumbra bp,pbp
+battleblock theater,battleblock_theater
+bb theater,battleblock_theater
+the last of us part one,tlou
+the last of us part 1,tlou
+last of us part one,tlou
+last of us part 1,tlou
+the last of us one,tlou
+the last of us 1,tlou
+the last of us,tlou
+last of us,tlou
+duck life one,dl1
+duck life 1,dl1
+dl one,dl1
+pac-man world two,pmw2
+pac man world two,pmw2
+pac-man world 2,pmw2
+pw world two,pmw2
+pw world 2,pmw2
+jet set radio future,jsrf
+jsr future,jsrf
+jet set future,jsrf
+animal crossing,ac
+wii play,wii_play
+doom 2016,d2016
+doom,d2016
+ape escape one,ae1
+ape escape 1,ae1
+ape escape,ae1
+ae one,ae1
+ae 1,ae1
+mario golf toadstool tour,mgtt
+mario golf tt,mgtt
+mg toadstool tour,mgtt
+toadstool tour,mgtt
+tony hawks underground two,thug2
+tony hawks underground 2,thug2
+thug two,thug2
+streets of rage four,streets_of_rage_4
+streets of rage 4,streets_of_rage_4
+sor four,streets_of_rage_4
+sor 4,streets_of_rage_4
+dishonored two,dishonored_2
+dishonored 2,dishonored 2
+wii party,wii_party
+metal gear solid,mgs1
+mgs,mgs1
+pikmin one,pikmin1
+pikmin 1,pikmin1
+pikmin,pikmin1
+hyper light drifter,hld
+shantae and the pirates curse,satpc
+shantae the pirates curse,satpc
+shantae pirates curse,satpc
+shantae curse,satpc
+sat pirates curse,satpc
+rabi-ribi,rabiribi
+rabi ribi,rabiribi
+lufia two rise of the sinistrals,lufia2
+lufia ii rise of the sinistrals,lufia2
+lufia 2 rise of the sinistrals,lufia2
+lufia two sinistrals,lufia2
+lufia ii sinistrals,lufia2
+lufia 2 sinistrals,lufia2
+lufia rise of the sinistrals,lufia2
+lufia sinistrals,lufia2
+silent hill one,sh1
+silent hill 1,sh1
+silent hill,sh1
+kirby super star,kss
+kirby ss,kss
+super mario land two six golden coins,sml2
+super mario land 2 6 golden coins,sml2
+sml two six golden coins,sml2
+sml 2 6 golden coins,sml2
+super mario land 2,sml2
+mario land 2,sml2
+mario super sluggers,mss
+super sluggers,mss
+out there somewhere,ots
+sonic the hedgehog 2006,sonic06
+sonic the hedgehog 06,sonic06
+sonic 2006,sonic06
+sonic 06,sonic06
+kirby 64 the crystal shards,k64
+kirby crystal shards,k64
+kirby 64,k64
+pokemon lets go pikachu eevee,pkmnletsgo
+pokmon lets go pikachu eevee,pkmnletsgo
+pokemon lets go pikachu,pkmnletsgo
+pokemon lets go eevee,pkmnletsgo
+pokemon pikachu eevee,pkmnletsgo
+pokemon lets go,pkmnletsgo
+pokemon eevee,pkmnletsgo
+kirbys adventure,ka
+pokemon puzzle challenge,pokemon_puzzle_challenge
+pokmon puzzle challenge,pokemon_puzzle_challenge
+pkmn puzzle challenge,pokemon_puzzle_challenge
+fallout three,fallout_3
+fallout 3,fallout_3
+silent hill three,sh3
+silent hill 3,sh3
+sh three,sh3
+god of war,gow
+lego star wars the video game,lsw
+lego star wars tvg,lsw
+lego star wars,lsw
+another perspective,ap
+silent hill two,sh2
+silent hill 2,sh2
+sh two,sh2
+new super mario bros. u deluxe,nsmbudx
+new super mario bros u deluxe,nsmbudx
+new super mario u deluxe,nsmbudx
+super mario bros u deluxe,nsmbudx
+super mario u deluxe,nsmbudx
+mario bros u deluxe,nsmbudx
+mario u deluxe,nsmbudx
+nsmb u deluxe,nsmbudx
+new super mario bros. u dx,nsmbudx
+new super mario bros u dx,nsmbudx
+new super mario u dx,nsmbudx
+super mario bros u dx,nsmbudx
+super mario u dx,nsmbudx
+mario bros u dx,nsmbudx
+mario u dx,nsmbudx
+nsmb u dx,nsmbudx
+assault android cactus,aac
+bully scholarship edition,bully_se
+bully scholarship,bully_se
+bully se,bully_se
+jet set radio,jsr
+jet set,jsr
+soul knight,soul_knight
+final fantasy seven remake,ff7r
+final fantasy vii remake,ff7r
+final fantasy 7 remake,ff7r
+ff seven remake,ff7r
+ff vii remake,ff7r
+ff 7 remake,ff7r
+s.t.a.l.k.e.r. shadow of chernobyl,shoc
+stalker shadow of chernobl,shoc
+stalker chernobyl,shoc
+stalker soc,shoc
+fallout four,fallout_4
+fallout 4,fallout_4
+shantae half-genie hero,shantae_hgh
+shantae half genie hero,shantae_hgh
+shantae hgh,shantae_hgh
+the legend of zelda twilight princess hd,tphd
+legend of zelda twilight princess hd,tphd
+zelda twilight princess hd,tphd
+twilight princess hd,tphd
+lego batman the videogame,lb
+lego batman,lb
+teenage mutant ninja turtles four turtles in time,teenage_mutant_ninja_turtles_iv_turtles_in_time
+teenage mutant ninja turtles iv turtles in time,teenage_mutant_ninja_turtles_iv_turtles_in_time
+teenage mutant ninja turtles 4 turtles in time,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt four turtles in time,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt iv turtles in time,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt 4 turtles in time,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt tit,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt four,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt iv,teenage_mutant_ninja_turtles_iv_turtles_in_time
+tmnt 4,teenage_mutant_ninja_turtles_iv_turtles_in_time
+wave race 64,wr64
+spyro reignited trilogy pc,spyrortpc
+spyro reignited pc,spyrortpc
+spyro rt pc,spyrortpc
+mirrors edge catalyst,mec
+me catalyst,mec
+super paper mario,spm
+harry potter and the prisoner of azkaban pc,hp3pc
+harry potter prisoner of azkaban pc,hp3pc
+harry potter azkaban pc,hp3pc
+harry potter 3 pc,hp3pc
+harry and the prisoner of azkaban pc,hp3pc
+harry prisoner of azkaban pc,hp3pc
+harry azkaban pc,hp3pc
+harry 3 pc,hp3pc
+hp and the prisoner of azkaban pc,hp3pc
+hp prisoner of azkaban pc,hp3pc
+hp azkaban pc,hp3pc
+hp 3 pc,hp3pc
+kirby and the amazing mirror,katam
+kirby the amazing mirror,katam
+kirby amazing mirror,katam
+kirby am,katam
+red ball one,redball1
+red ball 1,redball1
+red ball,redball1
+streets of rage one,sor1
+streets of rage 1,sor1
+streets of rage,sor1
+sor one,sor1
+sor 1,sor1
+hotline miami two wrong number,hm2
+hotline miami 2 wrong number,hm2
+hotline miami wrong number,hm2
+hotline miami two,hm2
+hotline miami 2,hm2
+hm two wrong number,hm2
+hm 2 wrong number,hm2
+hm wrong number,hm2
+hm two,hm2
+hm 2,hm2
+freedom planet,fp
+mike tysons punch-out,mtpo
+mike tysons punch out,mtpo
+mt punch-out,mtpo
+mike tysons po,mtpo
+rayman one,rayman_1
+rayman 1,rayman_1
+rayman,rayman_1
+club penguin,cp
+the sims four,ts4
+the sims 4,ts4
+sims four,ts4
+sims 4,ts4
+hearts of iron four,hoi4
+hearts of iron iv,hoi4
+hearts of iron 4,hoi4
+hoi four,hoi4
+hoi iv,hoi4
+hoi 4,hoi4
+goof troop,goof_troop
+super ghouls n ghosts,super_ghouls_n_ghosts
+super ghouls and ghosts,super_ghouls_n_ghosts
+sgng,super_ghouls_n_ghosts
+super mario all-stars,smas
+super mario all stars,smas
+mario all stars,smas
+sm all stars,smas
+marble madness nes,marblemadness
+marble madness,marblemadness
+doom eternal,doom_eternal
+ape escape two,ae2
+ape escape 2,ae2
+ae two,ae2
+ratchet and clank ps4,racps4
+cat mario,cm
+contra hard corps,contra_hard_corps
+dr. mario nes,drmariones
+dr mario nes,drmariones
+dr mario,drmariones
+batman arkham asylum,arkhamasylum
+batman aa,arkhamasylum
+bm arkham asylum,arkhamasylum
+god of war two,gow2
+god of war ii,gow2
+god of war 2,gow2
+gow two,gow2
+gow ii,gow2
+prince of persia the sands of time,pop_sot
+prince of persia sands of time,pop_sot
+persia the sands of time,pop_sot
+persia sands of time,pop_sot
+pop the sands of time,pop_sot
+pop sands of time,pop_sot
+prince of persia sot,pop_sot
+persia sot,pop_sot
+pop sot,pop_sot
+brawl stars,brawl_stars
+contra three the alien wars,contra3
+contra iii the alien wars,contra3
+contra 3 the alien wars,contra3
+contra three alien wars,contra3
+contra iii alien wars,contra3
+contra 3 alien wars,contra3
+contra alien wars,contra3
+contra three,contra3
+contra iii,contra3
+contra 3,contra3
+castlevania two simons quest,cv2sq
+castlevania ii simons quest,cv2sq
+castlevania 2 simons quest,cv2sq
+castlevania simons quest,cv2sq
+cv two simons quest,cv2sq
+cv ii simons quest,cv2sq
+cv 2 simons quest,cv2sq
+castlevania two sq,cv2sq
+castlevania ii sq,cv2sq
+castlevania 2 sq,cv2sq
+cv two sq,cv2sq
+cv ii sq,cv2sq
+mega man x3,mmx3
+mmx3,mmx3
+super mario land one,sml1
+super mario land 1,sml1
+super mario land,sml1
+mario land one,sml1
+mario land 1,sml1
+mario land,sml1
+sml one,sml1
+mega man legacy collection one and two,mega_man_legacy_collection
+mega man legacy collection 1 and 2,mega_man_legacy_collection
+mega man legacy collection 1 plus 2,mega_man_legacy_collection
+mega man legacy one and two,mega_man_legacy_collection
+mega man legacy 1 and 2,mega_man_legacy_collection
+mega man legacy collection,mega_man_legacy_collection
+mega man legacy,mega_man_legacy_collection
+mm legacy collection one and two,mega_man_legacy_collection
+mm legacy collection 1 and 2,mega_man_legacy_collection
+mm legacy one and two,mega_man_legacy_collection
+mm legacy 1 and 2,mega_man_legacy_collection
+mm legacy collection,mega_man_legacy_collection
+mm legacy,mega_man_legacy_collection
+mmlc,mega_man_legacy_collection
+donkey kong country tropical freeze,dkctf
+donkey kong tropical freeze,dkctf
+dk country tropical freeze,dkctf
+dk tropical freeze,dkctf
+dkc tropical freeze,dkctf
+donkey kong country tf,dkctf
+donkey kong tf,dkctf
+dkc tf,dkctf
+wubbzys amazing adventure,waa
+wubbzys aa,waa
+castle crashers,cc
+call of duty world at war zombies,wawzombies
+call of duty waw zombies,wawzombies
+call of duty wawz,wawzombies
+cod world at war zombies,wawzombies
+cod waw zombies,wawzombies
+cod wawz,wawzombies
+world at war zombies,wawzombies
+super monkey ball deluxe,smbdeluxe
+monkey ball deluxe,smbdeluxe
+smb deluxe,smbdeluxe
+n plus plus,nplusplus
+n and and,nplusplus
+octodad dadliest catch,odc
+octodad dc,odc
+meteor 60 seconds,m6s
+meteor 60s,m6s
+batman the video game nes,batman_the_video_game_nes
+batman nes,batman_the_video_game_nes
+uncharted drakes fortune,uncharted1
+uncharted one,uncharted1
+uncharted 1,uncharted1
+super smash tv,super_smash_tv
+sstv,super_smash_tv
+bendy and the ink machine,batim
+bendy ink machine,batim
+bendy,batim
+final fantasy six,ff6
+final fantasy vi,ff6
+final fantasy 6,ff6
+ff six,ff6
+ff vi,ff6
+yoshis story,yoshis_story
+battletoads nes,battletoads_nes
+amnesia the dark descent,tdd
+the dark descent,tdd
+amnesia tdd,tdd
+super mario 3d land,sm3dl
+mario 3d land,sm3dl
+sm 3d land,sm3dl
+steamworld dig,steamworld_dig
+final fantasy xiii,ff13
+final fantasy 13,ff13
+ff xiii,ff13
+super mario kart,smk
+mario kart snes,smk
+mario kart,smk
+bioshock one,bs1
+bioshock 1,bs1
+bioshock,bs1
+bs one,bs1
+super mario rpg legend of the seven stars,smrpg
+legend of the seven stars,smrpg
+super mario rpg,smrpg
+mario rpg,smrpg
+kobolds and catacombs,kobolds_catacombs
+kobolds catacombs,kobolds_catacombs
+rayman three hoodlum havoc,r3
+rayman 3 hoodlum havoc,r3
+rayman hoodlum havoc,r3
+rayman three,r3
+rayman 3,r3
+deus ex human revolution,dxhr
+deus ex hr,dxhr
+dx human revolution,dxhr
+luigis mansion dark moon,lm2
+luigis mansion two,lm2
+luigis mansion 2,lm2
+lm two,lm2
+pokemon trading card game,pkmntcg
+pokmon trading card game,pkmntcg
+pokemon tcg,pkmntcg
+grand theft auto four,gtaiv
+grand theft auto iv,gtaiv
+grand theft auto 4,gtaiv
+gta four,gtaiv
+gta 4,gtaiv
+f-zero snes,fzsnes
+f-zero,fzsnes
+f zero snes,fzsnes
+f zero,fzsnes
+club penguin island,cpi
+cp island,cpi
+ty the tasmanian tiger,ty1
+ty one,ty1
+dead rising one,dr1
+dead rising 1,dr1
+dead rising,dr1
+the last of us left behind,tloulb
+the last of us lb,tloulb
+tlou left behind,tloulb
+final fantasy x-2,ffx-2
+ff x-2,ffx-2
+sonic the hedgehog two,s2
+sonic the hedgehog 2,s2
+sonic two,s2
+sonic 2,s2
+chrono trigger,ct
+pencil sharpening simulator,pss
+pencil sharpening sim,pss
+sonic the hedgehog one,s1
+sonic the hedgehog 1,s1
+sonic the hedgehog,s1
+sonic one,s1
+sonic 1,s1
+sonic,s1
+shrek two,shrek_2
+shrek 2,shrek_2
+blaster master,blaster_master
+little nightmares,little_nightmares
+ape escape three,ae3
+ape escape 3,ae3
+ae three,ae3
+putt-putt saves the zoo,puttzoo
+putt putt zoo,puttzoo
+pp saves the zoo,puttzoo
+ppzoo,puttzoo
+kirbys return to dream land,krtdl
+kirbys return,krtdl
+kirby rtdl,krtdl
+another metroid two remake,am2r
+another metroid 2 remake,am2r
+tetris web,tetris_web
+super smash flash two,ssf2
+super smash flash 2,ssf2
+ssf two,ssf2
+ninja gaiden two the dark sword of chaos,ng2nes
+ninja gaiden ii the dark sword of chaos,ng2nes
+ninja gaiden 2 the dark sword of chaos,ng2nes
+ninja gaiden two nes,ng2nes
+ninja gaiden ii nes,ng2nes
+ninja gaiden 2 nes,ng2nes
+ng two nes,ng2nes
+ng ii nes,ng2nes
+demons crest,demons_crest
+crash bandicoot twinsanity,twinsanity
+crash twinsanity,twinsanity
+the legend of zelda majoras mask 3d,mm
+legend of zelda majoras mask 3d,mm
+zelda majoras mask 3d,mm
+majoras mask 3d,mm
+mighty gunvolt,mg
+kirby triple deluxe,ktd
+kirby td,ktd
+harry potter and the philosophers stone ps1,hp1ps1
+harry potter philosophers stone ps1,hp1ps1
+harry and the philosophers stone ps1,hp1ps1
+harry philosophers stone ps1,hp1ps1
+hp and the philosophers stone ps1,hp1ps1
+hp philosophers stone ps1,hp1ps1
+harry potter and the sorcerers stone ps1,hp1ps1
+harry potter sorcerers stone ps1,hp1ps1
+harry and the sorcerers stone ps1,hp1ps1
+harry sorcerers stone ps1,hp1ps1
+hp and the sorcerers stone ps1,hp1ps1
+hp sorcerers stone ps1,hp1ps1
+toy story two buzz lightyear to the rescue,toys2
+toy story 2 buzz lightyear to the rescue,toys2
+toy story two,toys2
+toy story 2,toys2
+toys two,toys2
+bioshock infinite,bsi
+bs infinite,bsi
+prince of persia warrior within,pop_ww
+pop warrior within,pop_ww
+popww,pop_ww
+trackmania square stadium,tm2stadium
+trackmania 2 stadium,tm2stadium
+trackmania stadium,tm2stadium
+tm square stadium,tm2stadium
+tm 2 stadium,tm2stadium
+tm stadium,tm2stadium
+mafia the city of lost heaven,mavia1
+mafia one,mafia1
+mafia,mafia1
+shadow of the colossus 2018,sotc_2018
+sotc 2018,sotc_2018
+wii sports club,wsc
+bomberman 64,bm64
+devil may cry three special edition,dmc3se
+devil may cry 3 special edition,dmc3se
+devil may cry three se,dmc3se
+devil may cry 3 se,dmc3se
+dmc three special edition,dmc3se
+dmc 3 special edition,dmc3se
+call of duty black ops ii,blops2
+call of duty black ops two,blops2
+cod black ops two,blops2
+black ops two,blops2
+call of duty black ops 2,blops2
+cod black ops 2,blops2
+black ops 2,blops2
+cod bo2,blops2
+bo2,blops2
+sonic three and knuckles,s3k
+sonic three knuckles,s3k
+sonic 3 and knuckles,s3k
+sonic 3 knuckles,s3k
+sonic mania,sonic_mania
+the elder scrolls three morrowind,morrowind
+the elder scrolls iii morrowind,morrowind
+the elder scrolls 3 morrowind,morrowind
+tes three morrowind,morrowind
+tes iii morrowind,morrowind
+tes 3 morrowind,morrowind
+the elder scrolls three,morrowind
+the elder scrolls iii,morrowind
+the elder scrolls 3,morrowind
+elder scrolls three,morrowind
+elder scrolls iii,morrowind
+elder scrolls 3,morrowind
+kirbys epic yarn,key
+kirby ey,key
+teenage mutant ninja turtles one,tmnt1
+teenage mutant ninja turtles 1,tmnt1
+teenage mutant ninja turtles,tmnt1
+tnmt,tmnt1
+mega man x6,mmx6
+metal slug,mslug
+rec room,rec_room
+a short hike,ash
+kingdom hearts two,kh2
+kingdom hearts ii,kh2
+kingdom hearts 2,kh2
+kh two,kh2
+kh ii,kh2
+pokemon mystery dungeon red blue rescue team,pmdredblue
+pokmon mystery dungeon red blue rescue team,pmdredblue
+pokemon mystery dungeon red blue rescue,pmdredblue
+pokemon mystery dungeon red rescue team,pmdredblue
+pokemon mystery dungeon blue rescue team,pmdredblue
+pokemon mystery dungeon red blue,pmdredblue
+pokemon mystery dungeon red,pmdredblue
+pokemon mystery dungeon blue,pmdredblue
+pmd red blue rescue team,pmdredblue
+pmd red blue rescue,pmdredblue
+pmd red rescue team,pmdredblue
+pmd blue rescue team,pmdredblue
+pmd red blue,pmdredblue
+pmd red,pmdredblue
+pmd blue,pmdredblue
+horizon zero dawn,hzd
+batman arkham knight,arkhamknight
+arkham knight,arkhamknight
+batman ak,arkhamknight
+final fantasy twelve,ff12
+final fantasy xii,ff12
+final fantasy 12,ff12
+ff twelve,ff12
+ff xii,ff12
+roblox half-blox 2,rblx_hb2
+roblox half-blox two,rblx_hb2
+roblox half life two,rblx_hb2
+roblox hl two,rblx_hb2
+roblox half-blox 2,rblx_hb2
+roblox half life 2,rblx_hb2
+roblox hl 2,rblx_hb2
+rbloxhb2,rblx_hb2
+rblxhb2,rblx_hb2
+wheres waldo nes,wwnes
+wheres waldo,wwnes
+the legend of zelda links awakening,la
+legend of zelda links awakening,la
+zelda links awakening,la
+links awakening,la
+quake two pc,quake2
+quake ii pc,quake2
+quake 2 pc,quake2
+quake two,quake2
+quake ii,quake2
+quake 2,quake2
+kung fu,kung_fu
+new super mario bros. u,nsmbu
+new super mario bros u,nsmbu
+new super mario u,nsmbu
+new mario bros u,nsmbu
+new mario u,nsmbu
+goldeneye 007,ge
+goldeneye,ge
+need for speed carbon,nfsc
+nfs carbon,nfsc
+dark souls two,darksouls2
+dark souls ii,darksouls2
+dark souls 2,darksouls2
+geometry dash world,geometry_dash_world
+gm world,geometry_dash_world
+into the breach,itb
+castlevania three draculas curse,cv3dc
+castlevania iii draculas curse,cv3dc
+castlevania 3 draculas curse,cv3dc
+castlevania draculas curse,cv3dc
+cv three draculas curse,cv3dc
+cv iii draculas curse,cv3dc
+cv 3 draculas curse,cv3dc
+castlevania three dc,cv3dc
+castlevania iii dc,cv3dc
+castlevania 3 dc,cv3dc
+castlevania dc,cv3dc
+star wars knights of the old republic,kotor1
+star wars kotor,kotor1
+sonic cd 2011,scd11
+sonic cd 11,scd11
+katamari damacy reroll,katamarireroll
+katamari reroll,katamarireroll
+katamari dr,katamarireroll
+apex legends,apex_legends
+chameleon twist one,ctwist1
+chameleon twist 1,ctwist1
+chameleon twist,ctwist1
+johnny upgrade,johnny_upgrade
+toejam and earl,toejam_and_earl
+devil may cry five,dmc5
+devil may cry 5,dmc5
+dmc five,dmc5
+harry potter and the philosophers stone pc,hp1pc
+harry potter philosophers stone pc,hp1pc
+harry and the philosophers stone pc,hp1pc
+harry philosophers stone pc,hp1pc
+hp and the philosophers stone pc,hp1pc
+hp philosophers stone pc,hp1pc
+harry potter and the sorcerers stone pc,hp1pc
+harry potter sorcerers stone pc,hp1pc
+harry and the sorcerers stone pc,hp1pc
+harry sorcerers stone pc,hp1pc
+hp and the sorcerers stone pc,hp1pc
+hp sorcerers stone pc,hp1pc
+marble it up,miu
+marvels spider-man,sm2018
+marvels spiderman 2018,sm2018
+spiderman 2018,sm2018
+jazz jackrabbit two,jj2
+jazz jackrabbit 2,jj2
+jj two,jj2
+fable the lost chapters,fabletlc
+fable tlc,fabletlc
+pokemon firered and leafgreen,pkmnredblue
+pokemon firered leafgreen,pkmnredblue
+pokmon firered leafgreen,pkmnredblue
+pokemon firered,pkmnredblue
+pokemon leafgreen,pkmnredblue
+pokemon fr and lg,pkmnredblue
+pokemon fr lg,pkmnredblue
+pokemon fr,pkmnredblue
+pokemon lg,pkmnredblue
+star wars battlefront two,swbf2
+star wars battlefront ii,swbf2
+star wars battlefront 2,swbf2
+star wars bf two,swbf2
+star wars bf ii,swbf2
+star wars bf 2,swbf2
+sw battlefront two,swbf2
+sw battlefront ii,swbf2
+sw battlefront 2,swbf2
+sw bf two,swbf2
+sw bf ii,swbf2
+sw bf 2,swbf2
+the impossible quiz,the_impossible_quiz
+impossible quiz,the_impossible_quiz
+plague inc.,plague_inc
+plague inc,plague_inc
+darkest dungeon,darkest_dungeon
+scp secret laboratory,scpsl
+the lion king snes,lionkingsnes
+lion king snes,lionkingsnes
+final fantasy mystic quest,ffmq
+ff mystic quest,ffmq
+final fantasy mq,ffmq
+tengen tetris nes,tengen_tetris
+tengen tetris,tengen_tetris
+new super luigi u,nslu
+new luigi u,nslu
+clock tower snes,clocktower
+clock tower,clocktower
+call of duty infinite warfare zombies,iwzombies
+call of duty iw zombies,iwzombies
+call of duty iwz,iwzombies
+cod infinite warfare zombies,iwzombies
+cod iw zombies,iwzombies
+cod iwz,iwzombies
+soulcalibur two,soulcalibur_ii
+soulcalibur ii,soulcalibur_ii
+soulcalibur 2,soulcalibur_ii
+lego indiana jones the original adventures,lij
+lego indiana jones toa,lij
+lego indiana jones,lij
+star wars episode one racer,swe1r
+star wars episode i racer,swe1r
+star wars episode 1 racer,swe1r
+sw episode one racer,swe1r
+sw episode i racer,swe1r
+sw episode 1 racer,swe1r
+conkers bad fur day,cbfd
+conker bfd,cbfd
+kirbys dream land two,kdl2
+kirbys dream land 2,kdl2
+kirby dl two,kdl2
+kirby dl 2,kdl2
+resident evil zero,re0
+resident evil 0,re0
+re zero,re0
+roblox speed run four classic,rblx_sr4c
+roblox speed run 4 classic,rblx_sr4c
+rblx speed run four classic,rblx_sr4c
+rblx speed run 4 classic,rblx_sr4c
+rblx sr4c,rblx_sr4c
+roblox sr4c,rblx_sr4c
+touhou luna nights,tln
+secret of evermore,secret_of_evermore
+golden axe,golden_axe
+doom gba,doom_gba
+doom gameboy advance,doom_gba
+doom gameboy,doom_gba
+dragon quest three,dq3
+dragon quest iii,dq3
+dragon quest 3,dq3
+dq three,dq3
+dq iii,dq3
+mario kart super circuit,mksc
+mario super circuit,mksc
+mk super circuit,mksc
+mario kart sc,mksc
+mario kart gba,mksc
+mario kart gameboy,mksc
+the outer worlds,the_outer_worlds
+dead by daylight,dead_by_daylight
+legend of mana,lom
+plants vs. zombies garden warfare two,pvzgw2
+plants vs. zombies garden warfare 2,pvzgw2
+plants vs. zombies gw two,pvzgw2
+plants vs. zombies gw 2,pvzgw2
+pvz garden warfare two,pvzgw2
+pvz garden warfare 2,pvzgw2
+quake three arena,quake_3_arena
+quake iii arena,quake_3_arena
+quake 3 arena,quake_3_arena
+quake three,quake_3_arena
+quake iii,quake_3_arena
+quake 3,quake_3_arena
+darkwing duck nes,dwd
+darkwing duck,dwd
+super mario advance two super mario world,sma2
+super mario advance 2 super mario world,sma2
+mario advance two super mario world,sma2
+mario advance 2 super mario world,sma2
+super mario advance two smw,sma2
+super mario advance 2 smw,sma2
+mario advance two smw,sma2
+mario advance 2 smw,sma2
+super mario advance two,sma2
+super mario advance 2,sma2
+mario advance two,sma2
+mario advance 2,sma2
+salt and sanctuary,salt_and_sanctuary
+call of duty modern warfare two remastered,mw2
+cod modern warfare two remastered,mw2
+cod mw two remastered,mw2
+call of duty modern warfare 2 remastered,mw2
+cod modern warfare 2 remastered,mw2
+cod mw2 remastered,mw2
+cod mw two r,mw2
+mortal kombat one,mk1
+mortal kombat 1,mk1
+mortal kombat,mk1
+spongebob squarepants truth or square,sbtos
+spongebobs truth or square,sbtos
+spongebob squarepants tos,sbtos
+spongebob tos,sbtos
+sb truth or square,sbtos
+ratchet deadlocked,rac4
+ratchet and clank four,rac4
+ratchet and clank 4,rac4
+ratchet and clank deadlocked,rac4
+rac deadlocked,rac4
+rac four,rac4
+spongebob squarepants creature from the krusty krab,cftkk
+spongebob creature from the krusty krab,cftkk
+sb creature from the krusty krab,cftkk
+spongebob squarepants cftkk,cftkk
+spongebob cftkk,cftkk
+sb cftkk,cftkk
+spongebob squarepants creature krusty krab,cftkk
+spongebob creature krusty krab,cftkk
+sb creature krusty krab,cftkk
+super c,super_c
+resident evil code veronica x,cvx
+re code veronica x,cvx
+resident evil cvx,cvx
+code veronica x,cvx
+ducktales two nes,dt2
+ducktales 2 nes,dt2
+ducktales two,dt2
+ducktales 2,dt2

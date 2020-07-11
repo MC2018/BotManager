@@ -41,7 +41,7 @@ import java.util.LinkedHashMap;
  */
 public final class SpeedrunBot extends BotBase {
 
-    private final WebDriverManager webDrivers = new WebDriverManager();
+    private final WebDriverManager webDrivers = new WebDriverManager(10);
     private LinkedHashMap<String, String> gameSynonyms;
     private ArrayList<String> uniqueGameIds;
     private final String separator = "/";

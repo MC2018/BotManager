@@ -1,8 +1,7 @@
 package botmanager.speedrunbot.scrape;
 
-import botmanager.speedrunbot.*;
-import botmanager.Utilities;
 import static botmanager.Utilities.verifyFilePathExists;
+import botmanager.speedrunbot.webdriver.SingleWebDriver;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +9,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+
+//where name equals an id that isn't the same id as name, freak out
 
 /**
  *
@@ -20,34 +22,62 @@ public class DuplicateEntryRemover {
 
     public static void main(String[] args) {
         try {
-            String[] custom = read(new File("data/Speedrun Bot/game_name_shortcuts_custom.csv")).split("\n");
-            String[] scrape = read(new File("data/Speedrun Bot/game_name_shortcuts_scrape.csv")).split("\n");
-            ArrayList<String> array = new ArrayList<>();
-            ArrayList<String> partial = new ArrayList<>();
+            String[] customSet = read(new File("src/main/java/botmanager/speedrunbot/scrape/game_name_shortcuts_custom.csv")).split("\n");
+            String[] scrapeSet = read(new File("src/main/java/botmanager/speedrunbot/scrape/game_name_shortcuts_scrape.csv")).split("\n");
+            ArrayList<String> conglomerateSet = new ArrayList<>();
+            ArrayList<String> conglomerateNameSet = new ArrayList<>();
+            ArrayList<String> conglomerateIdSet = new ArrayList<>();
             
-            for (String custom1 : custom) {
-                String part = custom1.split(",")[0];
-                if (!array.contains(simplify(custom1)) && !partial.contains(simplify(part))) {
-                    array.add(simplify(custom1));
-                    partial.add(simplify(part));
+            for (String custom : customSet) {
+                String name = custom.split(",")[0];
+                String id = custom.split(",")[1];
+                
+                if (!conglomerateSet.contains(simplify(custom))) {
+                    conglomerateSet.add(simplify(custom));
+                }
+                
+                if (!conglomerateNameSet.contains(simplify(name))) {
+                    conglomerateNameSet.add(simplify(name));
+                } else {
+                    System.out.println("repeat: " + custom);
+                }
+                
+                if (!conglomerateIdSet.contains(id)) {
+                    conglomerateIdSet.add(id);
                 }
             }
             
-            for (String scrape1 : scrape) {
-                String part = scrape1.split(",")[0];
-                String actual = part + "," + scrape1.split(",")[1];
-                if (!array.contains(simplify(scrape1)) && !partial.contains(simplify(part))) {
-                    array.add(simplify(actual));
-                    partial.add(simplify(part));
+            for (int i = 0; i < scrapeSet.length; i++) {
+                scrapeSet[i] = simplify(scrapeSet[i]);
+            }
+            
+            Collections.sort(conglomerateSet);
+            SingleWebDriver web = new SingleWebDriver(false);
+            
+            int counter = 0;
+            
+            ArrayList<String> skippables = new ArrayList<>();
+            
+            for (String scrapeFullLine : scrapeSet) {
+                String name = scrapeFullLine.split(",")[0];
+                String id = scrapeFullLine.split(",")[1];
+                String actual = name + "," + id;
+                
+                if (!conglomerateSet.contains(simplify(actual)) && !conglomerateNameSet.contains(simplify(name))) {
+                    conglomerateSet.add(simplify(actual));
+                    conglomerateNameSet.add(simplify(name));
                     
-                    if (Integer.parseInt(scrape1.split(",")[2]) > 120 && !part.contains("é")) {
-                        System.out.println(part + "\t" + scrape1.split(",")[2] + "\t\t" + actual);
+                    if (!skippables.contains(id) && !name.equals(id) && Integer.parseInt(scrapeFullLine.split(",")[2]) > 120 && counter < 10) {
+                        skippables.add(id);
+                        web.newTab("https://www.speedrun.com/" + id);
+                        counter++;
+                        System.out.println((!conglomerateIdSet.contains(id) ? "none\t" : "\t") + simplify(name) + "," + scrapeFullLine.split(",")[1] + "\t\t\t\t" + scrapeFullLine.split(",")[2]);
                     }
                 }
             }
             
-            array.sort((a, b) -> a.split(",")[0].length() - b.split(",")[0].length());
-            String result = String.join("\n", array.toArray(new String[array.size()]));
+            conglomerateSet.sort((a, b) -> a.split(",")[0].length() - b.split(",")[0].length());
+            String result = String.join("\n", conglomerateSet.toArray(new String[conglomerateSet.size()]));
             write(new File("data/Speedrun Bot/game_name_shortcuts.csv"), result);
         } catch (Exception e) {
             e.printStackTrace();
