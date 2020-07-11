@@ -36,7 +36,8 @@ public abstract class SpeedrunBotCommandBase implements ICommand {
     public MessageEmbed getConnectionFailureEmbed() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setThumbnail(bot.getErrorUrl());
-        eb.addField("", "", false);
+        eb.addField("Search Failed", "Either there was a problem connecting to Speedrun.com's API, or the game/category you were searching for"
+                + "isn't properly supported.", false);
         return eb.build();
     }
     
