@@ -6,6 +6,8 @@ import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import java.util.ArrayList;
+import java.util.List;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 
 /**
@@ -25,6 +27,7 @@ public class PMRepeaterCommand extends SpeedrunBotCommandBase {
     public void run(Event genericEvent) {
         PrivateMessageReceivedEvent event;
         String message;
+        List<Attachment> attachments = new ArrayList();
         
         if (!(genericEvent instanceof PrivateMessageReceivedEvent)) {
             return;
@@ -36,7 +39,17 @@ public class PMRepeaterCommand extends SpeedrunBotCommandBase {
             return;
         }
         
-        message = "Sent by " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "\n" + event.getMessage().getContentRaw();
+        message = "Sent by " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "\n" + event.getMessage().getContentDisplay();
+        attachments = event.getMessage().getAttachments();
+        
+        if (!attachments.isEmpty()) {
+            message += "\n\nAttachments:\n";
+            
+            for (Attachment attachment : attachments) {
+                message += attachment.getUrl() + "\n";
+            }
+        }
+        
         Utilities.sendPrivateMessage(bot.getJDA().getUserById("106949500500738048"), message);
         
         if (event.getMessage().getContentRaw().startsWith(bot.getPrefix()) && !messagedUserIDs.contains(event.getAuthor().getId())) {
