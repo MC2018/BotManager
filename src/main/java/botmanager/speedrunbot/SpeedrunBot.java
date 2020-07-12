@@ -30,6 +30,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import botmanager.generic.ICommand;
+import botmanager.speedrunbot.commands.ForwardMessageCommand;
 import botmanager.speedrunbot.webdriver.WebDriverManager;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -63,7 +64,8 @@ public final class SpeedrunBot extends BotBase {
             new PlaceCommand(this),
             new RunCommand(this),
             new HelpCommand(this),
-            new PMRepeaterCommand(this)
+            new PMRepeaterCommand(this),
+            new ForwardMessageCommand(this)
         });
         
         buildHashMap(Utilities.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
