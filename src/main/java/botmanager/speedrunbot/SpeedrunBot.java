@@ -68,6 +68,10 @@ public final class SpeedrunBot extends BotBase {
             new ForwardMessageCommand(this)
         });
         
+        for (Guild guild : getJDA().getGuilds()) {
+            System.out.println(guild.getName());
+        }
+        
         buildHashMap(Utilities.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
         
         Runtime.getRuntime().addShutdownHook(new Thread() {
