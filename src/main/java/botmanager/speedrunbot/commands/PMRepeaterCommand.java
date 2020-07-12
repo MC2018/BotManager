@@ -39,7 +39,7 @@ public class PMRepeaterCommand extends SpeedrunBotCommandBase {
         message = "Sent by " + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "\n" + event.getMessage().getContentRaw();
         Utilities.sendPrivateMessage(bot.getJDA().getUserById("106949500500738048"), message);
         
-        if (event.getMessage().getContentRaw().startsWith(bot.getPrefix()) && messagedUserIDs.contains(event.getAuthor().getId())) {
+        if (event.getMessage().getContentRaw().startsWith(bot.getPrefix()) && !messagedUserIDs.contains(event.getAuthor().getId())) {
             Utilities.sendPrivateMessage(event.getAuthor(), "I prefer my commands be used on servers rather than DMs. "
                     + "If you have any questions or concerns about this bot though, feel free to voice your opinion through this chat, "
                     + "and they will reach to the developer.");
