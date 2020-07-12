@@ -32,7 +32,7 @@ public class PMRepeaterCommand extends SpeedrunBotCommandBase {
         
         event = (PrivateMessageReceivedEvent) genericEvent;
         
-        if (event.getAuthor().isBot()) {
+        if (event.getAuthor().isBot() || event.getAuthor().getId().equals("106949500500738048")) {
             return;
         }
         
