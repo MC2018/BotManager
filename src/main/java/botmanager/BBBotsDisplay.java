@@ -180,7 +180,10 @@ public class BBBotsDisplay extends javax.swing.JFrame {
             List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
             
             bots = new BotBase[] {
-                new Jigsaw(tokens.get(0), "Jigsaw")
+                new NSFWPolice(tokens.get(0), "NSFW Police"),
+                new SuggestionBox(tokens.get(1), "Suggestion Box"),
+                new BulletBot(tokens.get(2), "Bullet Bot"),
+                new Jigsaw(tokens.get(3), "Jigsaw")
             };
         } catch (Exception e) {
             e.printStackTrace();
