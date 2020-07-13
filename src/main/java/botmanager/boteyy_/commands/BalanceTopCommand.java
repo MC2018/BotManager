@@ -53,7 +53,7 @@ public class BalanceTopCommand extends Boteyy_CommandBase {
         }
 
         guild = event.getGuild();
-        files = new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/").listFiles();
+        files = new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/members/").listFiles();
 
         int[] baltop = {0, 0, 0, 0, 0};
         String[] baltopNames = new String[5];
@@ -61,8 +61,7 @@ public class BalanceTopCommand extends Boteyy_CommandBase {
         for (File file : files) {
             try {
                 Member member = guild.getMemberById(file.getName().replace(".csv", ""));
-                String memberName;// = member.getEffectiveName();
-                //int balance = bot.getUserBalance(member);
+                String memberName;
                 int balance;
 
                 if (member == null) {

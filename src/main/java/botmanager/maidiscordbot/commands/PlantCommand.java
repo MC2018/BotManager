@@ -64,7 +64,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
         userExistingPlantAmount = bot.getUserPlant(event.getMember());
 
         try {
-            String info = Utilities.read(new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/plant.csv"));
+            String info = Utilities.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/plant.csv"));
             totalPlantAmount = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
         } catch (NumberFormatException e) {
             totalPlantAmount = 0;
@@ -118,11 +118,11 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
 
         Utilities.sendGuildMessage(event.getChannel(), result);
         bot.updatePlant(event.getGuild(), totalPlantAmount);
-        bot.planters.add(event.getMember());
+        bot.addPlanter(event.getMember());
     }
 
     public String getNameOutput(Guild guild) {
-        File[] files = new File("data/" + bot.getName() + "/" + guild.getId() + "/").listFiles();
+        File[] files = new File("data/" + bot.getName() + "/guilds/" + guild.getId() + "/members/").listFiles();
         String result = "";
 
         for (File file : files) {

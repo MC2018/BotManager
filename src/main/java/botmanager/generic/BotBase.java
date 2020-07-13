@@ -15,7 +15,6 @@ public abstract class BotBase extends ListenerAdapter {
     private final JDA JDA_INSTANCE;
     private final String BOT_TOKEN;
     private String name;
-    private String prefix;
     private ICommand[] commands;
     
     public BotBase(String botToken, String name) {
@@ -50,14 +49,6 @@ public abstract class BotBase extends ListenerAdapter {
     
     public void setName(String name) {
         this.name = name;
-    }
-    
-    public String getPrefix() {
-        return prefix;
-    }
-    
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
     }
     
     public ICommand[] getCommands() {

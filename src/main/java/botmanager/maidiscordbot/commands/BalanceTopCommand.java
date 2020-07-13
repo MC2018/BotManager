@@ -68,7 +68,7 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
         }
         
         guild = event.getGuild();
-        files = new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/").listFiles();
+        files = new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/members/").listFiles();
 
         int[] baltop = new int[size];
         String[] baltopNames = new String[size];

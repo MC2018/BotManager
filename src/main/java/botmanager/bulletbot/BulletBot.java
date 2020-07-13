@@ -17,10 +17,13 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  */
 public class BulletBot extends BotBase {
 
+    private String prefix;
+
     public BulletBot(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.playing("Abuse"));
-        setPrefix("!");
+        prefix = "!";
+
         setCommands(new BulletBotCommandBase[] {
             new NewbieCommand(this),
             new BirthDateCommand(this),
@@ -41,6 +44,10 @@ public class BulletBot extends BotBase {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
     
 }

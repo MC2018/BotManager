@@ -10,6 +10,4 @@ public abstract interface ICommand {
     
     public abstract void run(Event event);
     
-    //public abstract String info();
-    
 }

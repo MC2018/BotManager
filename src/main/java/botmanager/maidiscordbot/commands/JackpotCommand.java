@@ -64,7 +64,7 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
         userJackpot = bot.getUserJackpot(event.getMember());
         
         try {
-            String info = Utilities.read(new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/jackpot.csv"));
+            String info = Utilities.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/jackpot.csv"));
             jackpotCap = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
             jackpotBalance = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 1));
         } catch (NumberFormatException e) {
@@ -144,7 +144,7 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
     }
     
     public String getNameOutput(Guild guild) {
-        File[] files = new File("data/" + bot.getName() + "/" + guild.getId() + "/").listFiles();
+        File[] files = new File("data/" + bot.getName() + "/guilds/" + guild.getId() + "/members/").listFiles();
         String result = "";
         
         for (File file : files) {
@@ -182,7 +182,7 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
     }
     
     public String calculateWinnerAndOutput(Guild guild, int jackpotBalance) {
-        File[] files = new File("data/" + bot.getName() + "/" + guild.getId() + "/").listFiles();
+        File[] files = new File("data/" + bot.getName() + "/guilds/" + guild.getId() + "/members/").listFiles();
         String result = "";
         User winner = null;
         int winningNumber = (int) (Math.random() * jackpotBalance);

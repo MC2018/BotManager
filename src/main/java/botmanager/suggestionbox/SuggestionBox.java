@@ -19,6 +19,8 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  */
 public class SuggestionBox extends BotBase {
 
+    private String prefix;
+    
     public class MemberInstanceCounter {
         Member member;
         long time = System.currentTimeMillis();
@@ -31,7 +33,8 @@ public class SuggestionBox extends BotBase {
     public SuggestionBox(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.listening("your bad ideas!"));
-        setPrefix("~");
+        prefix = "~";
+        
         setCommands(new SuggestionBoxCommandBase[] {
             new SuggestionCommand(this),
             new ReactionManagerCommand(this),
@@ -65,6 +68,10 @@ public class SuggestionBox extends BotBase {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
+    }
+    
+    public String getPrefix() {
+        return prefix;
     }
     
 }

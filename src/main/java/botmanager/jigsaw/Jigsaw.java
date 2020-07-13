@@ -51,7 +51,7 @@ public class Jigsaw extends BotBase {
     }
     
     public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
 
         if (!file.exists()) {
             return "";
@@ -61,7 +61,7 @@ public class Jigsaw extends BotBase {
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
         String data = Utilities.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
@@ -137,7 +137,7 @@ public class Jigsaw extends BotBase {
     }
     
     public File[] getGuildFolders() {
-        File[] dataFiles = new File("data/" + getName()).listFiles();
+        File[] dataFiles = new File("data/" + getName() + "/guilds/").listFiles();
         List<File> guildFolders = new ArrayList();
         File[] array;
         

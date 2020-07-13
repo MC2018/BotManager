@@ -29,11 +29,13 @@ import botmanager.generic.ICommand;
  */
 public class Boteyy_ extends BotBase {
 
+    private String prefix;
+    
     public Boteyy_(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.playing(">help for commands!"));
-
-        setPrefix(">");
+        prefix = ">";
+        
         setCommands(new ICommand[] {
             new MoneyCommand(this),
             new HelpCommand(this),
@@ -62,8 +64,12 @@ public class Boteyy_ extends BotBase {
         }
     }
     
+    public String getPrefix() {
+        return prefix;
+    }
+    
     public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
 
         if (!file.exists()) {
             return "";
@@ -73,7 +79,7 @@ public class Boteyy_ extends BotBase {
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
         String data = Utilities.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
@@ -150,7 +156,7 @@ public class Boteyy_ extends BotBase {
     }
 
     public void updateJackpot(Guild guild, int jackpotCap, int jackpotBalance) {
-        Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
+        Utilities.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
     public int getUserDaily(Guild guild, User user) {

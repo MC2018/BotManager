@@ -22,8 +22,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
-
-
 //idea: encrypter(s) built in?
 /**
  *
@@ -31,16 +29,18 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  */
 public class MaiDiscordBot extends BotBase {
 
-    TimerTask timerTask;
-    Timer timer = new Timer();
+    private TimerTask timerTask;
+    private Timer timer = new Timer();
     private HashMap<Guild, Boolean> harvesting = new HashMap<>();
     private static final int PLANT_GROWTH_MAX = 500000;
-    public Set<Member> planters = new HashSet<>();
-    
+    private Set<Member> planters = new HashSet<>();
+    private String prefix;
+
     public MaiDiscordBot(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.watching(" you lose money :)"));
-        setPrefix("~");
+        prefix = "~";
+
         generatePlantTimer();
         setCommands(new ICommand[] {
             new MoneyCommand(this),
@@ -60,24 +60,6 @@ public class MaiDiscordBot extends BotBase {
         });
     }
 
-    public void generatePlantTimer() {
-        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
-        timerTask = new TimerTask() {
-
-            @Override
-            public void run() {
-                growPlants();
-            }
-        };
-
-        timer.schedule(timerTask, 180000, 180000);
-        exec.schedule(new Runnable() {
-            public void run() {
-                generatePlanterCache();
-            }
-        }, 1, TimeUnit.SECONDS);
-    }
-
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
@@ -92,8 +74,20 @@ public class MaiDiscordBot extends BotBase {
         }
     }
     
+    public String getPrefix() {
+        return prefix;
+    }
+    
+    public Set<Member> getPlanters() {
+        return planters;
+    }
+    
+    public void addPlanter(Member member) {
+        planters.add(member);
+    }
+    
     public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
 
         if (!file.exists()) {
             return "";
@@ -103,7 +97,7 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
+        File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
         String data = Utilities.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
@@ -173,11 +167,11 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void updateJackpot(Guild guild, int jackpotCap, int jackpotBalance) {
-        Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
+        Utilities.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
     public File[] getGuildFolders() {
-        File[] dataFiles = new File("data/" + getName()).listFiles();
+        File[] dataFiles = new File("data/guilds/" + getName()).listFiles();
 
         List<File> guildFolders = new ArrayList();
         File[] array;
@@ -200,6 +194,24 @@ public class MaiDiscordBot extends BotBase {
         return array;
     }
 
+    public void generatePlantTimer() {
+        ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+        timerTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                growPlants();
+            }
+        };
+
+        timer.schedule(timerTask, 180000, 180000);
+        exec.schedule(new Runnable() {
+            public void run() {
+                generatePlanterCache();
+            }
+        }, 1, TimeUnit.SECONDS);
+    }
+    
     private void generatePlanterCache() {
         File[] guildFolders = getGuildFolders();
 
@@ -245,12 +257,12 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void updatePlant(Guild guild, int plantBalance) {
-        Utilities.write(new File("data/" + getName() + "/" + guild.getId() + "/plant.csv"), String.valueOf(plantBalance));
+        Utilities.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/plant.csv"), String.valueOf(plantBalance));
     }
 
     public int getTotalPlant(Guild guild) {
         try {
-            String info = Utilities.read(new File("data/" + getName() + "/" + guild.getId() + "/plant.csv"));
+            String info = Utilities.read(new File("data/" + getName() + "/guilds/" + guild.getId() + "/plant.csv"));
             return Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
         } catch (NumberFormatException e) {
             updatePlant(guild, 0);

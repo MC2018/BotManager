@@ -99,7 +99,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
     }
 
     public String getNameOutput(Guild guild) {
-        File[] files = new File("data/" + bot.getName() + "/" + guild.getId() + "/").listFiles();
+        File[] files = new File("data/" + bot.getName() + "/guilds/" + guild.getId() + "/members/").listFiles();
         String result = "";
 
         for (File file : files) {

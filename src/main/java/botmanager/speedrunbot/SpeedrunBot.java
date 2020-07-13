@@ -47,6 +47,7 @@ public final class SpeedrunBot extends BotBase {
     private ArrayList<String> uniqueGameIds;
     private final String separator = "/";
     private final String errorUrl = "https://i.imgur.com/OUBCmGA.png";
+    private String prefix;
     
     //look into making help button with embeds
     //add info command
@@ -55,8 +56,8 @@ public final class SpeedrunBot extends BotBase {
     //idea: keep top 10-100 most frequented games always queued up? refresh every day perhaps
     public SpeedrunBot(String botToken, String name) {
         super(botToken, name);
-        setPrefix("$");
-        getJDA().getPresence().setActivity(Activity.playing(getPrefix() + "help for info"));
+        prefix = "$";
+        getJDA().getPresence().setActivity(Activity.playing(prefix + "help for info"));
         
         setCommands(new SpeedrunBotCommandBase[] {
             new LeaderboardCommand(this),
@@ -179,35 +180,8 @@ public final class SpeedrunBot extends BotBase {
         return result;
     }
     
-    public String getUserCSVAtIndex(Guild guild, User user, int index) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
-
-        if (!file.exists()) {
-            return "";
-        }
-
-        return Utilities.getCSVValueAtIndex(Utilities.read(file), index);
-    }
-
-    public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
-        File file = new File("data/" + getName() + "/" + guild.getId() + "/" + user.getId() + ".csv");
-        String data = Utilities.read(file);
-        String[] originalValues = data.split(",");
-        String[] newValues;
-
-        if (originalValues.length > index) {
-            newValues = data.split(",");
-        } else {
-            newValues = new String[index + 1];
-            System.arraycopy(originalValues, 0, newValues, 0, originalValues.length);
-
-            for (int i = originalValues.length; i < newValues.length; i++) {
-                newValues[i] = "";
-            }
-        }
-
-        newValues[index] = newValue;
-        Utilities.write(file, Utilities.buildCSV(newValues));
+    public String getPrefix() {
+        return prefix;
     }
 
     public String determineGameID(String game) {

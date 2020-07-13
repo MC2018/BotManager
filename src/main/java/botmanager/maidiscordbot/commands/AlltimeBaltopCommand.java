@@ -54,7 +54,7 @@ public class AlltimeBaltopCommand extends MaiDiscordBotCommandBase {
         }
 
         guild = event.getGuild();
-        files = new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/").listFiles();
+        files = new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/members/").listFiles();
 
         int[] baltop = {0, 0, 0, 0, 0};
         String[] baltopNames = new String[5];

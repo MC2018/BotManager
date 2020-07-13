@@ -62,7 +62,7 @@ public class JackpotCommand extends Boteyy_CommandBase {
         }
         
         try {
-            String info = Utilities.read(new File("data/" + bot.getName() + "/" + event.getGuild().getId() + "/jackpot.csv"));
+            String info = Utilities.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/jackpot.csv"));
             jackpotCap = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
             jackpotBalance = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 1));
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class JackpotCommand extends Boteyy_CommandBase {
     }
     
     public String calculateWinnerAndOutput(Guild guild, int jackpotBalance) {
-        File[] files = new File("data/" + bot.getName() + "/" + guild.getId() + "/").listFiles();
+        File[] files = new File("data/" + bot.getName() + "/guilds/" + guild.getId() + "/members/").listFiles();
         String result = "";
         User winner = null;
         int winningNumber = (int) (Math.random() * jackpotBalance);
