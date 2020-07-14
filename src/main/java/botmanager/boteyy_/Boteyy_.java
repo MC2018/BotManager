@@ -26,7 +26,7 @@ public class Boteyy_ extends MaiDiscordBot {
 
     public Boteyy_(String botToken, String name) {
         super(botToken, name);
-        setPrefix("~");
+        setPrefix(">");
         getJDA().getPresence().setActivity(Activity.of(Activity.ActivityType.DEFAULT, getPrefix() + "help for commands!"));
 
         generatePlantTimer();

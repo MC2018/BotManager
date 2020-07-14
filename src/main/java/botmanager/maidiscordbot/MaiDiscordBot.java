@@ -377,15 +377,4 @@ public class MaiDiscordBot extends BotBase {
         }
     }
     
-    @Override
-    public ICommand[] getCommands() {
-        ICommand[] commands = super.getCommands();
-        MaiDiscordBotCommandBase[] newCommands = new MaiDiscordBotCommandBase[commands.length];
-        
-        for (int i = 0; i < commands.length; i++) {
-            newCommands[i] = (MaiDiscordBotCommandBase) commands[i];
-        }
-        
-        return newCommands;
-    }
 }
