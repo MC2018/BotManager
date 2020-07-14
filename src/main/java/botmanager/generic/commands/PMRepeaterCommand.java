@@ -1,33 +1,34 @@
-package botmanager.speedrunbot.commands;
+package botmanager.generic.commands;
 
-import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
+import botmanager.generic.BotBase;
+import botmanager.generic.ICommand;
 import java.util.ArrayList;
 import java.util.List;
-import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class PMRepeaterCommand extends SpeedrunBotCommandBase {
+public class PMRepeaterCommand implements ICommand {
 
+    BotBase bot;
     ArrayList<String> messagedUserIDs = new ArrayList();
     
     public PMRepeaterCommand(BotBase bot) {
-        super(bot);
+        this.bot = bot;
     }
-
+    
     @Override
     public void run(Event genericEvent) {
         PrivateMessageReceivedEvent event;
         String message;
-        List<Attachment> attachments = new ArrayList();
+        List<Message.Attachment> attachments;
         
         if (!(genericEvent instanceof PrivateMessageReceivedEvent)) {
             return;
@@ -45,24 +46,12 @@ public class PMRepeaterCommand extends SpeedrunBotCommandBase {
         if (!attachments.isEmpty()) {
             message += "\n\nAttachments:\n";
             
-            for (Attachment attachment : attachments) {
+            for (Message.Attachment attachment : attachments) {
                 message += attachment.getUrl() + "\n";
             }
         }
         
         Utilities.sendPrivateMessage(bot.getJDA().getUserById("106949500500738048"), message);
-        
-        if (event.getMessage().getContentRaw().startsWith(bot.getPrefix()) && !messagedUserIDs.contains(event.getAuthor().getId())) {
-            Utilities.sendPrivateMessage(event.getAuthor(), "I prefer my commands be used on servers rather than DMs. "
-                    + "If you have any questions or concerns about this bot though, feel free to voice your opinion through this chat, "
-                    + "and they will reach to the developer.");
-            messagedUserIDs.add(event.getAuthor().getId());
-        }
-    }
-
-    @Override
-    public Field info() {
-        return null;
     }
 
 }

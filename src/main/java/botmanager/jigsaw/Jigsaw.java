@@ -5,6 +5,7 @@ import botmanager.jigsaw.generic.JigsawCommandBase;
 import botmanager.Utilities;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMRepeaterCommand;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,8 +37,9 @@ public class Jigsaw extends BotBase {
         getJDA().getPresence().setActivity(Activity.playing("with your mind"));
         generateDirtyWords();
         generateBanTimer();
-        setCommands(new JigsawCommandBase[] {
-            new WordTrackerCommand(this)
+        setCommands(new ICommand[] {
+            new WordTrackerCommand(this),
+            new PMRepeaterCommand(this)
         });
         
         System.out.println(Utilities.getTrueFileName(new File("data/bbbots_tokens.txt")));

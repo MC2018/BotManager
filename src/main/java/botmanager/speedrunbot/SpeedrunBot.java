@@ -1,6 +1,5 @@
 package botmanager.speedrunbot;
 
-import botmanager.speedrunbot.commands.PMRepeaterCommand;
 import botmanager.speedrunbot.commands.PlaceCommand;
 import botmanager.speedrunbot.commands.LeaderboardCommand;
 import botmanager.speedrunbot.commands.RunCommand;
@@ -21,8 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
@@ -30,6 +27,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMRepeaterCommand;
 import botmanager.speedrunbot.commands.ForwardMessageCommand;
 import botmanager.speedrunbot.webdriver.WebDriverManager;
 import java.io.IOException;
@@ -59,7 +57,7 @@ public final class SpeedrunBot extends BotBase {
         prefix = "$";
         getJDA().getPresence().setActivity(Activity.playing(prefix + "help for info"));
         
-        setCommands(new SpeedrunBotCommandBase[] {
+        setCommands(new ICommand[] {
             new LeaderboardCommand(this),
             new WorldRecordCommand(this),
             new PlaceCommand(this),
@@ -615,11 +613,6 @@ public final class SpeedrunBot extends BotBase {
     
     public String getErrorUrl() {
         return errorUrl;
-    }
-
-    @Override
-    public SpeedrunBotCommandBase[] getCommands() {
-        return (SpeedrunBotCommandBase[]) super.getCommands();
     }
     
 }

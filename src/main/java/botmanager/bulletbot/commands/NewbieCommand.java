@@ -22,7 +22,6 @@ public class NewbieCommand extends BulletBotCommandBase {
     @Override
     public void run(Event genericEvent) {
         GuildMemberJoinEvent event;
-        String message;
         Date userCreationDate;
         Date lastMonth = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy");

@@ -3,7 +3,20 @@ package botmanager.maidiscordbot;
 import botmanager.Utilities;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
-import botmanager.maidiscordbot.commands.*;
+import botmanager.generic.commands.PMRepeaterCommand;
+import botmanager.maidiscordbot.commands.AlltimeBaltopCommand;
+import botmanager.maidiscordbot.commands.BalanceCommand;
+import botmanager.maidiscordbot.commands.BalanceTopCommand;
+import botmanager.maidiscordbot.commands.CoinflipCommand;
+import botmanager.maidiscordbot.commands.DailyRewardCommand;
+import botmanager.maidiscordbot.commands.DeadCommand;
+import botmanager.maidiscordbot.commands.GambleCommand;
+import botmanager.maidiscordbot.commands.GiveCommand;
+import botmanager.maidiscordbot.commands.HarvestCommand;
+import botmanager.maidiscordbot.commands.HelpCommand;
+import botmanager.maidiscordbot.commands.JackpotCommand;
+import botmanager.maidiscordbot.commands.MoneyCommand;
+import botmanager.maidiscordbot.commands.PlantCommand;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import java.io.File;
 import java.util.ArrayList;
@@ -32,9 +45,9 @@ public class MaiDiscordBot extends BotBase {
     private TimerTask timerTask;
     private Timer timer = new Timer();
     private HashMap<Guild, Boolean> harvesting = new HashMap<>();
-    private static final int PLANT_GROWTH_MAX = 500000;
     private Set<Member> planters = new HashSet<>();
     private String prefix;
+    private static final int PLANT_GROWTH_MAX = 500000;
 
     public MaiDiscordBot(String botToken, String name) {
         super(botToken, name);
@@ -76,6 +89,10 @@ public class MaiDiscordBot extends BotBase {
     
     public String getPrefix() {
         return prefix;
+    }
+    
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
     
     public Set<Member> getPlanters() {
@@ -360,14 +377,8 @@ public class MaiDiscordBot extends BotBase {
         }
     }
     
-    /*public void updateUserBaltop(Member member, int amount) {
-        if (getUserBaltop(member) < amount) {
-            setUserBaltop(member, amount);
-        }
-    }*/
-    
     @Override
-    public MaiDiscordBotCommandBase[] getCommands() {
+    public ICommand[] getCommands() {
         ICommand[] commands = super.getCommands();
         MaiDiscordBotCommandBase[] newCommands = new MaiDiscordBotCommandBase[commands.length];
         

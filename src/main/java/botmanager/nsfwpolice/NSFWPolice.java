@@ -2,10 +2,10 @@ package botmanager.nsfwpolice;
 
 import botmanager.nsfwpolice.commands.MuteCommand;
 import botmanager.nsfwpolice.commands.NSFWBanCommand;
-import botmanager.nsfwpolice.commands.PMRepeaterCommand;
 import botmanager.nsfwpolice.commands.TimeoutCommand;
 import botmanager.generic.ICommand;
 import botmanager.generic.BotBase;
+import botmanager.generic.commands.PMRepeaterCommand;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;

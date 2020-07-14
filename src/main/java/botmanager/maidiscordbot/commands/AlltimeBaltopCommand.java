@@ -62,8 +62,7 @@ public class AlltimeBaltopCommand extends MaiDiscordBotCommandBase {
         for (File file : files) {
             try {
                 Member member = guild.getMemberById(file.getName().replace(".csv", ""));
-                String memberName;// = member.getEffectiveName();
-                //int balance = bot.getUserBalance(member);
+                String memberName;
                 int balance;
 
                 if (member == null) {
@@ -95,7 +94,7 @@ public class AlltimeBaltopCommand extends MaiDiscordBotCommandBase {
             }
         }
         
-        result = "Alltime Balance Top (starting on 2/15/2020):\n";
+        result = "Alltime Balance Top:\n";
         
         for (int i = 0; i < baltop.length; i++) {
             result += getNumericalSuffix(i) + ": " + baltopNames[i] + " with $" + baltop[i] + "\n";
@@ -106,7 +105,7 @@ public class AlltimeBaltopCommand extends MaiDiscordBotCommandBase {
 
     @Override
     public String info() {
-        return "**" + bot.getPrefix() + "alltimetop** - shows the richest people have ever been at any point on the server (as of 2/15/2020)";
+        return "**" + bot.getPrefix() + "alltimetop** - shows the richest people have ever been at any point on the server";
     }
     
     public String getNumericalSuffix(int index) {

@@ -1,11 +1,11 @@
 package botmanager.suggestionbox;
 
-import botmanager.suggestionbox.commands.PMRepeaterCommand;
 import botmanager.suggestionbox.commands.ReactionManagerCommand;
 import botmanager.suggestionbox.commands.SuggestionCommand;
 import botmanager.suggestionbox.generic.SuggestionBoxCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMRepeaterCommand;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -35,7 +35,7 @@ public class SuggestionBox extends BotBase {
         getJDA().getPresence().setActivity(Activity.listening("your bad ideas!"));
         prefix = "~";
         
-        setCommands(new SuggestionBoxCommandBase[] {
+        setCommands(new ICommand[] {
             new SuggestionCommand(this),
             new ReactionManagerCommand(this),
             new PMRepeaterCommand(this)

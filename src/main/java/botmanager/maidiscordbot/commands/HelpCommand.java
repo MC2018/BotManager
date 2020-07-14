@@ -2,6 +2,7 @@ package botmanager.maidiscordbot.commands;
 
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
+import botmanager.generic.ICommand;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
@@ -21,7 +22,7 @@ public class HelpCommand extends MaiDiscordBotCommandBase {
         GuildMessageReceivedEvent event;
         MoneyCommand moneyCommand = null;
         String[] words;
-        String result = "__**MaiDiscordBot**__\n\n";
+        String result = "__**" + bot.getName() + "**__\n\n";
         
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
             return;
@@ -31,13 +32,16 @@ public class HelpCommand extends MaiDiscordBotCommandBase {
         words = event.getMessage().getContentRaw().split(" ");
         
         if (words.length > 0 && words[0].equals(bot.getPrefix() + "help")) {
-            for (MaiDiscordBotCommandBase command : bot.getCommands()) {
-                String info = command.info();
-                
-                if (info != null && command instanceof MoneyCommand) {
-                    moneyCommand = (MoneyCommand) command;
-                } else if (info != null) {
-                    result += info + "\n";
+            for (ICommand icommand : bot.getCommands()) {
+                if (icommand instanceof MaiDiscordBotCommandBase) {
+                    MaiDiscordBotCommandBase command = (MaiDiscordBotCommandBase) icommand;
+                    String info = command.info();
+                    
+                    if (info != null && command instanceof MoneyCommand) {
+                        moneyCommand = (MoneyCommand) command;
+                    } else if (info != null) {
+                        result += info + "\n";
+                    }
                 }
             }
             

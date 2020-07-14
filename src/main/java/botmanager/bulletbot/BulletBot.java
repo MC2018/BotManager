@@ -4,9 +4,9 @@ import botmanager.bulletbot.commands.BirthDateCommand;
 import botmanager.bulletbot.commands.InfoCommand;
 import botmanager.bulletbot.commands.JoinDateCommand;
 import botmanager.bulletbot.commands.NewbieCommand;
-import botmanager.bulletbot.generic.BulletBotCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMRepeaterCommand;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -24,11 +24,12 @@ public class BulletBot extends BotBase {
         getJDA().getPresence().setActivity(Activity.playing("Abuse"));
         prefix = "!";
 
-        setCommands(new BulletBotCommandBase[] {
+        setCommands(new ICommand[] {
             new NewbieCommand(this),
             new BirthDateCommand(this),
             new JoinDateCommand(this),
-            new InfoCommand(this)
+            new InfoCommand(this),
+            new PMRepeaterCommand(this)
         });
     }
     
