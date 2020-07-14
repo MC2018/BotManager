@@ -3,6 +3,7 @@ package botmanager.maidiscordbot;
 import botmanager.Utilities;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import botmanager.maidiscordbot.commands.AlltimeBaltopCommand;
 import botmanager.maidiscordbot.commands.BalanceCommand;
@@ -17,7 +18,6 @@ import botmanager.maidiscordbot.commands.HelpCommand;
 import botmanager.maidiscordbot.commands.JackpotCommand;
 import botmanager.maidiscordbot.commands.MoneyCommand;
 import botmanager.maidiscordbot.commands.PlantCommand;
-import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,10 +66,11 @@ public class MaiDiscordBot extends BotBase {
             new CoinflipCommand(this),
             new JackpotCommand(this),
             new DeadCommand(this),
-            new PMRepeaterCommand(this),
             new AlltimeBaltopCommand(this),
             new PlantCommand(this),
-            new HarvestCommand(this)
+            new HarvestCommand(this),
+            new PMRepeaterCommand(this),
+            new PMForwarderCommand(this)
         });
     }
 

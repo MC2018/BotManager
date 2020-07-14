@@ -5,6 +5,7 @@ import botmanager.suggestionbox.commands.SuggestionCommand;
 import botmanager.suggestionbox.generic.SuggestionBoxCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
@@ -38,7 +39,8 @@ public class SuggestionBox extends BotBase {
         setCommands(new ICommand[] {
             new SuggestionCommand(this),
             new ReactionManagerCommand(this),
-            new PMRepeaterCommand(this)
+            new PMRepeaterCommand(this),
+            new PMForwarderCommand(this)
         });
     }
     

@@ -7,7 +7,6 @@ import botmanager.speedrunbot.commands.WorldRecordCommand;
 import botmanager.speedrunbot.commands.HelpCommand;
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
-import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import com.tsunderebug.speedrun4j.game.Category;
 import com.tsunderebug.speedrun4j.game.Game;
 import com.tsunderebug.speedrun4j.game.Leaderboard;
@@ -27,8 +26,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
-import botmanager.speedrunbot.commands.ForwardMessageCommand;
 import botmanager.speedrunbot.webdriver.WebDriverManager;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -64,7 +63,7 @@ public final class SpeedrunBot extends BotBase {
             new RunCommand(this),
             new HelpCommand(this),
             new PMRepeaterCommand(this),
-            new ForwardMessageCommand(this)
+            new PMForwarderCommand(this)
         });
         
         buildHashMap(Utilities.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));

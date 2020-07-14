@@ -6,6 +6,7 @@ import botmanager.bulletbot.commands.JoinDateCommand;
 import botmanager.bulletbot.commands.NewbieCommand;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -29,7 +30,8 @@ public class BulletBot extends BotBase {
             new BirthDateCommand(this),
             new JoinDateCommand(this),
             new InfoCommand(this),
-            new PMRepeaterCommand(this)
+            new PMRepeaterCommand(this),
+            new PMForwarderCommand(this)
         });
     }
     

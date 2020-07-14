@@ -1,27 +1,28 @@
-package botmanager.speedrunbot.commands;
+package botmanager.generic.commands;
 
 import botmanager.generic.BotBase;
 import botmanager.Utilities;
+import botmanager.generic.ICommand;
 import net.dv8tion.jda.api.events.Event;
-import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class ForwardMessageCommand extends SpeedrunBotCommandBase {
+public class PMForwarderCommand implements ICommand {
 
+    BotBase bot;
+    
     final String[] KEYWORDS = {
-        bot.getPrefix() + "forward",
-        bot.getPrefix() + "message",
-        bot.getPrefix() + "f",
-        bot.getPrefix() + "m",
+        "forward",
+        "message",
+        "f",
+        "m",
     };
 
-    public ForwardMessageCommand(BotBase bot) {
-        super(bot);
+    public PMForwarderCommand(BotBase bot) {
+        this.bot = bot;
     }
 
     @Override
@@ -29,7 +30,6 @@ public class ForwardMessageCommand extends SpeedrunBotCommandBase {
         PrivateMessageReceivedEvent event;
         String input;
         String userID;
-
         boolean found = false;
 
         if (!(genericEvent instanceof PrivateMessageReceivedEvent)) {
@@ -53,17 +53,11 @@ public class ForwardMessageCommand extends SpeedrunBotCommandBase {
 
         userID = input.split(" ")[0];
         
-        
         if (!event.getAuthor().getId().equals("106949500500738048")) {
             return;
         }
         
         Utilities.sendPrivateMessage(bot.getJDA().getUserById(userID), input.replaceFirst(userID, ""));
-    }
-
-    @Override
-    public Field info() {
-        return null;
     }
 
 }

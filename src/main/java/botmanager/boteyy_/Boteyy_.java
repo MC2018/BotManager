@@ -1,6 +1,7 @@
 package botmanager.boteyy_;
 
 import botmanager.generic.ICommand;
+import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import botmanager.maidiscordbot.MaiDiscordBot;
 import botmanager.maidiscordbot.commands.AlltimeBaltopCommand;
@@ -40,10 +41,11 @@ public class Boteyy_ extends MaiDiscordBot {
             new GambleCommand(this),
             new CoinflipCommand(this),
             new JackpotCommand(this),
-            new PMRepeaterCommand(this),
             new AlltimeBaltopCommand(this),
             new PlantCommand(this),
-            new HarvestCommand(this)
+            new HarvestCommand(this),
+            new PMRepeaterCommand(this),
+            new PMForwarderCommand(this)
         });
     }
 

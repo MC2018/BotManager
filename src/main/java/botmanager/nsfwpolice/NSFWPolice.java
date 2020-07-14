@@ -5,6 +5,7 @@ import botmanager.nsfwpolice.commands.NSFWBanCommand;
 import botmanager.nsfwpolice.commands.TimeoutCommand;
 import botmanager.generic.ICommand;
 import botmanager.generic.BotBase;
+import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
@@ -34,9 +35,10 @@ public class NSFWPolice extends BotBase {
         
         setCommands(new ICommand[] {
             new NSFWBanCommand(this),
-            new PMRepeaterCommand(this),
             new MuteCommand(this),
-            new TimeoutCommand(this)
+            new TimeoutCommand(this),
+            new PMRepeaterCommand(this),
+            new PMForwarderCommand(this)
         });
     }
     
