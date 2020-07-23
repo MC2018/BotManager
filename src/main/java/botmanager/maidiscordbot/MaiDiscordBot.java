@@ -224,6 +224,7 @@ public class MaiDiscordBot extends BotBase {
 
         timer.schedule(timerTask, 180000, 180000);
         exec.schedule(new Runnable() {
+            @Override
             public void run() {
                 generatePlanterCache();
             }
