@@ -29,6 +29,7 @@ import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import botmanager.speedrunbot.webdriver.WebDriverManager;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 
@@ -198,7 +199,7 @@ public final class SpeedrunBot extends BotBase {
         }
 
         for (HashMap.Entry<String, String> set : gameSynonyms.entrySet()) {
-            double similarity = similarity(game, set.getKey());
+            double similarity = Utilities.similarity(game, set.getKey());
 
             if (similarity > bestSimilarity) {
                 result = set.getValue().split(separator)[1];
@@ -222,7 +223,7 @@ public final class SpeedrunBot extends BotBase {
         }
 
         for (HashMap.Entry<String, String> set : gameSynonyms.entrySet()) {
-            double similarity = similarity(game, set.getKey());
+            double similarity = Utilities.similarity(game, set.getKey());
 
             if (similarity > bestSimilarity) {
                 bestSimilarity = similarity;
@@ -251,7 +252,7 @@ public final class SpeedrunBot extends BotBase {
         game = simplify(game);
 
         for (HashMap.Entry<String, String> set : gameSynonyms.entrySet()) {
-            double similarity = similarity(game, set.getKey());
+            double similarity = Utilities.similarity(game, set.getKey());
 
             for (int i = bestSimilarity.size() - 2; i >= 0; i--) {
                 if (similarity > bestSimilarity.get(i)) {
@@ -303,14 +304,6 @@ public final class SpeedrunBot extends BotBase {
                 System.out.println("stop here");
             }
         }
-        
-        return result;
-    }
-    
-    public static ArrayList<String> test(Leaderboard lb) {
-        ArrayList<String> result = new ArrayList<>();
-        PlacedRun[] runs = lb.getRuns();
-        
         
         return result;
     }
@@ -451,7 +444,7 @@ public final class SpeedrunBot extends BotBase {
             Category[] categories = game.getCategories().getCategories();
             
             for (Category category : categories) {
-                double similarity = similarity(simplify(name), simplify(category.getName()));
+                double similarity = Utilities.similarity(simplify(name), simplify(category.getName()));
 
                 if (similarity > bestSimilarity) {
                     result = category;
@@ -504,70 +497,6 @@ public final class SpeedrunBot extends BotBase {
         return result;
     }
 
-    public static String bestSimilarity(List<String> collection, String phrase) {
-        String result = null;
-        double bestSimilarity = -1;
-        
-        for (String s1 : collection) {
-            double similarity = similarity(simplify(s1), phrase);
-            
-            if (similarity > bestSimilarity) {
-                result = s1;
-                bestSimilarity = similarity;
-            }
-        }
-        
-        return result;
-    }
-    
-    public static double similarity(String s1, String s2) {
-        String longer = s1, shorter = s2;
-        if (s1.length() < s2.length()) { // longer should always have greater length
-            longer = s2;
-            shorter = s1;
-        }
-        int longerLength = longer.length();
-        if (longerLength == 0) {
-            return 1.0;
-            /* both strings are zero length */ }
-
-        double result = (longerLength - editDistance(longer, shorter)) / (double) longerLength;
-        if (s1.contains(s2) || s2.contains(s1)) {
-            result += (1 - result) / 2;
-        }
-
-        return result;
-    }
-
-    public static int editDistance(String s1, String s2) {
-        s1 = s1.toLowerCase();
-        s2 = s2.toLowerCase();
-
-        int[] costs = new int[s2.length() + 1];
-        for (int i = 0; i <= s1.length(); i++) {
-            int lastValue = i;
-            for (int j = 0; j <= s2.length(); j++) {
-                if (i == 0) {
-                    costs[j] = j;
-                } else {
-                    if (j > 0) {
-                        int newValue = costs[j - 1];
-                        if (s1.charAt(i - 1) != s2.charAt(j - 1)) {
-                            newValue = Math.min(Math.min(newValue, lastValue),
-                                    costs[j]) + 1;
-                        }
-                        costs[j - 1] = lastValue;
-                        lastValue = newValue;
-                    }
-                }
-            }
-            if (i > 0) {
-                costs[s2.length()] = lastValue;
-            }
-        }
-        return costs[s2.length()];
-    }
-
     public static String getNumericalSuffix(int index) {
         String result;
         int number = index + 1;
@@ -612,6 +541,14 @@ public final class SpeedrunBot extends BotBase {
     
     public String getErrorUrl() {
         return errorUrl;
+    }
+    
+    public static Color getEmbedColor() {
+        return new Color(217, 159, 36);
+    }
+    
+    public static Color getEmbedFailureColor() {
+        return new Color(255, 85, 41);
     }
     
 }

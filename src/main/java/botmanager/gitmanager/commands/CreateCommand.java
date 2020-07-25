@@ -47,7 +47,7 @@ public class CreateCommand extends GitManagerCommandBase {
         
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.toLowerCase().replace(keyword + " ", "");
+                input = input.substring(keyword.length() + 1, input.length());
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
@@ -72,11 +72,12 @@ public class CreateCommand extends GitManagerCommandBase {
         eb.addField("Task Created", "Task '" + input + "' was created.", true);
         taskMessage = Utilities.sendGuildMessageReturn(
                 bot.getTaskChannel(event.getGuild().getIdLong(), StatusType.TO_DO),
-                Task.generateMessageEmbed(task)
+                Task.generateMessageEmbed(task, bot)
         );
         
         GitManager.addTaskReactions(taskMessage, StatusType.TO_DO);
         Utilities.sendPrivateMessage(event.getAuthor(), eb.build());
+        bot.writeTask(task);
     }
 
     

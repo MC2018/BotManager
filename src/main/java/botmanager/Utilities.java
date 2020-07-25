@@ -1,7 +1,10 @@
 package botmanager;
 
+import static botmanager.speedrunbot.SpeedrunBot.simplify;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import com.vdurmont.emoji.Emoji;
+import com.vdurmont.emoji.EmojiManager;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Emote;
@@ -119,7 +123,7 @@ public class Utilities {
 
         return result;
     }
-    
+
     public static boolean isNullOrEmpty(String s) {
         return s == null || s.equals("");
     }
@@ -210,7 +214,7 @@ public class Utilities {
 
         user.openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
     }
-    
+
     public static void sendPrivateMessage(User user, MessageEmbed message) {
         user.openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
     }
@@ -273,16 +277,112 @@ public class Utilities {
         return sdf.format(date);
     }
 
-    public static void addReaction(Message message, String emoteName) {
-        List<Emote> emotes = message.getGuild().getEmotesByName(emoteName, true);
+    public static Emoji getEmoji(String potentialAlias) {
+        Emoji emoji = EmojiManager.getForAlias(potentialAlias);
+
+        if (emoji == null) {
+        ArrayList<Emoji> emojis = new ArrayList(EmojiManager.getAll());
+        double similarity = 0;
+        
+            for (Emoji potentialEmoji : emojis) {
+                for (String alias : potentialEmoji.getAliases()) {
+                    double potentialSimilarity = similarity(potentialAlias, alias);
+
+                    if (potentialSimilarity > similarity) {
+                        emoji = potentialEmoji;
+                        similarity = potentialSimilarity;
+                    }
+                }
+            }
+        }
+        
+        return emoji;
+    }
+    
+    public static void addReaction(Message message, String potentialName) {
+        List<Emote> emotes = message.getGuild().getEmotesByName(potentialName, true);
         Emote emote;
 
-        if (emotes.isEmpty()) {
-            return;
+        if (!emotes.isEmpty()) {
+            emote = emotes.get(0);
+            message.addReaction(emote).queue();
+        } else {
+            message.addReaction(getEmoji(potentialName).getUnicode()).queue();
+        }
+    }
+
+    public static String bestSimilarity(List<String> collection, String phrase) {
+        String result = null;
+        double bestSimilarity = -1;
+
+        for (String s1 : collection) {
+            double similarity = similarity(simplify(s1), phrase);
+
+            if (similarity > bestSimilarity) {
+                result = s1;
+                bestSimilarity = similarity;
+            }
         }
 
-        emote = emotes.get(0);
-        message.addReaction(emote).queue();
+        return result;
+    }
+
+    public static double similarity(String s1, String s2) {
+        String longer = s1, shorter = s2;
+        int longerLength;
+        double result;
+        
+        if (s1.length() < s2.length()) {
+            longer = s2;
+            shorter = s1;
+        }
+        
+        longerLength = longer.length();
+        
+        if (longerLength == 0) {
+            return 1.0;
+        }
+
+        result = (longerLength - editDistance(longer, shorter)) / (double) longerLength;
+        
+        if (s1.contains(s2) || s2.contains(s1)) {
+            result += (1 - result) / 2;
+        }
+
+        return result;
+    }
+    
+    public static int editDistance(String s1, String s2) {
+        int[] costs = new int[s2.length() + 1];
+        s1 = s1.toLowerCase();
+        s2 = s2.toLowerCase();
+
+        for (int i = 0; i <= s1.length(); i++) {
+            int lastValue = i;
+            
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0) {
+                    costs[j] = j;
+                } else {
+                    if (j > 0) {
+                        int newValue = costs[j - 1];
+                        
+                        if (s1.charAt(i - 1) != s2.charAt(j - 1)) {
+                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                        }
+                        
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+            }
+            
+            if (i > 0) {
+                costs[s2.length()] = lastValue;
+            }
+        }
+        
+        return costs[s2.length()];
     }
 
 }

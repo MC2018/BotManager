@@ -93,6 +93,7 @@ public class PlaceCommand extends SpeedrunBotCommandBase {
         eb.addField("Example", "```" + bot.getPrefix() + "p mario 3"
                 + bot.getSeparator() + "warpless"
                 + bot.getSeparator() + "3```", false);
+        eb.setColor(SpeedrunBot.getEmbedFailureColor());
         return eb.build();
     }
 
@@ -131,6 +132,7 @@ public class PlaceCommand extends SpeedrunBotCommandBase {
                 eb.addField("Video Link", videoLink, false);
             }
             
+            eb.setColor(SpeedrunBot.getEmbedColor());
             return eb.build();
         } catch (IOException e) {
             e.printStackTrace();

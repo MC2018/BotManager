@@ -88,6 +88,7 @@ public class RulesCommand extends SpeedrunBotCommandBase {
         eb.addField("Examples", "```" + bot.getPrefix() + "rules undertale\n"
                 + bot.getPrefix() + "rules shovel knight"
                 + bot.getSeparator() + "any%```", false);
+        eb.setColor(SpeedrunBot.getEmbedFailureColor());
         return eb.build();
     }
     
@@ -98,7 +99,7 @@ public class RulesCommand extends SpeedrunBotCommandBase {
         eb.setThumbnail(game.getAssets().getCoverLarge().getUri());
         
         //game.
-        
+        eb.setColor(SpeedrunBot.getEmbedColor());
         return eb.build();
     }
 

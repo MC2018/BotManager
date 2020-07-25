@@ -95,6 +95,7 @@ public class LeaderboardCommand extends SpeedrunBotCommandBase {
         eb.addField("Examples", "```" + bot.getPrefix() + "lb botw\n"
                 + bot.getPrefix() + "lb celeste"
                 + bot.getSeparator() + "any%```", false);
+        eb.setColor(SpeedrunBot.getEmbedFailureColor());
         return eb.build();
     }
 
@@ -115,6 +116,7 @@ public class LeaderboardCommand extends SpeedrunBotCommandBase {
             return getConnectionFailureEmbed();
         }
 
+        eb.setColor(SpeedrunBot.getEmbedColor());
         return eb.build();
     }
 
@@ -161,6 +163,7 @@ public class LeaderboardCommand extends SpeedrunBotCommandBase {
         }
 
         eb.addField("Category List", categoryList, false);
+        eb.setColor(SpeedrunBot.getEmbedColor());
         return eb.build();
     }
 

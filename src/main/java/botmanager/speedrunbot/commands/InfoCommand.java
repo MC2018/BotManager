@@ -62,7 +62,7 @@ public class InfoCommand extends SpeedrunBotCommandBase {
         if (!found) {
             return;
         }
-
+        
         sentMessage = Utilities.sendGuildMessageReturn(event.getChannel(), getWaitingEmbed());
         gameID = bot.determineGameID(input.split(bot.getSeparator())[0]);
 
@@ -95,6 +95,7 @@ public class InfoCommand extends SpeedrunBotCommandBase {
         eb.addField("Examples", "```" + bot.getPrefix() + "lb botw\n"
                 + bot.getPrefix() + "lb celeste"
                 + bot.getSeparator() + "any%```", false);
+        eb.setColor(SpeedrunBot.getEmbedFailureColor());
         return eb.build();
     }
     
@@ -133,6 +134,7 @@ public class InfoCommand extends SpeedrunBotCommandBase {
         }
 
         eb.addField("Category List", categoryList, false);
+        eb.setColor(SpeedrunBot.getEmbedColor());
         return eb.build();
     }
     

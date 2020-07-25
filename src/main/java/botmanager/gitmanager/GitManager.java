@@ -95,7 +95,7 @@ public class GitManager extends BotBase {
     }
     
     public static void addTaskReactions(Message message, int statusType) {
-        String[] reactions = {"one", "two", "three", "four"};
+        String[] reactions = {"todo", "inprogress", "inpr", "completed", "four", "upside_down", "slight_frown"};
         reactions[statusType] = null;
         
         for (String reaction : reactions) {
