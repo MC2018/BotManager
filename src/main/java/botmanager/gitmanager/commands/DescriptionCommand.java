@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  *
- * @author maxclausius
+ * @author MC_2018 <mc2018.git@gmail.com>
  */
 public class DescriptionCommand extends GitManagerCommandBase {
 
