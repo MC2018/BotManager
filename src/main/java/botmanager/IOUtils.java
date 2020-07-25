@@ -1,11 +1,7 @@
 package botmanager;
 
-import static botmanager.speedrunbot.SpeedrunBot.simplify;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.vdurmont.emoji.Emoji;
-import com.vdurmont.emoji.EmojiManager;
-import com.vdurmont.emoji.EmojiParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
