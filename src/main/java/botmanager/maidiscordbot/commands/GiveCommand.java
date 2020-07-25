@@ -1,7 +1,7 @@
 package botmanager.maidiscordbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
@@ -43,7 +43,7 @@ public class GiveCommand extends MaiDiscordBotCommandBase {
         words = message.split(" ");
         
         if (words.length < 2) {
-            Utilities.sendGuildMessage(event.getChannel(), "Proper format: " + "**" + bot.getPrefix() + "give USER AMOUNT**");
+            JDAUtils.sendGuildMessage(event.getChannel(), "Proper format: " + "**" + bot.getPrefix() + "give USER AMOUNT**");
             return;
         }
         
@@ -51,29 +51,29 @@ public class GiveCommand extends MaiDiscordBotCommandBase {
             amount = Integer.parseInt(words[words.length - 1]);
             
             if (balance < amount) {
-                Utilities.sendGuildMessage(event.getChannel(), "Amount too high, you only have $" + balance + ".");
+                JDAUtils.sendGuildMessage(event.getChannel(), "Amount too high, you only have $" + balance + ".");
                 return;
             } else if (amount < 1) {
-                Utilities.sendGuildMessage(event.getChannel(), "Amount too low, it needs to be greater than $0.");
+                JDAUtils.sendGuildMessage(event.getChannel(), "Amount too low, it needs to be greater than $0.");
                 return;
             }
         } catch (NumberFormatException e) {
-            Utilities.sendGuildMessage(event.getChannel(), "Proper format: " + "**" + bot.getPrefix() + "give USER AMOUNT**");
+            JDAUtils.sendGuildMessage(event.getChannel(), "Proper format: " + "**" + bot.getPrefix() + "give USER AMOUNT**");
             return;
         }
         
         name = combineArrayStopAtIndex(words, words.length - 1);
-        id = Utilities.findUserId(event.getGuild(), name);
+        id = JDAUtils.findUserId(event.getGuild(), name);
         
         if (id == null) {
-            Utilities.sendGuildMessage(event.getChannel(), "I could not find the user'" + name + "'.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "I could not find the user'" + name + "'.");
             return;
         }
         
         bot.addUserBalance(event.getMember(), amount * -1);
         bot.addUserBalance(event.getGuild().getMemberById(id), amount);
         
-        Utilities.sendGuildMessage(event.getChannel(),
+        JDAUtils.sendGuildMessage(event.getChannel(),
                 event.getMember().getEffectiveName() + " gave "
                 + event.getGuild().getMemberById(id).getEffectiveName()
                 + " $" + amount + ".");

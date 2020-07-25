@@ -5,9 +5,9 @@ package botmanager.bulletbot.commands;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
+import botmanager.JDAUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.bulletbot.generic.BulletBotCommandBase;
-import botmanager.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import net.dv8tion.jda.api.events.Event;
@@ -35,7 +35,7 @@ public class NewbieCommand extends BulletBotCommandBase {
         lastMonth.setTime(lastMonth.getTime() + (1000 * 60 * 60 * 24 * 30 * 3 / 2));
         
         if (userCreationDate.after(lastMonth)) {
-            Utilities.sendGuildMessage(event.getGuild().getTextChannelsByName("action-logs", true).get(0), "The user " + event.getMember().getAsMention()
+            JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("action-logs", true).get(0), "The user " + event.getMember().getAsMention()
                     + " was made on: " + sdf.format(userCreationDate) + ". Watch out for em!");
         }
     }

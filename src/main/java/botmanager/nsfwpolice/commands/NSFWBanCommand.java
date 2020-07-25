@@ -1,8 +1,8 @@
 package botmanager.nsfwpolice.commands;
 
+import botmanager.JDAUtils;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.nsfwpolice.generic.NSFWPoliceCommandBase;
-import botmanager.Utilities;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,16 +53,16 @@ public class NSFWBanCommand extends NSFWPoliceCommandBase {
         event = (GuildMemberRoleAddEvent) genericEvent;
         
         member = event.getMember();
-        role = Utilities.getRole(event, "NSFW");
-        hasNSFWBan = Utilities.hasRole(member, "NSFW-Ban");
-        hasNSFW = Utilities.hasRole(member, "NSFW");
+        role = JDAUtils.getRole(event, "NSFW");
+        hasNSFWBan = JDAUtils.hasRole(member, "NSFW-Ban");
+        hasNSFW = JDAUtils.hasRole(member, "NSFW");
         
         if (hasNSFW && hasNSFWBan) {
             DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
             
             try {
                 event.getGuild().removeRoleFromMember(member, role).complete();
-                Utilities.sendPrivateMessage(member.getUser(), PRIVATE_MESSAGE);
+                JDAUtils.sendPrivateMessage(member.getUser(), PRIVATE_MESSAGE);
                 lastMemberCaught = member.getUser().getName()
                         + "#" + member.getUser().getDiscriminator()
                         + ", " + dateFormat.format(new Date());
@@ -84,9 +84,9 @@ public class NSFWBanCommand extends NSFWPoliceCommandBase {
         for (int i = 0; i < memberCounterList.size(); i++) {
             if (memberCounterList.get(i).member.getId().equals(member.getId())) {
                 if (System.currentTimeMillis() - memberCounterList.get(i).time < (10*60*1000)) {
-                    Utilities.sendPrivateMessage(member.getUser(), getWittyReply());
+                    JDAUtils.sendPrivateMessage(member.getUser(), getWittyReply());
                 } else {
-                    Utilities.sendPrivateMessage(member.getUser(), PRIVATE_MESSAGE);
+                    JDAUtils.sendPrivateMessage(member.getUser(), PRIVATE_MESSAGE);
                 }
                 
                 memberCounterList.get(i).time = System.currentTimeMillis();
@@ -98,7 +98,7 @@ public class NSFWBanCommand extends NSFWPoliceCommandBase {
         }
         
         memberCounterList.add(new MemberInstanceCounter(member));
-        Utilities.sendPrivateMessage(member.getUser(), PRIVATE_MESSAGE);
+        JDAUtils.sendPrivateMessage(member.getUser(), PRIVATE_MESSAGE);
     }
     
     private String getWittyReply() {

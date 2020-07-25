@@ -1,6 +1,6 @@
 package botmanager.gitmanager.commands;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.tasks.Task;
@@ -46,7 +46,7 @@ public class TitleCommand extends GitManagerCommandBase {
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
-                Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+                JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
             }
         }
 
@@ -59,12 +59,12 @@ public class TitleCommand extends GitManagerCommandBase {
         try {
             taskNumber = Integer.parseInt(input.split(" ")[0]);
         } catch (Exception e) {
-            Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+            JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
             return;
         }
         
         if (input.split(" ").length < 2) {
-            Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+            JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
             return;
         }
         

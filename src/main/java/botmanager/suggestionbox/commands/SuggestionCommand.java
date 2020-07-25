@@ -1,8 +1,8 @@
 package botmanager.suggestionbox.commands;
 
+import botmanager.JDAUtils;
 import botmanager.suggestionbox.SuggestionBox;
 import botmanager.suggestionbox.generic.SuggestionBoxCommandBase;
-import botmanager.Utilities;
 import java.io.File;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -38,7 +38,7 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
         message = event.getMessage().getContentStripped();
 
         if (message.split(" ").length == 1 && message.startsWith(bot.getPrefix() + "suggest") && event.getChannel().getName().equalsIgnoreCase("bot-commands")) {
-            Utilities.sendGuildMessage(event.getChannel(), "Please include a message to go along with the suggestion.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "Please include a message to go along with the suggestion.");
             return;
         }
         
@@ -56,7 +56,7 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
 
         message = message.replaceFirst(bot.getPrefix() + "suggest ", "");
         message = "**Suggestion by " + event.getMember().getAsMention() + ":**\n```" + message + "```";
-        channel = (TextChannel) Utilities.findChannelByName(event.getGuild(), "user-suggestions");
+        channel = (TextChannel) JDAUtils.findChannelByName(event.getGuild(), "user-suggestions");
 
         if (channel == null) {
             return;
@@ -65,9 +65,9 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
         attachments = event.getMessage().getAttachments();
 
         if (attachments.isEmpty()) {
-            Utilities.sendGuildMessageWithReactions(channel, message, reactionNames);
+            JDAUtils.sendGuildMessageWithReactions(channel, message, reactionNames);
         } else if (attachments.size() > 1) {
-            Utilities.sendGuildMessage(event.getChannel(), "Send a max of 1 file.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "Send a max of 1 file.");
             return;
         } else {
             try {
@@ -75,17 +75,17 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
                 tempFile.mkdirs();
                 tempFile = new File(tempFile.getAbsolutePath() + "/" + attachments.get(0).getFileName());
                 attachments.get(0).downloadToFile(tempFile).get();
-                channel = (TextChannel) Utilities.findChannelByName(event.getGuild(), "emote-suggestions");
+                channel = (TextChannel) JDAUtils.findChannelByName(event.getGuild(), "emote-suggestions");
                 if (channel == null) {
                     return;
                 }
-                Utilities.sendGuildMessageWithReactions(channel, message, reactionNames, tempFile);
+                JDAUtils.sendGuildMessageWithReactions(channel, message, reactionNames, tempFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        Utilities.sendGuildMessage(event.getChannel(), "Thank you for the suggestion, " + event.getMember().getAsMention() + ".");
+        JDAUtils.sendGuildMessage(event.getChannel(), "Thank you for the suggestion, " + event.getMember().getAsMention() + ".");
     }
 
     @Override

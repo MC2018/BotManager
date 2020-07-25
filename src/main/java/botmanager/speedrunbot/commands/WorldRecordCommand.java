@@ -1,7 +1,7 @@
 package botmanager.speedrunbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import botmanager.speedrunbot.SpeedrunBot;
 import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import com.tsunderebug.speedrun4j.game.Category;
@@ -56,7 +56,7 @@ public class WorldRecordCommand extends SpeedrunBotCommandBase {
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
-                Utilities.sendGuildMessage(event.getChannel(), getSyntaxFailureEmbed());
+                JDAUtils.sendGuildMessage(event.getChannel(), getSyntaxFailureEmbed());
             }
         }
 
@@ -64,7 +64,7 @@ public class WorldRecordCommand extends SpeedrunBotCommandBase {
             return;
         }
 
-        sentMessage = Utilities.sendGuildMessageReturn(event.getChannel(), getWaitingEmbed());
+        sentMessage = JDAUtils.sendGuildMessageReturn(event.getChannel(), getWaitingEmbed());
         gameID = bot.determineGameID(input.split(bot.getSeparator())[0]);
         game = SpeedrunBot.getGame(gameID);
 

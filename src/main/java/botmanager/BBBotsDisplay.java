@@ -4,7 +4,6 @@ import botmanager.bulletbot.BulletBot;
 import botmanager.jigsaw.Jigsaw;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.suggestionbox.SuggestionBox;
-import static botmanager.Utilities.readLines;
 import botmanager.generic.BotBase;
 import java.awt.Frame;
 import java.io.File;
@@ -177,7 +176,7 @@ public class BBBotsDisplay extends javax.swing.JFrame {
         }
         
         try {
-            List<String> tokens = readLines(new File("data/bbbots_tokens.txt"));
+            List<String> tokens = IOUtils.readLines(new File("data/bbbots_tokens.txt"));
             
             bots = new BotBase[] {
                 new NSFWPolice(tokens.get(0), "NSFW Police"),

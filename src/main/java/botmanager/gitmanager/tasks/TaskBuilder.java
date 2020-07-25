@@ -1,6 +1,7 @@
 package botmanager.gitmanager.tasks;
 
-import botmanager.Utilities;
+import botmanager.IOUtils;
+import botmanager.Utils;
 import botmanager.generic.BotBase;
 import java.io.File;
 
@@ -24,7 +25,7 @@ public class TaskBuilder {
     }
     
     public Task build() throws Exception {
-        if (Utilities.isNullOrEmpty(name)) {
+        if (Utils.isNullOrEmpty(name)) {
             throw new Exception("Name is empty.");
         } else if (guildID < 0) {
             throw new Exception("Guild ID is empty.");
@@ -102,10 +103,10 @@ public class TaskBuilder {
 
     private int getID() {
         File taskCounterFile = new File("data/" + bot.getName() + "/guilds/" + guildID + "/task_counter.txt");
-        String info = Utilities.read(taskCounterFile);
+        String info = IOUtils.read(taskCounterFile);
         int counter = 0;
         
-        if (!Utilities.isNullOrEmpty(info)) {
+        if (!Utils.isNullOrEmpty(info)) {
             try {
                 counter = Integer.parseInt(info);
             } catch (Exception e) {
@@ -113,7 +114,7 @@ public class TaskBuilder {
             }
         }
         
-        Utilities.write(taskCounterFile, String.valueOf(++counter));
+        IOUtils.write(taskCounterFile, String.valueOf(++counter));
         return counter;
     }
     

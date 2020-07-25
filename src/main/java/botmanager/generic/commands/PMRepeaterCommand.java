@@ -1,6 +1,6 @@
 package botmanager.generic.commands;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class PMRepeaterCommand implements ICommand {
             }
         }
         
-        Utilities.sendPrivateMessage(bot.getJDA().getUserById("106949500500738048"), message);
+        JDAUtils.sendPrivateMessage(bot.getJDA().getUserById("106949500500738048"), message);
     }
 
 }

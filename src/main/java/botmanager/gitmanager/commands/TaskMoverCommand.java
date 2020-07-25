@@ -1,6 +1,7 @@
 package botmanager.gitmanager.commands;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
+import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.tasks.Task;
@@ -59,7 +60,7 @@ public class TaskMoverCommand extends GitManagerCommandBase {
         
         embeds = originalMessage.getEmbeds();
         
-        if (embeds.isEmpty() || Utilities.isNullOrEmpty(embeds.get(0).getTitle())) {
+        if (embeds.isEmpty() || Utils.isNullOrEmpty(embeds.get(0).getTitle())) {
             return;
         }
         
@@ -83,7 +84,7 @@ public class TaskMoverCommand extends GitManagerCommandBase {
         }
         
         task = bot.readTask(event.getGuild().getIdLong(), taskID);
-        newMessage = Utilities.sendGuildMessageReturn(bot.getTaskChannel(event.getGuild().getIdLong(), newStatus), Task.generateTaskEmbed(task, bot));
+        newMessage = JDAUtils.sendGuildMessageReturn(bot.getTaskChannel(event.getGuild().getIdLong(), newStatus), Task.generateTaskEmbed(task, bot));
         GitManager.addTaskReactions(newMessage, newStatus);
         originalMessage.delete().queue();
         task.updateStatus(newStatus, newMessage.getChannel().getIdLong(), newMessage.getIdLong(), event.getUserIdLong());

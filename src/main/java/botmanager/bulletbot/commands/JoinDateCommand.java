@@ -1,8 +1,8 @@
 package botmanager.bulletbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.bulletbot.generic.BulletBotCommandBase;
-import botmanager.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
@@ -42,7 +42,7 @@ public class JoinDateCommand extends BulletBotCommandBase {
         
         event = (GuildMessageReceivedEvent) genericEvent;
         
-        if (!Utilities.hasRole(event.getMember(), "Mod")) {
+        if (!JDAUtils.hasRole(event.getMember(), "Mod")) {
             return;
         }
         
@@ -69,14 +69,14 @@ public class JoinDateCommand extends BulletBotCommandBase {
         if (!mentionedMembers.isEmpty()) {
             for (Member member : mentionedMembers) {
                 result += "\nThe account '" + member.getUser().getName() + "' joined on "
-                        + Utilities.getFormattedUserTimeJoined(member, "MMMMM d, yyyy") + ".";
+                        + JDAUtils.getFormattedUserTimeJoined(member, "MMMMM d, yyyy") + ".";
             }
         } else {
-            userID = Utilities.findUserId(event.getGuild(), message);
+            userID = JDAUtils.findUserId(event.getGuild(), message);
 
             if (userID != null) {
                 result = "The account '" + event.getJDA().getUserById(userID).getName()
-                        + "' joined on " + Utilities.getFormattedUserTimeJoined(event.getGuild().getMemberById(userID), "MMMMM d, yyyy") + ".";
+                        + "' joined on " + JDAUtils.getFormattedUserTimeJoined(event.getGuild().getMemberById(userID), "MMMMM d, yyyy") + ".";
             } else {
                 result = "Use proper syntax please.\n"
                         + bot.getPrefix() + "jd @Username\n"
@@ -85,7 +85,7 @@ public class JoinDateCommand extends BulletBotCommandBase {
             }
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
     
     @Override

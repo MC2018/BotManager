@@ -1,7 +1,7 @@
 package botmanager.generic.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import botmanager.generic.ICommand;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
@@ -57,7 +57,7 @@ public class PMForwarderCommand implements ICommand {
             return;
         }
         
-        Utilities.sendPrivateMessage(bot.getJDA().getUserById(userID), input.replaceFirst(userID, ""));
+        JDAUtils.sendPrivateMessage(bot.getJDA().getUserById(userID), input.replaceFirst(userID, ""));
     }
 
 }

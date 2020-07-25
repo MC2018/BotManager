@@ -1,6 +1,6 @@
 package botmanager.gitmanager.commands;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.tasks.StatusType;
@@ -52,7 +52,7 @@ public class CreateCommand extends GitManagerCommandBase {
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
-                Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+                JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
             }
         }
 
@@ -69,18 +69,18 @@ public class CreateCommand extends GitManagerCommandBase {
         try {
             task = tb.build();
         } catch (Exception e) {
-            Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+            JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
             return;
         }
         
         eb.addField("Task Created", "Task '" + input + "' was created.", true);
-        taskMessage = Utilities.sendGuildMessageReturn(
+        taskMessage = JDAUtils.sendGuildMessageReturn(
                 bot.getTaskChannel(event.getGuild().getIdLong(), StatusType.TO_DO),
                 Task.generateTaskEmbed(task, bot)
         );
         
         GitManager.addTaskReactions(taskMessage, StatusType.TO_DO);
-        Utilities.sendPrivateMessage(event.getAuthor(), eb.build());
+        JDAUtils.sendPrivateMessage(event.getAuthor(), eb.build());
         task.setChannelID(taskMessage.getChannel().getIdLong());
         task.setMessageID(taskMessage.getIdLong());
         bot.writeTask(task);

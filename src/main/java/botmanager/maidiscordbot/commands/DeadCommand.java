@@ -1,7 +1,7 @@
 package botmanager.maidiscordbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
@@ -49,9 +49,9 @@ public class DeadCommand extends MaiDiscordBotCommandBase {
         dead = event.getGuild().getId().equals("231535629932953602");
         
         if (dead) {
-            Utilities.sendGuildMessage(event.getChannel(), getWittyReply());
+            JDAUtils.sendGuildMessage(event.getChannel(), getWittyReply());
         } else {
-            Utilities.sendGuildMessage(event.getChannel(), "What, you think this server is like Coco? Nah this one is actually alive.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "What, you think this server is like Coco? Nah this one is actually alive.");
         }
     }
 

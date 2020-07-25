@@ -1,8 +1,8 @@
 package botmanager.bulletbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.bulletbot.generic.BulletBotCommandBase;
-import botmanager.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import net.dv8tion.jda.api.entities.User;
@@ -45,7 +45,7 @@ public class BirthDateCommand extends BulletBotCommandBase {
         
         event = (GuildMessageReceivedEvent) genericEvent;
         
-        if (!Utilities.hasRole(event.getMember(), "Mod")) {
+        if (!JDAUtils.hasRole(event.getMember(), "Mod")) {
             return;
         }
         
@@ -71,14 +71,14 @@ public class BirthDateCommand extends BulletBotCommandBase {
         
         if (!mentionedUsers.isEmpty()) {
             for (User user : mentionedUsers) {
-                result += "\nThe account '" + user.getName() + "' was made on " + Utilities.getFormattedUserTimeCreated(user, "MMMMM d, yyyy") + ".";
+                result += "\nThe account '" + user.getName() + "' was made on " + JDAUtils.getFormattedUserTimeCreated(user, "MMMMM d, yyyy") + ".";
             }
         } else {
-            userID = Utilities.findUserId(event.getGuild(), message);
+            userID = JDAUtils.findUserId(event.getGuild(), message);
 
             if (userID != null) {
                 result = "The account '" + event.getJDA().getUserById(userID).getName()
-                        + "' was made on " + Utilities.getFormattedUserTimeCreated(event.getJDA().getUserById(userID), "MMMMM d, yyyy") + ".";
+                        + "' was made on " + JDAUtils.getFormattedUserTimeCreated(event.getJDA().getUserById(userID), "MMMMM d, yyyy") + ".";
             } else {
                 result = "Use proper syntax please.\n"
                         + bot.getPrefix() + "bd @Username\n"
@@ -87,7 +87,7 @@ public class BirthDateCommand extends BulletBotCommandBase {
             }
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
     
     @Override

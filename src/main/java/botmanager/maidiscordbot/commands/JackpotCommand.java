@@ -1,7 +1,9 @@
 package botmanager.maidiscordbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
+import botmanager.IOUtils;
+import botmanager.Utils;
 import java.io.File;
 import java.util.Random;
 import net.dv8tion.jda.api.entities.Guild;
@@ -64,9 +66,9 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
         userJackpot = bot.getUserJackpot(event.getMember());
         
         try {
-            String info = Utilities.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/jackpot.csv"));
-            jackpotCap = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
-            jackpotBalance = Integer.parseInt(Utilities.getCSVValueAtIndex(info, 1));
+            String info = IOUtils.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/jackpot.csv"));
+            jackpotCap = Integer.parseInt(Utils.getCSVValueAtIndex(info, 0));
+            jackpotBalance = Integer.parseInt(Utils.getCSVValueAtIndex(info, 1));
         } catch (NumberFormatException e) {
             jackpotCap = generateJackpotCap();
             jackpotBalance = 0;
@@ -82,26 +84,26 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
                 result += "\n" + getNameOutput(event.getGuild());
             }
             
-            Utilities.sendGuildMessage(event.getChannel(), result);
+            JDAUtils.sendGuildMessage(event.getChannel(), result);
             return;
         }
         
         try {
             bet = Integer.parseInt(message);
         } catch (NumberFormatException e) {
-            Utilities.sendGuildMessage(event.getChannel(), "'" + message + "' is not a valid number.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "'" + message + "' is not a valid number.");
             return;
         }
         
         if (balance < bet) {
-            Utilities.sendGuildMessage(event.getChannel(), "You only have $" + balance + ", ntnt.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "You only have $" + balance + ", ntnt.");
             return;
         } else if (bet <= 0) {
-            Utilities.sendGuildMessage(event.getChannel(), bet + " is too small of a number.");
+            JDAUtils.sendGuildMessage(event.getChannel(), bet + " is too small of a number.");
             return;
         } else if (calculatingWinner) {
             result += "The winner for the jackpot is currently being determined, try again in a moment.";
-            Utilities.sendGuildMessage(event.getChannel(), result);
+            JDAUtils.sendGuildMessage(event.getChannel(), result);
             return;
         } else if (bet > jackpotCap - jackpotBalance) {
             result += "Your bet would have overfilled the pot, bringing the bet down from $" + bet + " to $" + (jackpotCap - jackpotBalance) + ".\n";
@@ -110,7 +112,7 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
         
         if (userJackpot >= jackpotCap / 2) {
             result += "Your bet already fills half of the pot! You cannot add any more.";
-            Utilities.sendGuildMessage(event.getChannel(), result);
+            JDAUtils.sendGuildMessage(event.getChannel(), result);
             return;
         } else if (bet + userJackpot > jackpotCap / 2) {
             result += "Your bet would have made more than half the pot yours, "
@@ -134,7 +136,7 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
             calculatingWinner = false;
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
         bot.updateJackpot(event.getGuild(), jackpotCap, jackpotBalance);
     }
 

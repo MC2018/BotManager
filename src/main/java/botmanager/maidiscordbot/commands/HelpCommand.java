@@ -1,7 +1,7 @@
 package botmanager.maidiscordbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import botmanager.generic.ICommand;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -52,7 +52,7 @@ public class HelpCommand extends MaiDiscordBotCommandBase {
             return;
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
 
     @Override

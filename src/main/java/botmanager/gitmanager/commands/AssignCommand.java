@@ -1,6 +1,6 @@
 package botmanager.gitmanager.commands;
 
-import botmanager.Utilities;
+import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.tasks.Task;
@@ -47,14 +47,14 @@ public class AssignCommand extends GitManagerCommandBase {
             return;
         }
         
-        if (!Utilities.getEmojiAlias(event.getReactionEmote().getEmoji()).equals("red_circle")) {
+        if (!Utils.getEmojiAlias(event.getReactionEmote().getEmoji()).equals("red_circle")) {
             return;
         }
         
         event.getReaction().removeReaction(event.getUser()).queue();
         embeds = message.getEmbeds();
         
-        if (embeds.isEmpty() || Utilities.isNullOrEmpty(embeds.get(0).getTitle())) {
+        if (embeds.isEmpty() || Utils.isNullOrEmpty(embeds.get(0).getTitle())) {
             return;
         }
         

@@ -1,11 +1,10 @@
 package botmanager.speedrunbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import botmanager.generic.ICommand;
 import botmanager.speedrunbot.SpeedrunBot;
-import java.awt.Color;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -54,7 +53,7 @@ public class HelpCommand extends SpeedrunBotCommandBase {
         }
         
         eb.setColor(SpeedrunBot.getEmbedColor());
-        Utilities.sendGuildMessage(event.getChannel(), eb.build());
+        JDAUtils.sendGuildMessage(event.getChannel(), eb.build());
     }
 
     @Override

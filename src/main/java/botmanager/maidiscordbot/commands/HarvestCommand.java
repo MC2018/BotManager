@@ -1,6 +1,6 @@
 package botmanager.maidiscordbot.commands;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import net.dv8tion.jda.api.entities.Guild;
@@ -54,7 +54,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
         }
 
         if (bot.isHarvesting(event.getGuild())) {
-            Utilities.sendGuildMessage(event.getChannel(), "Someone else beat you to it!");
+            JDAUtils.sendGuildMessage(event.getChannel(), "Someone else beat you to it!");
             return;
         }
 
@@ -65,7 +65,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
             result = "$" + totalPlantAmount + " is planted right now.\n";
             result += "\n" + getNameOutput(event.getGuild());
 
-            Utilities.sendGuildMessage(event.getChannel(), result);
+            JDAUtils.sendGuildMessage(event.getChannel(), result);
 
             return;
         } else if (totalPlantAmount == 0) {
@@ -82,7 +82,7 @@ public class HarvestCommand extends MaiDiscordBotCommandBase {
             }
         }
 
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
 
         bot.resetPlanters(event.getGuild());
         bot.updatePlant(event.getGuild(), 0);

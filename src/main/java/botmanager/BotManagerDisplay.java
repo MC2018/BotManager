@@ -1,6 +1,5 @@
 package botmanager;
 
-import static botmanager.Utilities.readLines;
 import botmanager.generic.BotBase;
 import botmanager.boteyy_.Boteyy_;
 import botmanager.maidiscordbot.MaiDiscordBot;
@@ -18,7 +17,7 @@ public class BotManagerDisplay extends javax.swing.JFrame {
     
     public BotManagerDisplay() {
         initComponents();
-        List<String> tokens = readLines(new File("data/botmanager_tokens.txt"));
+        List<String> tokens = IOUtils.readLines(new File("data/botmanager_tokens.txt"));
         
         bots = new BotBase[] {
             new MaiDiscordBot(tokens.get(0), "MaiDiscordBot"),

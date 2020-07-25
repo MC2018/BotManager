@@ -1,7 +1,7 @@
 package botmanager.maidiscordbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
@@ -61,24 +61,24 @@ public class GambleCommand extends MaiDiscordBotCommandBase {
         if (!found) {
             return;
         } else if (message.equals("")) {
-            Utilities.sendGuildMessage(event.getChannel(), info());
+            JDAUtils.sendGuildMessage(event.getChannel(), info());
         }
         
         try {
             bet = Integer.parseInt(message);
         } catch (NumberFormatException e) {
-            Utilities.sendGuildMessage(event.getChannel(), "'" + message + "' is not a valid number.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "'" + message + "' is not a valid number.");
             return;
         }
         
         if (balance < bet) {
-            Utilities.sendGuildMessage(event.getChannel(), "You only have $" + balance + ", ntnt.");
+            JDAUtils.sendGuildMessage(event.getChannel(), "You only have $" + balance + ", ntnt.");
             return;
         } else if (bet <= 0) {
-            Utilities.sendGuildMessage(event.getChannel(), bet + " is too small of a number.");
+            JDAUtils.sendGuildMessage(event.getChannel(), bet + " is too small of a number.");
             return;
         } else if (bet >= 1000000) {
-            Utilities.sendGuildMessage(event.getChannel(), bet + " is too large of a number (> 1000000).");
+            JDAUtils.sendGuildMessage(event.getChannel(), bet + " is too large of a number (> 1000000).");
             return;
         }
         
@@ -134,7 +134,7 @@ public class GambleCommand extends MaiDiscordBotCommandBase {
             bot.addUserBalance(event.getMember(), reward);
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
 
     @Override

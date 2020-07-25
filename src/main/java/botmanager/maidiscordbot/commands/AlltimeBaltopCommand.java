@@ -1,7 +1,7 @@
 package botmanager.maidiscordbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
 import java.io.File;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -100,7 +100,7 @@ public class AlltimeBaltopCommand extends MaiDiscordBotCommandBase {
             result += getNumericalSuffix(i) + ": " + baltopNames[i] + " with $" + baltop[i] + "\n";
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
 
     @Override

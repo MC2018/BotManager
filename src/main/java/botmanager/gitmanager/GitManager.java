@@ -1,6 +1,7 @@
 package botmanager.gitmanager;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
+import botmanager.IOUtils;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
@@ -74,17 +75,17 @@ public class GitManager extends BotBase {
         File file = new File("data/" + getName() + "/guilds/" + event.getGuild().getId() + "/task_channels.txt");
         
         if (!file.exists()) {
-            Utilities.write(file, "to-do\nin-progress\nin-pr\ncompleted");
+            IOUtils.write(file, "to-do\nin-progress\nin-pr\ncompleted");
         }
     }
     
     private List<String> getTaskChannelIDs(long guildID) {
         File file = new File("data/" + getName() + "/guilds/" + guildID + "/task_channels.txt");
-        List<String> data = Utilities.readLines(file);
+        List<String> data = IOUtils.readLines(file);
         
         if (data == null) {
-            Utilities.write(file, "to-do\nin-progress\nin-pr\ncompleted");
-            data = Utilities.readLines(file);
+            IOUtils.write(file, "to-do\nin-progress\nin-pr\ncompleted");
+            data = IOUtils.readLines(file);
         }
         
         return data;
@@ -125,7 +126,7 @@ public class GitManager extends BotBase {
         
         for (String reaction : reactions) {
             if (reaction != null) {
-                Utilities.addReaction(message, reaction);
+                JDAUtils.addReaction(message, reaction);
             }
         }
     }
@@ -134,14 +135,14 @@ public class GitManager extends BotBase {
         File file = new File("data/" + getName() + "/guilds/" + guildID + "/tasks/" + taskID + ".json");
         Gson gson = new Gson();
         
-        return gson.fromJson(Utilities.read(file), Task.class);
+        return gson.fromJson(IOUtils.read(file), Task.class);
     }
     
     public void writeTask(Task task) {
         File file = new File("data/" + getName() + "/guilds/" + task.getGuildID() + "/tasks/" + task.getID() + ".json");
         Gson gson = new Gson();
         
-        Utilities.write(file, gson.toJson(task, Task.class));
+        IOUtils.write(file, gson.toJson(task, Task.class));
     }
     
 }

@@ -1,6 +1,7 @@
 package botmanager.maidiscordbot;
 
-import botmanager.Utilities;
+import botmanager.IOUtils;
+import botmanager.Utils;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
@@ -111,12 +112,12 @@ public class MaiDiscordBot extends BotBase {
             return "";
         }
 
-        return Utilities.getCSVValueAtIndex(Utilities.read(file), index);
+        return Utils.getCSVValueAtIndex(IOUtils.read(file), index);
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
         File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
-        String data = Utilities.read(file);
+        String data = IOUtils.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
 
@@ -132,7 +133,7 @@ public class MaiDiscordBot extends BotBase {
         }
         
         newValues[index] = newValue;
-        Utilities.write(file, Utilities.buildCSV(newValues));
+        IOUtils.write(file, Utils.buildCSV(newValues));
     }
 
     public int getUserBalance(Guild guild, User user) {
@@ -185,7 +186,7 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void updateJackpot(Guild guild, int jackpotCap, int jackpotBalance) {
-        Utilities.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
+        IOUtils.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/jackpot.csv"), jackpotCap + "," + jackpotBalance);
     }
 
     public File[] getGuildFolders() {
@@ -240,7 +241,7 @@ public class MaiDiscordBot extends BotBase {
             Guild guild = getJDA().getGuildById(Long.parseLong(guildId));
             
             for (File userFile : userFiles) {
-                String userId = Utilities.getTrueFileName(userFile);
+                String userId = IOUtils.getTrueFileName(userFile);
 
                 try {
                     Long.parseLong(userId);
@@ -276,13 +277,13 @@ public class MaiDiscordBot extends BotBase {
     }
 
     public void updatePlant(Guild guild, int plantBalance) {
-        Utilities.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/plant.csv"), String.valueOf(plantBalance));
+        IOUtils.write(new File("data/" + getName() + "/guilds/" + guild.getId() + "/plant.csv"), String.valueOf(plantBalance));
     }
 
     public int getTotalPlant(Guild guild) {
         try {
-            String info = Utilities.read(new File("data/" + getName() + "/guilds/" + guild.getId() + "/plant.csv"));
-            return Integer.parseInt(Utilities.getCSVValueAtIndex(info, 0));
+            String info = IOUtils.read(new File("data/" + getName() + "/guilds/" + guild.getId() + "/plant.csv"));
+            return Integer.parseInt(Utils.getCSVValueAtIndex(info, 0));
         } catch (NumberFormatException e) {
             updatePlant(guild, 0);
             return 0;

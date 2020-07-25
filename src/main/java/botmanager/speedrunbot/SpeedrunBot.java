@@ -6,7 +6,8 @@ import botmanager.speedrunbot.commands.RunCommand;
 import botmanager.speedrunbot.commands.WorldRecordCommand;
 import botmanager.speedrunbot.commands.HelpCommand;
 import botmanager.generic.BotBase;
-import botmanager.Utilities;
+import botmanager.IOUtils;
+import botmanager.Utils;
 import com.tsunderebug.speedrun4j.game.Category;
 import com.tsunderebug.speedrun4j.game.Game;
 import com.tsunderebug.speedrun4j.game.Leaderboard;
@@ -67,7 +68,7 @@ public final class SpeedrunBot extends BotBase {
             new PMForwarderCommand(this)
         });
         
-        buildHashMap(Utilities.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
+        buildHashMap(IOUtils.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
         
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
@@ -199,7 +200,7 @@ public final class SpeedrunBot extends BotBase {
         }
 
         for (HashMap.Entry<String, String> set : gameSynonyms.entrySet()) {
-            double similarity = Utilities.similarity(game, set.getKey());
+            double similarity = Utils.similarity(game, set.getKey());
 
             if (similarity > bestSimilarity) {
                 result = set.getValue().split(separator)[1];
@@ -223,7 +224,7 @@ public final class SpeedrunBot extends BotBase {
         }
 
         for (HashMap.Entry<String, String> set : gameSynonyms.entrySet()) {
-            double similarity = Utilities.similarity(game, set.getKey());
+            double similarity = Utils.similarity(game, set.getKey());
 
             if (similarity > bestSimilarity) {
                 bestSimilarity = similarity;
@@ -252,7 +253,7 @@ public final class SpeedrunBot extends BotBase {
         game = simplify(game);
 
         for (HashMap.Entry<String, String> set : gameSynonyms.entrySet()) {
-            double similarity = Utilities.similarity(game, set.getKey());
+            double similarity = Utils.similarity(game, set.getKey());
 
             for (int i = bestSimilarity.size() - 2; i >= 0; i--) {
                 if (similarity > bestSimilarity.get(i)) {
@@ -444,7 +445,7 @@ public final class SpeedrunBot extends BotBase {
             Category[] categories = game.getCategories().getCategories();
             
             for (Category category : categories) {
-                double similarity = Utilities.similarity(simplify(name), simplify(category.getName()));
+                double similarity = Utils.similarity(simplify(name), simplify(category.getName()));
 
                 if (similarity > bestSimilarity) {
                     result = category;

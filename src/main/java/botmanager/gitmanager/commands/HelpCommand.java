@@ -1,6 +1,6 @@
 package botmanager.gitmanager.commands;
 
-import botmanager.Utilities;
+import botmanager.JDAUtils;
 import botmanager.generic.ICommand;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
@@ -50,7 +50,7 @@ public class HelpCommand extends GitManagerCommandBase {
             return;
         }
         
-        Utilities.sendPrivateMessage(event.getAuthor(), eb.build());
+        JDAUtils.sendPrivateMessage(event.getAuthor(), eb.build());
     }
 
     @Override

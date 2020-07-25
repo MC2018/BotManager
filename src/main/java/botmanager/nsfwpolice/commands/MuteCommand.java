@@ -1,8 +1,8 @@
 package botmanager.nsfwpolice.commands;
 
+import botmanager.JDAUtils;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.nsfwpolice.generic.NSFWPoliceCommandBase;
-import botmanager.Utilities;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -27,7 +27,7 @@ public class MuteCommand extends NSFWPoliceCommandBase {
 
         event = (GuildMessageReceivedEvent) genericEvent;
         
-        if (Utilities.hasRole(event.getMember(), "Muted")) {
+        if (JDAUtils.hasRole(event.getMember(), "Muted")) {
             event.getMessage().delete().queue();
         }
     }

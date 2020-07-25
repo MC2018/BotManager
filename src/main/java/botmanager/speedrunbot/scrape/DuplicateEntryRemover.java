@@ -1,6 +1,6 @@
 package botmanager.speedrunbot.scrape;
 
-import static botmanager.Utilities.verifyFilePathExists;
+import botmanager.IOUtils;
 import botmanager.speedrunbot.webdriver.SingleWebDriver;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -110,7 +110,7 @@ public class DuplicateEntryRemover {
     }
     
     public static void write(File file, String info) {
-        verifyFilePathExists(file);
+        IOUtils.verifyFilePathExists(file);
         
         try {
             FileWriter fw = new FileWriter(file, false);

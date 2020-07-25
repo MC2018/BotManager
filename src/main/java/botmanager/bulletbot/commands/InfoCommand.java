@@ -1,8 +1,8 @@
 package botmanager.bulletbot.commands;
 
+import botmanager.JDAUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.bulletbot.generic.BulletBotCommandBase;
-import botmanager.Utilities;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Member;
@@ -41,7 +41,7 @@ public class InfoCommand extends BulletBotCommandBase {
         
         event = (GuildMessageReceivedEvent) genericEvent;
         
-        if (!Utilities.hasRole(event.getMember(), "Mod")) {
+        if (!JDAUtils.hasRole(event.getMember(), "Mod")) {
             return;
         }
         
@@ -68,18 +68,18 @@ public class InfoCommand extends BulletBotCommandBase {
         if (!mentionedMembers.isEmpty()) {
             for (Member member : mentionedMembers) {
                 result += "\nThe account '" + member.getUser().getName() + "' was made on "
-                        + Utilities.getFormattedUserTimeCreated(member.getUser(), "MMMMM d, yyyy") + ".";
+                        + JDAUtils.getFormattedUserTimeCreated(member.getUser(), "MMMMM d, yyyy") + ".";
                 result += "\nThe account '" + member.getUser().getName() + "' joined on "
-                        + Utilities.getFormattedUserTimeJoined(member, "MMMMM d, yyyy") + ".";
+                        + JDAUtils.getFormattedUserTimeJoined(member, "MMMMM d, yyyy") + ".";
             }
         } else {
-            userID = Utilities.findUserId(event.getGuild(), message);
+            userID = JDAUtils.findUserId(event.getGuild(), message);
 
             if (userID != null) {
                 result += "\nThe account '" + event.getJDA().getUserById(userID).getName()
-                        + "' was made on " + Utilities.getFormattedUserTimeCreated(event.getJDA().getUserById(userID), "MMMMM d, yyyy") + ".";
+                        + "' was made on " + JDAUtils.getFormattedUserTimeCreated(event.getJDA().getUserById(userID), "MMMMM d, yyyy") + ".";
                 result += "\nThe account '" + event.getJDA().getUserById(userID).getName()
-                        + "' joined on " + Utilities.getFormattedUserTimeJoined(event.getGuild().getMemberById(userID), "MMMMM d, yyyy") + ".";
+                        + "' joined on " + JDAUtils.getFormattedUserTimeJoined(event.getGuild().getMemberById(userID), "MMMMM d, yyyy") + ".";
             } else {
                 result += "Use proper syntax please.\n"
                         + bot.getPrefix() + "info @Username\n"
@@ -88,7 +88,7 @@ public class InfoCommand extends BulletBotCommandBase {
             }
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
     
     @Override

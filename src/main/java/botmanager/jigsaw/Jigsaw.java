@@ -1,8 +1,9 @@
 package botmanager.jigsaw;
 
+import botmanager.JDAUtils;
 import botmanager.jigsaw.commands.WordTrackerCommand;
-import botmanager.jigsaw.generic.JigsawCommandBase;
-import botmanager.Utilities;
+import botmanager.IOUtils;
+import botmanager.Utils;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMRepeaterCommand;
@@ -42,7 +43,7 @@ public class Jigsaw extends BotBase {
             new PMRepeaterCommand(this)
         });
         
-        System.out.println(Utilities.getTrueFileName(new File("data/bbbots_tokens.txt")));
+        System.out.println(IOUtils.getTrueFileName(new File("data/bbbots_tokens.txt")));
     }
     
     @Override
@@ -59,12 +60,12 @@ public class Jigsaw extends BotBase {
             return "";
         }
 
-        return Utilities.getCSVValueAtIndex(Utilities.read(file), index);
+        return Utils.getCSVValueAtIndex(IOUtils.read(file), index);
     }
 
     public void setUserCSVAtIndex(Guild guild, User user, int index, String newValue) {
         File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/members/" + user.getId() + ".csv");
-        String data = Utilities.read(file);
+        String data = IOUtils.read(file);
         String[] originalValues = data.split(",");
         String[] newValues;
 
@@ -80,7 +81,7 @@ public class Jigsaw extends BotBase {
         }
         
         newValues[index] = newValue;
-        Utilities.write(file, Utilities.buildCSV(newValues));
+        IOUtils.write(file, Utils.buildCSV(newValues));
     }
     
     public int getUserDirtyWords(Guild guild, User user) {
@@ -106,7 +107,7 @@ public class Jigsaw extends BotBase {
     }
     
     public void generateDirtyWords() {
-        dirtyWords = Utilities.readLines(new File("data/" + getName() + "/dirty_words.txt"));
+        dirtyWords = IOUtils.readLines(new File("data/" + getName() + "/dirty_words.txt"));
         
         if (dirtyWords != null) {
             dirtyWords.forEach(x -> x = x.toLowerCase());
@@ -163,11 +164,11 @@ public class Jigsaw extends BotBase {
     public List<UserData> getAllUserDirtyWords(File guildFolder) {
         File[] guildFiles = guildFolder.listFiles();
         List<UserData> result = new ArrayList();
-        Guild guild = getJDA().getGuildById(Utilities.getTrueFileName(guildFolder));
+        Guild guild = getJDA().getGuildById(IOUtils.getTrueFileName(guildFolder));
         
         for (File potentialUserFile : guildFiles) {
             try {
-                String potentialID = Utilities.getTrueFileName(potentialUserFile);
+                String potentialID = IOUtils.getTrueFileName(potentialUserFile);
                 User user;
                 
                 Integer.parseInt(potentialID);
@@ -185,17 +186,17 @@ public class Jigsaw extends BotBase {
         
         for (File guildFolder : guildFolders) {
             Guild guild = getJDA().getGuildById(guildFolder.getName());
-            String userID = Utilities.read(new File(guildFolder.getAbsolutePath() + "/temp_banned.txt"));
+            String userID = IOUtils.read(new File(guildFolder.getAbsolutePath() + "/temp_banned.txt"));
             
             if (!userID.isEmpty()) {
                 User user = getJDA().getUserById(userID);
-                TextChannel channel = (TextChannel) Utilities.findChannelByName(guild, "action-logs");
+                TextChannel channel = (TextChannel) JDAUtils.findChannelByName(guild, "action-logs");
                 
                 guild.unban(user).complete();
-                Utilities.sendPrivateMessage(user, "You are now unbanned from the " + guild.getName() + " server.");
+                JDAUtils.sendPrivateMessage(user, "You are now unbanned from the " + guild.getName() + " server.");
                 
                 if (channel != null) {
-                    Utilities.sendGuildMessage(channel, "Unbanned user " + user.getName() + "#" + user.getDiscriminator() + ", ID " + user.getId());
+                    JDAUtils.sendGuildMessage(channel, "Unbanned user " + user.getName() + "#" + user.getDiscriminator() + ", ID " + user.getId());
                 }
             }
         }
@@ -205,18 +206,18 @@ public class Jigsaw extends BotBase {
         File[] guildFolders = getGuildFolders();
         
         for (File guildFolder : guildFolders) {
-            String userID = Utilities.read(new File(guildFolder.getAbsolutePath() + "/temp_banned.txt"));
+            String userID = IOUtils.read(new File(guildFolder.getAbsolutePath() + "/temp_banned.txt"));
             
             if (!userID.isEmpty()) {
-                Guild guild = getJDA().getGuildById(Utilities.getTrueFileName(guildFolder));
+                Guild guild = getJDA().getGuildById(IOUtils.getTrueFileName(guildFolder));
                 User user = getJDA().getUserById(userID);
-                TextChannel channel = (TextChannel) Utilities.findChannelByName(guild, "action-logs");
+                TextChannel channel = (TextChannel) JDAUtils.findChannelByName(guild, "action-logs");
                 
                 guild.unban(user).complete();
-                Utilities.sendPrivateMessage(user, "You are now unbanned from the " + guild.getName() + " server.");
+                JDAUtils.sendPrivateMessage(user, "You are now unbanned from the " + guild.getName() + " server.");
                 
                 if (channel != null) {
-                    Utilities.sendGuildMessage(channel, "Unbanned user " + user.getName() + "#" + user.getDiscriminator() + ", ID " + user.getId());
+                    JDAUtils.sendGuildMessage(channel, "Unbanned user " + user.getName() + "#" + user.getDiscriminator() + ", ID " + user.getId());
                 }
             }
         }
