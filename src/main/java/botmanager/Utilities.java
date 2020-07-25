@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
+import com.vdurmont.emoji.EmojiParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Emote;
@@ -277,9 +277,17 @@ public class Utilities {
         return sdf.format(date);
     }
 
+    public static String getEmojiAlias(String unicode) {
+        try {
+            return EmojiParser.parseToAliases(unicode).replaceAll(":", "");
+        } catch (Exception e) {
+            return "";
+        }
+    }
+    
     public static Emoji getEmoji(String potentialAlias) {
         Emoji emoji = EmojiManager.getForAlias(potentialAlias);
-
+        
         if (emoji == null) {
         ArrayList<Emoji> emojis = new ArrayList(EmojiManager.getAll());
         double similarity = 0;

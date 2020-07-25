@@ -50,11 +50,16 @@ public class HelpCommand extends GitManagerCommandBase {
             return;
         }
         
-        Utilities.sendGuildMessage(event.getChannel(), eb.build());
+        Utilities.sendPrivateMessage(event.getAuthor(), eb.build());
     }
 
     @Override
     public Field info() {
+        return null;
+    }
+
+    @Override
+    public MessageEmbed getFailureEmbed() {
         return null;
     }
     

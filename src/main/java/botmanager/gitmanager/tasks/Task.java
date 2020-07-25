@@ -1,8 +1,11 @@
 package botmanager.gitmanager.tasks;
 
 import botmanager.generic.BotBase;
+import botmanager.gitmanager.GitManager;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -13,19 +16,19 @@ import net.dv8tion.jda.api.entities.User;
  */
 public class Task {
 
-    private String name;
+    private String title;
     private String description;
     private long assignee;
     private long guildID;
     private long channelID;
     private long messageID;
-    private long epochSecond;
+    private long epochMilli;
     private int status;
     private int id;
     private ArrayList<UpdateLog> updateLogs;
     
-    public Task(String name, String description, long assignee, long guildID, long channelID, long messageID, int status, int id) {
-        this.name = name;
+    public Task(String title, String description, long assignee, long guildID, long channelID, long messageID, int status, int id) {
+        this.title = title;
         this.description = description;
         this.assignee = assignee;
         this.guildID = guildID;
@@ -33,17 +36,17 @@ public class Task {
         this.messageID = messageID;
         this.status = status;
         this.id = id;
-        epochSecond = Instant.now().getEpochSecond();
+        this.epochMilli = Instant.now().toEpochMilli();
         updateLogs = new ArrayList();
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name, long userID) {
-        updateLogs.add(new UpdateLog("Updated name", this.name, name, userID));
-        this.name = name;
+    public void setTitle(String name, long userID) {
+        updateLogs.add(new UpdateLog("Updated name", this.title, title, userID));
+        this.title = title;
     }
 
     public String getDescription() {
@@ -88,39 +91,45 @@ public class Task {
         this.messageID = messageID;
     }
 
-    public long getEpochSecond() {
-        return epochSecond;
+    public long getEpochMilli() {
+        return epochMilli;
     }
     
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status, long userID) {
+    public void updateStatus(int status, long channelID, long messageID, long userID) {
         updateLogs.add(new UpdateLog("Updated status", String.valueOf(this.status), String.valueOf(status), userID));
+        updateLogs.add(new UpdateLog("Updated channelID", String.valueOf(this.channelID), String.valueOf(channelID), userID));
+        updateLogs.add(new UpdateLog("Updated messageID", String.valueOf(this.messageID), String.valueOf(messageID), userID));
         this.status = status;
+        this.channelID = channelID;
+        this.messageID = messageID;
     }
-
+    
     public int getID() {
         return id;
     }
     
-    public static MessageEmbed generateMessageEmbed(Task task, BotBase bot) {
+    public static MessageEmbed generateTaskEmbed(Task task, GitManager bot) {
         EmbedBuilder eb = new EmbedBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+        boolean assigneeTBD = task.getAssignee() <= 0;
         
-        eb.setTitle("Task #" + task.getID() + ": " + task.getName());
+        eb.setTitle("Task #" + task.getID() + ": " + task.getTitle());
         eb.addField("Description", task.getDescription(), false);
         
-        if (task.getAssignee() > 0) {
+        if (assigneeTBD) {
+            eb.addField("Assignee", "TBD\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B Click :red_circle: to be assigned/unassigned", false);
+        } else {
             User user = bot.getJDA().getUserById(task.getAssignee());
             eb.addField("Assignee", user.getAsMention(), false);
-            eb.setImage(user.getAvatarUrl());
-        } else {
-            eb.addField("Assignee", "TBD", false);
+            eb.setThumbnail(user.getAvatarUrl());
         }
         
+        eb.appendDescription("Last Updated " + sdf.format(new Date(task.getEpochMilli())));
         eb.setTimestamp(Instant.now());
-        
         return eb.build();
     }
     
@@ -130,14 +139,14 @@ public class Task {
         private String before;
         private String after;
         private long userID;
-        private long epochSecond;
+        private long epochMilli;
         
         public UpdateLog(String changeLog, String before, String after, long userID) {
             this.changeLog = changeLog;
             this.before = before;
             this.after = after;
             this.userID = userID;
-            epochSecond = Instant.now().getEpochSecond();
+            epochMilli = Instant.now().toEpochMilli();
         }
         
     }

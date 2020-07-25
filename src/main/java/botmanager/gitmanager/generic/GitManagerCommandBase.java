@@ -2,6 +2,7 @@ package botmanager.gitmanager.generic;
 
 import botmanager.generic.ICommand;
 import botmanager.gitmanager.GitManager;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 
 /**
@@ -18,6 +19,8 @@ public abstract class GitManagerCommandBase implements ICommand {
     }
     
     public abstract Field info();
+    
+    public abstract MessageEmbed getFailureEmbed();
     
     public GitManager getBot() {
         return bot;

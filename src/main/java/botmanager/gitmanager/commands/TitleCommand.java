@@ -3,11 +3,8 @@ package botmanager.gitmanager.commands;
 import botmanager.Utilities;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
-import botmanager.gitmanager.tasks.StatusType;
 import botmanager.gitmanager.tasks.Task;
-import botmanager.gitmanager.tasks.TaskBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.Event;
@@ -17,26 +14,23 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  *
  * @author maxclausius
  */
-public class CreateCommand extends GitManagerCommandBase {
+public class TitleCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "create",
-        bot.getPrefix() + "c"
+        bot.getPrefix() + "title",
+        bot.getPrefix() + "t"
     };
     
-    public CreateCommand(GitManager bot) {
+    public TitleCommand(GitManager bot) {
         super(bot);
     }
 
     @Override
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent event;
-        EmbedBuilder eb = new EmbedBuilder();
-        TaskBuilder tb = new TaskBuilder(bot);
-        Message taskMessage;
         Task task;
         String input;
-
+        int taskNumber;
         boolean found = false;
 
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
@@ -62,34 +56,29 @@ public class CreateCommand extends GitManagerCommandBase {
             event.getMessage().delete().queue();
         }
         
-        
-        tb.setName(input);
-        tb.setGuildID(event.getGuild().getIdLong());
-        
         try {
-            task = tb.build();
+            taskNumber = Integer.parseInt(input.split(" ")[0]);
         } catch (Exception e) {
             Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
             return;
         }
         
-        eb.addField("Task Created", "Task '" + input + "' was created.", true);
-        taskMessage = Utilities.sendGuildMessageReturn(
-                bot.getTaskChannel(event.getGuild().getIdLong(), StatusType.TO_DO),
-                Task.generateTaskEmbed(task, bot)
-        );
+        if (input.split(" ").length < 2) {
+            Utilities.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+            return;
+        }
         
-        GitManager.addTaskReactions(taskMessage, StatusType.TO_DO);
-        Utilities.sendPrivateMessage(event.getAuthor(), eb.build());
-        task.setChannelID(taskMessage.getChannel().getIdLong());
-        task.setMessageID(taskMessage.getIdLong());
+        input = input.substring(input.split(" ")[0].length() + 1, input.length());
+        task = bot.readTask(event.getGuild().getIdLong(), taskNumber);
+        task.setTitle(input, event.getAuthor().getIdLong());
+        bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), Task.generateTaskEmbed(task, bot)).queue();
         bot.writeTask(task);
     }
 
     
     @Override
     public Field info() {
-        return new Field("Creating a Task", "```" + KEYWORDS[0] + " Task Title```", false);
+        return new Field("Changing a Title", "```" + KEYWORDS[0] + " 102 New Title```", false);
     }
     
     @Override
@@ -99,7 +88,7 @@ public class CreateCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + KEYWORDS[0] + " Title",
+                        + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION",
                 true);
         
         return eb.build();

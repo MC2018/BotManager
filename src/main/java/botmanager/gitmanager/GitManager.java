@@ -5,8 +5,13 @@ import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
+import botmanager.gitmanager.commands.AssignCommand;
+import botmanager.gitmanager.commands.ChannelCleanupCommand;
 import botmanager.gitmanager.commands.CreateCommand;
+import botmanager.gitmanager.commands.DescriptionCommand;
 import botmanager.gitmanager.commands.HelpCommand;
+import botmanager.gitmanager.commands.TaskMoverCommand;
+import botmanager.gitmanager.commands.TitleCommand;
 import botmanager.gitmanager.tasks.Task;
 import com.google.gson.Gson;
 import java.io.File;
@@ -16,6 +21,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 /**
@@ -32,8 +38,13 @@ public class GitManager extends BotBase {
         this.setCommands(new ICommand[] {
             new HelpCommand(this),
             new CreateCommand(this),
+            new TitleCommand(this),
+            new DescriptionCommand(this),
+            new TaskMoverCommand(this),
+            new AssignCommand(this),
             new PMForwarderCommand(this),
-            new PMRepeaterCommand(this)
+            new PMRepeaterCommand(this),
+            new ChannelCleanupCommand(this)
         });
     }
 
@@ -46,6 +57,13 @@ public class GitManager extends BotBase {
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+        for (ICommand command : getCommands()) {
+            command.run(event);
+        }
+    }
+    
+    @Override
+    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
@@ -72,6 +90,13 @@ public class GitManager extends BotBase {
         return data;
     }
     
+    public boolean isTaskChannel(TextChannel channel) {
+        File file = new File("data/" + getName() + "/guilds/" + channel.getGuild().getId() + "/task_channels.txt");
+        List<String> taskChannels = getTaskChannelIDs(channel.getGuild().getIdLong());
+        
+        return taskChannels.contains(channel.getName());
+    }
+    
     public String getPrefix() {
         return prefix;
     }
@@ -95,7 +120,7 @@ public class GitManager extends BotBase {
     }
     
     public static void addTaskReactions(Message message, int statusType) {
-        String[] reactions = {"todo", "inprogress", "inpr", "completed", "four", "upside_down", "slight_frown"};
+        String[] reactions = {"todo", "inprogress", "inpr", "completed", "red_circle"};
         reactions[statusType] = null;
         
         for (String reaction : reactions) {
