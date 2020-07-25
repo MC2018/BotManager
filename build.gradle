@@ -15,9 +15,10 @@ repositories {
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:4.1.1_104"
-    compile "org.seleniumhq.selenium:selenium-java:3.141.59"
-    compile "org.jsoup:jsoup:1.12.2"
+    compile 'net.dv8tion:JDA:4.1.1_104'
+    compile 'org.seleniumhq.selenium:selenium-java:3.141.59'
+    compile 'org.jsoup:jsoup:1.12.2'
+    compile 'com.vdurmont:emoji-java:5.1.1'
     implementation files('libs/Speedrun4J.jar')
 }
 
