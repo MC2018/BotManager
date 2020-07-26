@@ -17,7 +17,6 @@ import botmanager.gitmanager.tasks.Task;
 import com.google.gson.Gson;
 import java.io.File;
 import java.util.List;
-import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -103,21 +102,7 @@ public class GitManager extends BotBase {
     }
     
     public TextChannel getTaskChannel(long guildID, int statusType) {
-        List<String> taskChannelIDs = getTaskChannelIDs(guildID);
-        List<GuildChannel> guildChannels = getJDA().getGuildById(guildID).getChannels();
-        
-        for (GuildChannel guildChannel : guildChannels) {
-            if (guildChannel instanceof TextChannel) {
-                TextChannel textChannel = (TextChannel) guildChannel;
-                String textChannelName = textChannel.getName();
-                
-                if (textChannel.getName().equalsIgnoreCase(taskChannelIDs.get(statusType))) {
-                    return textChannel;
-                }
-            }
-        }
-        
-        return null;
+        return JDAUtils.findTextChannel(getJDA().getGuildById(guildID), getTaskChannelIDs(guildID).get(statusType));
     }
     
     public static void addTaskReactions(Message message, int statusType) {

@@ -1,6 +1,5 @@
 package botmanager.gitmanager.tasks;
 
-import botmanager.generic.BotBase;
 import botmanager.gitmanager.GitManager;
 import java.text.SimpleDateFormat;
 import java.time.Instant;

@@ -8,6 +8,7 @@ import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -47,7 +48,7 @@ public class AssignCommand extends GitManagerCommandBase {
             return;
         }
         
-        if (!Utils.getEmojiAlias(event.getReactionEmote().getEmoji()).equals("red_circle")) {
+        if (event.getReactionEmote().isEmote() || !Utils.getEmojiAlias(event.getReactionEmote().getEmoji()).equals("red_circle")) {
             return;
         }
         

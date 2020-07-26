@@ -182,4 +182,20 @@ public class JDAUtils {
         }
     }
     
+    public static TextChannel findTextChannel(Guild guild, String potentialName) {
+        List<GuildChannel> guildChannels = guild.getChannels();
+        
+        for (GuildChannel guildChannel : guildChannels) {
+            if (guildChannel instanceof TextChannel) {
+                TextChannel textChannel = (TextChannel) guildChannel;
+                
+                if (textChannel.getName().equalsIgnoreCase(potentialName)) {
+                    return textChannel;
+                }
+            }
+        }
+        
+        return null;
+    }
+    
 }

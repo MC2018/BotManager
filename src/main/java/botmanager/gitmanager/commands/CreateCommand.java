@@ -89,7 +89,7 @@ public class CreateCommand extends GitManagerCommandBase {
     
     @Override
     public Field info() {
-        return new Field("Creating a Task", "```" + KEYWORDS[0] + " Task Title```", false);
+        return new Field("Creating a Task", "```" + KEYWORDS[0] + " Title```", false);
     }
     
     @Override
