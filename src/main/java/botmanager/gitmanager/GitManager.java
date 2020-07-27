@@ -11,6 +11,7 @@ import botmanager.gitmanager.commands.ChannelCleanupCommand;
 import botmanager.gitmanager.commands.CreateCommand;
 import botmanager.gitmanager.commands.DescriptionCommand;
 import botmanager.gitmanager.commands.HelpCommand;
+import botmanager.gitmanager.commands.ServerCommand;
 import botmanager.gitmanager.commands.TaskMoverCommand;
 import botmanager.gitmanager.commands.TitleCommand;
 import botmanager.gitmanager.tasks.Task;
@@ -23,6 +24,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import org.eclipse.egit.github.core.client.GitHubClient;
 
 /**
  *
@@ -30,6 +32,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  */
 public class GitManager extends BotBase {
 
+    private GitHubClient client = new GitHubClient();
     private String prefix = ".";
     
     public GitManager(String botToken, String name) {
@@ -42,10 +45,16 @@ public class GitManager extends BotBase {
             new DescriptionCommand(this),
             new TaskMoverCommand(this),
             new AssignCommand(this),
+            new ServerCommand(this),
             new PMForwarderCommand(this),
             new PMRepeaterCommand(this),
             new ChannelCleanupCommand(this)
         });
+        
+        initializeClient();
+        
+        Task task = IOUtils.readGsonFile(new File("C:\\Users\\max\\Dropbox\\A Programming\\Spring 2020\\BotManager\\data\\Git Manager\\guilds\\308394198502080515\\tasks\\1.json"), Task.class);
+        task.getAssignee();
     }
 
     @Override
@@ -76,6 +85,12 @@ public class GitManager extends BotBase {
         if (!file.exists()) {
             IOUtils.write(file, "to-do\nin-progress\nin-pr\ncompleted");
         }
+    }
+    
+    public void initializeClient() {
+        File oauthFile = new File("data/" + this.getName() + "/oauth.txt");
+        String oauthToken = IOUtils.read(oauthFile);
+        client.setOAuth2Token(oauthToken);
     }
     
     private List<String> getTaskChannelIDs(long guildID) {
