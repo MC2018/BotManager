@@ -2,7 +2,6 @@ package botmanager;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -59,16 +58,6 @@ public class IOUtils {
         }
     }
 
-    public static <T>T readGson(File file, Class<T> objClass) {
-        Gson gson = new Gson();
-        return gson.fromJson(read(file), objClass);
-    }
-    
-    public static <T>void writeGson(File file, T obj) {
-        Gson gson = new Gson();
-        write(file, gson.toJson(obj));
-    }
-    
     public static void verifyFilePathExists(File file) {
         File directory;
         String path = file.getAbsolutePath().replaceAll("\\\\", "/");
