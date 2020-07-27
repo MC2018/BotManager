@@ -120,15 +120,15 @@ public class Task {
         eb.addField("Description", task.getDescription(), false);
         
         if (assigneeTBD) {
-            eb.addField("Assignee", "TBD\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B Click :red_circle: to be assigned/unassigned", false);
+            eb.addField("Assignee", "TBD \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B Click :red_circle: to be assigned/unassigned", false);
         } else {
             User user = bot.getJDA().getUserById(task.getAssignee());
             eb.addField("Assignee", user.getAsMention(), false);
             eb.setThumbnail(user.getAvatarUrl());
         }
         
-        eb.appendDescription("Last Updated " + sdf.format(new Date(task.getEpochMilli())));
-        eb.setTimestamp(Instant.now());
+        eb.appendDescription("Date Created " + sdf.format(new Date(task.getEpochMilli()))
+                + "\nLast Updated " + sdf.format(new Date(Instant.now().toEpochMilli())));
         return eb.build();
     }
     
