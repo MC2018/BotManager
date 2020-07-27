@@ -50,11 +50,6 @@ public class GitManager extends BotBase {
             new PMRepeaterCommand(this),
             new ChannelCleanupCommand(this)
         });
-        
-        initializeClient();
-        
-        Task task = IOUtils.readGsonFile(new File("C:\\Users\\max\\Dropbox\\A Programming\\Spring 2020\\BotManager\\data\\Git Manager\\guilds\\308394198502080515\\tasks\\1.json"), Task.class);
-        task.getAssignee();
     }
 
     @Override
