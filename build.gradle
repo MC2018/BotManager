@@ -19,11 +19,12 @@ dependencies {
     compile 'org.seleniumhq.selenium:selenium-java:3.141.59'
     compile 'org.jsoup:jsoup:1.12.2'
     compile 'com.vdurmont:emoji-java:5.1.1'
+    compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
     implementation files('libs/Speedrun4J.jar')
 }
 
 task(debug, dependsOn: 'classes', type: JavaExec) {
-    main = 'botmanager.BotManagerDisplay'
+    main = 'botmanager.GitManagerDisplay'
     classpath = sourceSets.main.runtimeClasspath
     args 'server'
     debug true
