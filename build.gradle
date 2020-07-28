@@ -20,6 +20,7 @@ dependencies {
     compile 'org.jsoup:jsoup:1.12.2'
     compile 'com.vdurmont:emoji-java:5.1.1'
     compile 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
+    compile 'com.google.code.gson:gson:2.8.6'
     implementation files('libs/Speedrun4J.jar')
 }
 
