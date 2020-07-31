@@ -38,17 +38,13 @@ Thumbs.db
 # Collaborative #
 #################
 .idea
-src/main/java/botmanager/addict
 
 # Files I specifically don't want in #
 ######################################
 SpeedrunGamesListScraper.java
 BotManager.jar
-build/libs/BotManager.jar
 *.bin
 *.lock
-build/libs/BotManager.jar
-.nb-gradle/private/cache/BotManager-d41d8cd98f00b204e9800998ecf8427e
 build/
 data/
 .gradle
