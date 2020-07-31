@@ -3,6 +3,7 @@ package botmanager;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,7 +17,7 @@ import java.util.List;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 public class IOUtils {
-
+    
     public static String read(File file) {
         StringBuilder result = new StringBuilder("");
 
@@ -66,6 +67,18 @@ public class IOUtils {
     
     public static <T>void writeGson(File file, T obj) {
         Gson gson = new Gson();
+        write(file, gson.toJson(obj));
+    }
+    
+    public static <T>void writeGson(File file, T obj, boolean prettyPrinting) {
+        Gson gson;
+        
+        if (prettyPrinting) {
+            gson = new GsonBuilder().setPrettyPrinting().create();
+        } else {
+            gson = new Gson();
+        }
+        
         write(file, gson.toJson(obj));
     }
     
