@@ -4,7 +4,9 @@ import botmanager.JDAUtils;
 import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
-import botmanager.gitmanager.tasks.Task;
+import botmanager.gitmanager.objects.GuildSettings;
+import botmanager.gitmanager.objects.Task;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
@@ -30,10 +32,11 @@ public class TaskMoverCommand extends GitManagerCommandBase {
         Message originalMessage;
         Message newMessage;
         List<MessageEmbed> embeds;
+        GuildSettings gs;
+        ArrayList<String> taskReactionNames;
         Task task;
-        String[] reactions = {"todo", "inprogress", "inpr", "completed", "red_circle"};
         String title;
-        int newStatus;
+        int newStatus = -1;
         int beginningIndex = -1;
         int taskID = -1;
         
@@ -52,9 +55,21 @@ public class TaskMoverCommand extends GitManagerCommandBase {
             return;
         }
         
-        if (Arrays.asList(reactions).contains(event.getReactionEmote().getName())) {
-            newStatus = Arrays.asList(reactions).indexOf(event.getReactionEmote().getName());
-        } else {
+        gs = bot.readGuildSettings(event.getGuild().getIdLong());
+        taskReactionNames = gs.getTaskReactionNames();
+        
+        if (event.getReactionEmote().isEmote() && taskReactionNames.contains(event.getReactionEmote().getName())) {
+            newStatus = taskReactionNames.indexOf(event.getReactionEmote().getName());
+        } else if (event.getReactionEmote().isEmoji()) {
+            for (String taskReactionName : taskReactionNames) {
+                if (Utils.getEmoji(taskReactionName).getUnicode().equals(event.getReactionEmote().getName())) {
+                    newStatus = taskReactionNames.indexOf(taskReactionName);
+                    break;
+                }
+            }
+        }
+        
+        if (newStatus == -1) {
             return;
         }
         
@@ -84,8 +99,8 @@ public class TaskMoverCommand extends GitManagerCommandBase {
         }
         
         task = bot.readTask(event.getGuild().getIdLong(), taskID);
-        newMessage = JDAUtils.sendGuildMessageReturn(bot.getTaskChannel(event.getGuild().getIdLong(), newStatus), Task.generateTaskEmbed(task, bot));
-        GitManager.addTaskReactions(newMessage, newStatus);
+        newMessage = JDAUtils.sendGuildMessageReturn(bot.getTaskChannel(event.getGuild().getIdLong(), newStatus), bot.generateTaskEmbed(task));
+        GitManager.addTaskReactions(newMessage, gs, newStatus);
         originalMessage.delete().queue();
         task.updateStatus(newStatus, newMessage.getChannel().getIdLong(), newMessage.getIdLong(), event.getUserIdLong());
         bot.writeTask(task);

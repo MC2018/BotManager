@@ -1,13 +1,7 @@
-package botmanager.gitmanager.tasks;
+package botmanager.gitmanager.objects;
 
-import botmanager.gitmanager.GitManager;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 
 /**
  *
@@ -109,27 +103,6 @@ public class Task {
     
     public int getID() {
         return id;
-    }
-    
-    public static MessageEmbed generateTaskEmbed(Task task, GitManager bot) {
-        EmbedBuilder eb = new EmbedBuilder();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        boolean assigneeTBD = task.getAssignee() <= 0;
-        
-        eb.setTitle("Task #" + task.getID() + ": " + task.getTitle());
-        eb.addField("Description", task.getDescription(), false);
-        
-        if (assigneeTBD) {
-            eb.addField("Assignee", "TBD \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B Click :red_circle: to be assigned/unassigned", false);
-        } else {
-            User user = bot.getJDA().getUserById(task.getAssignee());
-            eb.addField("Assignee", user.getAsMention(), false);
-            eb.setThumbnail(user.getAvatarUrl());
-        }
-        
-        eb.appendDescription("Date Created " + sdf.format(new Date(task.getEpochMilli()))
-                + "\nLast Updated " + sdf.format(new Date(Instant.now().toEpochMilli())));
-        return eb.build();
     }
     
     public class UpdateLog {

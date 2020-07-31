@@ -3,12 +3,12 @@ package botmanager.gitmanager.commands;
 import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
-import botmanager.gitmanager.tasks.Task;
+import botmanager.gitmanager.objects.GuildSettings;
+import botmanager.gitmanager.objects.Task;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.MessageReaction.ReactionEmote;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -86,7 +86,7 @@ public class AssignCommand extends GitManagerCommandBase {
             task.setAssignee(event.getUserIdLong(), event.getUserIdLong());
         }
         
-        message.editMessage(Task.generateTaskEmbed(task, bot)).queue();
+        message.editMessage(bot.generateTaskEmbed(task)).queue();
         bot.writeTask(task);
     }
     

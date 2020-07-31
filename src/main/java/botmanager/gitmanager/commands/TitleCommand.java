@@ -3,7 +3,7 @@ package botmanager.gitmanager.commands;
 import botmanager.JDAUtils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
-import botmanager.gitmanager.tasks.Task;
+import botmanager.gitmanager.objects.Task;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
@@ -71,7 +71,7 @@ public class TitleCommand extends GitManagerCommandBase {
         input = input.substring(input.split(" ")[0].length() + 1, input.length());
         task = bot.readTask(event.getGuild().getIdLong(), taskNumber);
         task.setTitle(input, event.getAuthor().getIdLong());
-        bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), Task.generateTaskEmbed(task, bot)).queue();
+        bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
         bot.writeTask(task);
     }
 
