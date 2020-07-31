@@ -7,8 +7,10 @@ import botmanager.gitmanager.generic.GitManagerCommandBase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 /**
  *
@@ -22,18 +24,23 @@ public class HelpCommand extends GitManagerCommandBase {
 
     @Override
     public void run(Event genericEvent) {
-        GuildMessageReceivedEvent event;
         EmbedBuilder eb = new EmbedBuilder();
+        User user;
         String[] words;
         
-        eb.setTitle(bot.getName() + " Commands");
-        
-        if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
+        if (!(genericEvent instanceof GuildMessageReceivedEvent) && !(genericEvent instanceof PrivateMessageReceivedEvent)) {
             return;
         }
         
-        event = (GuildMessageReceivedEvent) genericEvent;
-        words = event.getMessage().getContentRaw().split(" ");
+        if (genericEvent instanceof GuildMessageReceivedEvent) {
+            words = ((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().split(" ");
+            user = ((GuildMessageReceivedEvent) genericEvent).getAuthor();
+        } else {
+            words = ((PrivateMessageReceivedEvent) genericEvent).getMessage().getContentRaw().split(" ");
+            user = ((PrivateMessageReceivedEvent) genericEvent).getAuthor();
+        }
+        
+        eb.setTitle(bot.getName() + " Commands");
         
         if (words.length > 0 && words[0].equals(bot.getPrefix() + "help")) {
             for (ICommand icommand : bot.getCommands()) {
@@ -50,7 +57,7 @@ public class HelpCommand extends GitManagerCommandBase {
             return;
         }
         
-        JDAUtils.sendPrivateMessage(event.getAuthor(), eb.build());
+        JDAUtils.sendPrivateMessage(user, eb.build());
     }
 
     @Override

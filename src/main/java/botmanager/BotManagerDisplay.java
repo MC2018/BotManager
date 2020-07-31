@@ -2,6 +2,7 @@ package botmanager;
 
 import botmanager.generic.BotBase;
 import botmanager.boteyy_.Boteyy_;
+import botmanager.gitmanager.GitManager;
 import botmanager.maidiscordbot.MaiDiscordBot;
 import botmanager.speedrunbot.SpeedrunBot;
 import java.io.File;
@@ -22,7 +23,8 @@ public class BotManagerDisplay extends javax.swing.JFrame {
         bots = new BotBase[] {
             new MaiDiscordBot(tokens.get(0), "MaiDiscordBot"),
             new Boteyy_(tokens.get(1), "Boteyy_"),
-            new SpeedrunBot(tokens.get(2), "Speedrun Bot")
+            new SpeedrunBot(tokens.get(2), "Speedrun Bot"),
+            new GitManager(tokens.get(3), "Git Manager")
         };
     }
 

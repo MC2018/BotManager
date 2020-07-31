@@ -97,10 +97,10 @@ public class GitManager extends BotBase {
     
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        File file = new File("data/" + getName() + "/guilds/" + event.getGuild().getId() + "/task_channels.txt");
+        File file = new File("data/" + getName() + "/guilds/" + event.getGuild().getId() + "/settings.json");
         
         if (!file.exists()) {
-            IOUtils.write(file, "to-do\nin-progress\nin-pr\ncompleted");
+            IOUtils.writeGson(file, new GuildSettings(event.getGuild().getIdLong()), true);
         }
     }
     
@@ -111,7 +111,7 @@ public class GitManager extends BotBase {
         }
         
         for (Guild guild : getJDA().getGuilds()) {
-            File file = new File("data/" + this.getName() + "/guilds/" + guild.getId() + "/settings.json");
+            File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/settings.json");
             GitHubClient client;
             GuildSettings guildSettings;
             
@@ -145,6 +145,11 @@ public class GitManager extends BotBase {
             try {
                 GuildSettings gs = readGuildSettings(guild.getIdLong());
                 GitHubClient client = ghClients.get(guild.getIdLong());
+                
+                if (Utils.isNullOrEmpty(gs.getOAuthToken())) {
+                    continue;
+                }
+                
                 RepositoryService rs = new RepositoryService(client);
                 Repository repo = rs.getRepository(gs.getRepoOwnerName(), gs.getRepoName());
                 List<PullRequest> prs = new PullRequestService(client).getPullRequests(repo, IssueService.STATE_OPEN);
