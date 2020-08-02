@@ -83,7 +83,7 @@ public class TaskCreateCommand extends GitManagerCommandBase {
             return;
         }
         
-        GuildSettings gs = bot.readGuildSettings(guildID);
+        GuildSettings gs = bot.getGuildSettings(guildID);
         
         taskMessage = JDAUtils.sendGuildMessageReturn(
                 bot.getTaskChannel(guildID, gs.getDefaultTaskChannelIndex()),

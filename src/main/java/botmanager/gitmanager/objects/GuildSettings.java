@@ -1,8 +1,11 @@
 package botmanager.gitmanager.objects;
 
 import botmanager.generic.BotBase;
+import botmanager.gitmanager.GitManager;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  *
@@ -11,6 +14,8 @@ import java.util.ArrayList;
 
 public class GuildSettings {
 
+    private ArrayList<Meeting> meetings = new ArrayList();
+    private ArrayList<String> dateFormats = new ArrayList();
     private ArrayList<TaskChannel> taskChannels = new ArrayList();
     private String oauthToken = "";
     private String repoOwnerName = "";
@@ -26,10 +31,22 @@ public class GuildSettings {
         taskChannels.add(new TaskChannel("in-progress", "inprogress"));
         taskChannels.add(new TaskChannel("in-pr", "inpr"));
         taskChannels.add(new TaskChannel("completed", "completed"));
+        dateFormats.add("M/d/yyyy h:mma");
+        dateFormats.add("M/d/yyyy ha");
+        dateFormats.add("M/d/yy h:mma");
+        dateFormats.add("M/d/yy ha");
     }
 
     public static File getFile(BotBase bot, long guildID) {
         return new File("data/" + bot.getName() + "/guilds/" + guildID + "/settings.json");
+    }
+    
+    public ArrayList<Meeting> getMeetings() {
+        return meetings;
+    }
+    
+    public ArrayList<String> getDateFormats() {
+        return dateFormats;
     }
     
     public ArrayList<String> getTaskChannelNames() {
@@ -83,6 +100,14 @@ public class GuildSettings {
     public void setPrAnnouncementChannel(String prAnnouncementChannel) {
         this.prAnnouncementChannel = prAnnouncementChannel;
     }
+    
+    public String getMeetingAnnouncementChannel() {
+        return meetingAnnouncementChannel;
+    }
+
+    public void setMeetingAnnouncementChannel(String meetingAnnouncementChannel) {
+        this.meetingAnnouncementChannel = meetingAnnouncementChannel;
+    }
 
     public long getID() {
         return id;
@@ -96,6 +121,23 @@ public class GuildSettings {
         return defaultTaskChannelIndex;
     }
     
+    public Meeting getMeetingAtIndex(int index) {
+        return meetings.get(index);
+    }
+    
+    public void addMeeting(Date date) {
+        meetings.add(new Meeting(date));
+        meetings.sort(Comparator.comparing(Meeting::getDate));
+    }
+    
+    public void removeMeeting(Date date) {
+        meetings.remove(new Meeting(date));
+    }
+    
+    public void replaceMeeting(Date date) {
+        removeMeeting(date);
+        addMeeting(date);
+    }
     
     private class TaskChannel {
         
@@ -108,5 +150,7 @@ public class GuildSettings {
         }
         
     }
+    
+
     
 }

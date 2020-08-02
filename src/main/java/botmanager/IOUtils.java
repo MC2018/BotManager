@@ -61,12 +61,12 @@ public class IOUtils {
     }
 
     public static <T>T readGson(File file, Class<T> objClass) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().serializeNulls().create();
         return gson.fromJson(read(file), objClass);
     }
     
     public static <T>void writeGson(File file, T obj) {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().serializeNulls().create();
         write(file, gson.toJson(obj));
     }
     
@@ -74,9 +74,9 @@ public class IOUtils {
         Gson gson;
         
         if (prettyPrinting) {
-            gson = new GsonBuilder().setPrettyPrinting().create();
+            gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         } else {
-            gson = new Gson();
+            gson = new GsonBuilder().serializeNulls().create();
         }
         
         write(file, gson.toJson(obj));

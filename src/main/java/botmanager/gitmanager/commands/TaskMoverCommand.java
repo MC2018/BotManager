@@ -54,7 +54,7 @@ public class TaskMoverCommand extends GitManagerCommandBase {
             return;
         }
         
-        gs = bot.readGuildSettings(event.getGuild().getIdLong());
+        gs = bot.getGuildSettings(event.getGuild().getIdLong());
         taskReactionNames = gs.getTaskReactionNames();
         
         if (event.getReactionEmote().isEmote() && taskReactionNames.contains(event.getReactionEmote().getName())) {

@@ -18,14 +18,14 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class MeetingCreateCommand extends GitManagerCommandBase {
+public class MeetingDeleteCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting create",
-        bot.getPrefix() + "create meeting"
+        bot.getPrefix() + "meeting delete",
+        bot.getPrefix() + "delete meeting"
     };
     
-    public MeetingCreateCommand(GitManager bot) {
+    public MeetingDeleteCommand(GitManager bot) {
         super(bot);
     }
 
@@ -70,10 +70,9 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
         }
         
         try {
-            Date date;
+            int index = Integer.parseInt(input);
             guildSettings = bot.getGuildSettings(guildID);
-            date = Utils.parseDate(input, guildSettings.getDateFormats());
-            guildSettings.addMeeting(date);
+            guildSettings.removeMeeting(guildSettings.getMeetingAtIndex(index - 1).getDate());
             bot.writeGuildSettings(guildSettings);
         } catch (Exception e) {
             if (guildID == -1) {
@@ -86,7 +85,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Creating a Meeting", "```" + KEYWORDS[0] + " Time```", false);
+        return new MessageEmbed.Field("Deleting a Meeting", "```" + KEYWORDS[0] + " 102```", false);
     }
 
     @Override
@@ -112,9 +111,8 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TIME```",
+                        + "```" + KEYWORDS[0] + " INDEX```",
                 false);
-        eb.addField("Formats Allowed", "```" + formats.toString().trim() + "```", false);
         
         return eb.build();
     }

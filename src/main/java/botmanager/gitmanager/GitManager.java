@@ -15,11 +15,14 @@ import botmanager.gitmanager.commands.HelpCommand;
 import botmanager.gitmanager.commands.TaskPurgeCommand;
 import botmanager.gitmanager.commands.DefaultGuildCommand;
 import botmanager.gitmanager.commands.MeetingCreateCommand;
+import botmanager.gitmanager.commands.MeetingDeleteCommand;
+import botmanager.gitmanager.commands.MeetingDescriptionCommand;
+import botmanager.gitmanager.commands.MeetingListCommand;
 import botmanager.gitmanager.commands.TaskDeleteCommand;
 import botmanager.gitmanager.commands.TaskMoverCommand;
 import botmanager.gitmanager.commands.TaskTitleCommand;
 import botmanager.gitmanager.objects.GuildSettings;
-import botmanager.gitmanager.objects.MeetingManager;
+import botmanager.gitmanager.objects.Meeting;
 import botmanager.gitmanager.objects.Task;
 import botmanager.gitmanager.objects.TaskBuilder;
 import botmanager.gitmanager.objects.UserSettings;
@@ -34,7 +37,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Activity.ActivityType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -51,10 +53,6 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.format.DateTimeParser;
 
 /**
  *
@@ -63,8 +61,11 @@ import org.joda.time.format.DateTimeParser;
 public class GitManager extends BotBase {
 
     private HashMap<Long, GitHubClient> ghClients = new HashMap();
+    private HashMap<Long, GuildSettings> guildSettingsList = new HashMap();
     private TimerTask prTimerTask;
     private Timer prTimer = new Timer();
+    private TimerTask meetingTimerTask;
+    private Timer meetingTimer = new Timer();
     private String prefix = ".";
     
     public GitManager(String botToken, String name) {
@@ -80,6 +81,9 @@ public class GitManager extends BotBase {
             new TaskDeleteCommand(this),
             new TaskPurgeCommand(this),
             new MeetingCreateCommand(this),
+            new MeetingListCommand(this),
+            new MeetingDescriptionCommand(this),
+            new MeetingDeleteCommand(this),
             new TaskMoverCommand(this),
             new TaskAssignCommand(this),
             new PMForwarderCommand(this),
@@ -92,16 +96,7 @@ public class GitManager extends BotBase {
         } catch (Exception e) {
         }
         
-        
-        DateTimeParser[] dateParsers = {DateTimeFormat.forPattern("M/d/yyyy ha").getParser()};
-        DateTimeFormatter dateFormatter;
-        
-        dateFormatter = new DateTimeFormatterBuilder().append(null, dateParsers).toFormatter();
-        Date date = dateFormatter.parseDateTime("8/1/2020 9pm").toDate();
-        
-        
-        verifyGuildFilesExist();
-        //loadMeetings();
+        loadGuildFiles();
         initializeGitHubClients();
     }
 
@@ -133,24 +128,71 @@ public class GitManager extends BotBase {
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
         verifyGuildFilesExist(event.getGuild().getIdLong());
+        
     }
     
-    private void verifyGuildFilesExist() {
+    private void loadGuildFiles() {
         for (Guild guild : getJDA().getGuilds()) {
             verifyGuildFilesExist(guild.getIdLong());
+        }
+        
+        meetingTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                checkMeetingTimes();
+            }
+        };
+        
+        meetingTimer.schedule(meetingTimerTask, 3000, 60000);
+    }
+    
+    public void checkMeetingTimes() {
+        for (GuildSettings guildSettings : guildSettingsList.values()) {
+            for (Meeting meeting : guildSettings.getMeetings()) {
+                Guild guild = getJDA().getGuildById(guildSettings.getID());
+                Date twoDaysPrior = new Date(meeting.getDate().toInstant().minusSeconds(60 * 60 * 2 * 24).toEpochMilli());
+                Date twoHoursPrior = new Date(meeting.getDate().toInstant().minusSeconds(60 * 60 * 2).toEpochMilli());
+                Date date = new Date();
+                String dateFormat = guildSettings.getDateFormats().get(0);
+                
+                if (Utils.formatDate(twoDaysPrior, dateFormat).equals(Utils.formatDate(date, dateFormat))) {
+                    EmbedBuilder eb = new EmbedBuilder();
+                    eb.setTitle("Reminder");
+                    eb.addField("There is a meeting two days from now!", Utils.formatDate(date, dateFormat), false);
+                    
+                    if (meeting.getDescription() != null) {
+                        eb.addField("Description", meeting.getDescription(), false);
+                    }
+                    
+                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
+                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
+                } else if (Utils.formatDate(twoHoursPrior, dateFormat).equals(Utils.formatDate(date, dateFormat))) {
+                    EmbedBuilder eb = new EmbedBuilder();
+                    eb.setTitle("Reminder");
+                    eb.addField("There is a meeting two hours from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
+                    
+                    if (meeting.getDescription() != null) {
+                        eb.addField("Description", meeting.getDescription(), false);
+                    }
+                    
+                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
+                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
+                } else if (Utils.formatDate(new Date(), dateFormat).equals(Utils.formatDate(meeting.getDate(), dateFormat))) {
+                    guildSettings.removeMeeting(meeting.getDate());
+                }
+            }
         }
     }
 
     private void verifyGuildFilesExist(long guildID) {
         File guildSettingsFile = GuildSettings.getFile(this, guildID);
-        File meetingManagerFile = MeetingManager.getFile(this, guildID);
 
         if (!guildSettingsFile.exists()) {
             writeGuildSettings(new GuildSettings(guildID));
         }
-
-        if (!meetingManagerFile.exists()) {
-            writeMeetingManager(new MeetingManager(guildID));
+        
+        if (!guildSettingsList.containsKey(guildID)) {
+            guildSettingsList.put(guildID, readGuildSettings(guildID));
         }
     }
     
@@ -158,14 +200,8 @@ public class GitManager extends BotBase {
         for (Guild guild : getJDA().getGuilds()) {
             File file = GuildSettings.getFile(this, guild.getIdLong());
             GitHubClient client;
-            GuildSettings guildSettings;
+            GuildSettings guildSettings = IOUtils.readGson(file, GuildSettings.class);
             
-            if (!file.exists()) {
-                IOUtils.writeGson(file, new GuildSettings(guild.getIdLong()), true);
-                continue;
-            }
-            
-            guildSettings = IOUtils.readGson(file, GuildSettings.class);
             client = new GitHubClient();
             client.setOAuth2Token(guildSettings.getOAuthToken());
             ghClients.put(guild.getIdLong(), client);
@@ -304,7 +340,11 @@ public class GitManager extends BotBase {
         JDAUtils.addReaction(message, "red_circle");
     }
     
-    public GuildSettings readGuildSettings(long guildID) {
+    public GuildSettings getGuildSettings(long guildID) {
+        return guildSettingsList.get(guildID);
+    }
+    
+    private GuildSettings readGuildSettings(long guildID) {
         File file = GuildSettings.getFile(this, guildID);
         return IOUtils.readGson(file, GuildSettings.class);
     }
@@ -312,16 +352,6 @@ public class GitManager extends BotBase {
     public void writeGuildSettings(GuildSettings guildSettings) {
         File file = GuildSettings.getFile(this, guildSettings.getID());
         IOUtils.writeGson(file, guildSettings, true);
-    }
-    
-    public MeetingManager readMeetingManager(long guildID) {
-        File file = MeetingManager.getFile(this, guildID);
-        return IOUtils.readGson(file, MeetingManager.class);
-    }
-    
-    public void writeMeetingManager(MeetingManager meetingManager) {
-        File file = MeetingManager.getFile(this, meetingManager.getGuildID());
-        IOUtils.writeGson(file, meetingManager, true);
     }
     
     public Task readTask(long guildID, int taskID) {

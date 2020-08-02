@@ -91,7 +91,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
     
     @Override
     public Field info() {
-        return new Field("Changing a Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+        return new Field("Changing a Task Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
     }
     
     @Override
