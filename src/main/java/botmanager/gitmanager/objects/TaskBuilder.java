@@ -14,6 +14,7 @@ public class TaskBuilder {
     private BotBase bot;
     private String name;
     private String description = "TBD";
+    private long author = -1;
     private long assignee = -1;
     private long guildID = -1;
     private long channelID = -1;
@@ -27,11 +28,13 @@ public class TaskBuilder {
     public Task build() throws Exception {
         if (Utils.isNullOrEmpty(name)) {
             throw new Exception("Name is empty.");
-        } else if (guildID < 0) {
+        } else if (author < 0) {
+            throw new Exception("Author is empty.");
+        }else if (guildID < 0) {
             throw new Exception("Guild ID is empty.");
         }
         
-        return new Task(name, description, assignee, guildID, channelID, messageID, status, generateID());
+        return new Task(name, description, author, assignee, guildID, channelID, messageID, status, generateID());
     }
     
     public BotBase getBot() {
@@ -53,6 +56,15 @@ public class TaskBuilder {
     
     public TaskBuilder setDescription(String description) {
         this.description = description;
+        return this;
+    }
+    
+    public long getAuthor() {
+        return author;
+    }
+    
+    public TaskBuilder setAuthor(long author) {
+        this.author = author;
         return this;
     }
     
@@ -101,8 +113,12 @@ public class TaskBuilder {
         return this;
     }
 
+    public static File getCounterFile(BotBase bot, long guildID) {
+        return new File("data/" + bot.getName() + "/guilds/" + guildID + "/task_counter.json");
+    }
+    
     private int generateID() {
-        File taskCounterFile = new File("data/" + bot.getName() + "/guilds/" + guildID + "/task_counter.json");
+        File taskCounterFile = getCounterFile(bot, guildID);
         Integer number = IOUtils.readGson(taskCounterFile, Integer.class);
         int counter = 0;
         

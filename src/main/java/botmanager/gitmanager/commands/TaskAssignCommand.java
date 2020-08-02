@@ -3,7 +3,6 @@ package botmanager.gitmanager.commands;
 import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
-import botmanager.gitmanager.objects.GuildSettings;
 import botmanager.gitmanager.objects.Task;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
@@ -17,9 +16,9 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class AssignCommand extends GitManagerCommandBase {
+public class TaskAssignCommand extends GitManagerCommandBase {
 
-    public AssignCommand(GitManager bot) {
+    public TaskAssignCommand(GitManager bot) {
         super(bot);
     }
 

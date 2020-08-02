@@ -1,5 +1,7 @@
 package botmanager.gitmanager.objects;
 
+import botmanager.generic.BotBase;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -9,23 +11,12 @@ import java.util.ArrayList;
 
 public class GuildSettings {
 
-    private class TaskChannel {
-        
-        private String channelName = "";
-        private String reactionName = "";
-        
-        private TaskChannel(String channelName, String reactionName) {
-            this.channelName = channelName;
-            this.reactionName = reactionName;
-        }
-        
-    }
-    
     private ArrayList<TaskChannel> taskChannels = new ArrayList();
     private String oauthToken = "";
     private String repoOwnerName = "";
     private String repoName = "";
-    private String prUpdateChannel = "pr-updates";
+    private String prAnnouncementChannel = "pr-announcements";
+    private String meetingAnnouncementChannel = "general";
     private long id;
     private int defaultTaskChannelIndex = 0;
     
@@ -37,6 +28,10 @@ public class GuildSettings {
         taskChannels.add(new TaskChannel("completed", "completed"));
     }
 
+    public static File getFile(BotBase bot, long guildID) {
+        return new File("data/" + bot.getName() + "/guilds/" + guildID + "/settings.json");
+    }
+    
     public ArrayList<String> getTaskChannelNames() {
         ArrayList<String> taskChannelNames = new ArrayList();
         
@@ -81,12 +76,12 @@ public class GuildSettings {
         this.repoName = repoName;
     }
 
-    public String getPrUpdateChannel() {
-        return prUpdateChannel;
+    public String getPrAnnouncementChannel() {
+        return prAnnouncementChannel;
     }
 
-    public void setPrUpdateChannel(String prUpdateChannel) {
-        this.prUpdateChannel = prUpdateChannel;
+    public void setPrAnnouncementChannel(String prAnnouncementChannel) {
+        this.prAnnouncementChannel = prAnnouncementChannel;
     }
 
     public long getID() {
@@ -99,6 +94,19 @@ public class GuildSettings {
 
     public int getDefaultTaskChannelIndex() {
         return defaultTaskChannelIndex;
+    }
+    
+    
+    private class TaskChannel {
+        
+        private String channelName = "";
+        private String reactionName = "";
+        
+        private TaskChannel(String channelName, String reactionName) {
+            this.channelName = channelName;
+            this.reactionName = reactionName;
+        }
+        
     }
     
 }

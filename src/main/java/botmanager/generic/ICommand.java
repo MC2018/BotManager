@@ -8,6 +8,6 @@ import net.dv8tion.jda.api.events.Event;
  */
 public abstract interface ICommand {
     
-    public abstract void run(Event event);
+    public abstract void run(Event genericEvent);
     
 }

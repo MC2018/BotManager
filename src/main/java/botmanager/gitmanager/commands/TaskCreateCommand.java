@@ -10,78 +10,87 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class CreateCommand extends GitManagerCommandBase {
+public class TaskCreateCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "create",
-        bot.getPrefix() + "c"
+        bot.getPrefix() + "task create",
+        bot.getPrefix() + "task c",
+        bot.getPrefix() + "create task",
     };
     
-    public CreateCommand(GitManager bot) {
+    public TaskCreateCommand(GitManager bot) {
         super(bot);
     }
 
     @Override
     public void run(Event genericEvent) {
-        GuildMessageReceivedEvent event;
-        EmbedBuilder eb = new EmbedBuilder();
-        TaskBuilder tb = new TaskBuilder(bot);
+        GuildMessageReceivedEvent guildEvent = null;
+        PrivateMessageReceivedEvent privateEvent = null;
         Message taskMessage;
+        User user;
         Task task;
         String input;
-
+        long guildID;
         boolean found = false;
 
-        if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
+        if (genericEvent instanceof GuildMessageReceivedEvent) {
+            guildEvent = (GuildMessageReceivedEvent) genericEvent;
+            input = guildEvent.getMessage().getContentRaw();
+            user = guildEvent.getAuthor();
+            guildID = guildEvent.getGuild().getIdLong();
+        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
+            privateEvent = (PrivateMessageReceivedEvent) genericEvent;
+            input = privateEvent.getMessage().getContentRaw();
+            user = privateEvent.getAuthor();
+            guildID = bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        } else {
             return;
         }
-
-        event = (GuildMessageReceivedEvent) genericEvent;
-        input = event.getMessage().getContentRaw();
         
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
                 input = input.substring(keyword.length() + 1, input.length());
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
-                JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
+                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 
         if (!found) {
             return;
-        } else if (!bot.isTaskChannel(event.getChannel())) {
-            event.getMessage().delete().queue();
+        } else if (guildEvent != null && !bot.isTaskChannel(guildEvent.getChannel())) {
+            guildEvent.getMessage().delete().queue();
         }
         
-        tb.setName(input);
-        tb.setGuildID(event.getGuild().getIdLong());
-        
         try {
-            task = tb.build();
+            task = new TaskBuilder(bot)
+                    .setName(input)
+                    .setAuthor(user.getIdLong())
+                    .setGuildID(guildID)
+                    .build();
         } catch (Exception e) {
-            JDAUtils.sendPrivateMessage(event.getAuthor(), getFailureEmbed());
+            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             return;
         }
         
-        GuildSettings gs = bot.readGuildSettings(event.getGuild().getIdLong());
+        GuildSettings gs = bot.readGuildSettings(guildID);
         
-        eb.addField("Task Created", "Task '" + input + "' was created.", true);
         taskMessage = JDAUtils.sendGuildMessageReturn(
-                bot.getTaskChannel(event.getGuild().getIdLong(), gs.getDefaultTaskChannelIndex()),
+                bot.getTaskChannel(guildID, gs.getDefaultTaskChannelIndex()),
                 bot.generateTaskEmbed(task)
         );
         
         GitManager.addTaskReactions(taskMessage, gs, gs.getDefaultTaskChannelIndex());
-        JDAUtils.sendPrivateMessage(event.getAuthor(), eb.build());
         task.setChannelID(taskMessage.getChannel().getIdLong());
         task.setMessageID(taskMessage.getIdLong());
         bot.writeTask(task);
@@ -100,7 +109,7 @@ public class CreateCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + KEYWORDS[0] + " Title",
+                        + "```" + KEYWORDS[0] + " Title```",
                 true);
         
         return eb.build();

@@ -28,16 +28,14 @@ public class HelpCommand extends GitManagerCommandBase {
         User user;
         String[] words;
         
-        if (!(genericEvent instanceof GuildMessageReceivedEvent) && !(genericEvent instanceof PrivateMessageReceivedEvent)) {
-            return;
-        }
-        
         if (genericEvent instanceof GuildMessageReceivedEvent) {
             words = ((GuildMessageReceivedEvent) genericEvent).getMessage().getContentRaw().split(" ");
             user = ((GuildMessageReceivedEvent) genericEvent).getAuthor();
-        } else {
+        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
             words = ((PrivateMessageReceivedEvent) genericEvent).getMessage().getContentRaw().split(" ");
             user = ((PrivateMessageReceivedEvent) genericEvent).getAuthor();
+        } else {
+            return;
         }
         
         eb.setTitle(bot.getName() + " Commands");

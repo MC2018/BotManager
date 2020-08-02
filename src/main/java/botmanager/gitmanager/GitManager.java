@@ -7,16 +7,22 @@ import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
-import botmanager.gitmanager.commands.AssignCommand;
+import botmanager.gitmanager.commands.TaskAssignCommand;
 import botmanager.gitmanager.commands.ChannelCleanupCommand;
-import botmanager.gitmanager.commands.CreateCommand;
-import botmanager.gitmanager.commands.DescriptionCommand;
+import botmanager.gitmanager.commands.TaskCreateCommand;
+import botmanager.gitmanager.commands.TaskDescriptionCommand;
 import botmanager.gitmanager.commands.HelpCommand;
-import botmanager.gitmanager.commands.ServerCommand;
+import botmanager.gitmanager.commands.TaskPurgeCommand;
+import botmanager.gitmanager.commands.DefaultGuildCommand;
+import botmanager.gitmanager.commands.MeetingCreateCommand;
+import botmanager.gitmanager.commands.TaskDeleteCommand;
 import botmanager.gitmanager.commands.TaskMoverCommand;
-import botmanager.gitmanager.commands.TitleCommand;
+import botmanager.gitmanager.commands.TaskTitleCommand;
 import botmanager.gitmanager.objects.GuildSettings;
+import botmanager.gitmanager.objects.MeetingManager;
 import botmanager.gitmanager.objects.Task;
+import botmanager.gitmanager.objects.TaskBuilder;
+import botmanager.gitmanager.objects.UserSettings;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -27,6 +33,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Activity.ActivityType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -43,6 +51,10 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.PullRequestService;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.DateTimeParser;
 
 /**
  *
@@ -57,34 +69,57 @@ public class GitManager extends BotBase {
     
     public GitManager(String botToken, String name) {
         super(botToken, name);
+        getJDA().getPresence().setActivity(Activity.watching(prefix + "help in Guild or DM!"));
         
         this.setCommands(new ICommand[] {
+            new DefaultGuildCommand(this),
             new HelpCommand(this),
-            new CreateCommand(this),
-            new TitleCommand(this),
-            new DescriptionCommand(this),
+            new TaskCreateCommand(this),
+            new TaskTitleCommand(this),
+            new TaskDescriptionCommand(this),
+            new TaskDeleteCommand(this),
+            new TaskPurgeCommand(this),
+            new MeetingCreateCommand(this),
             new TaskMoverCommand(this),
-            new AssignCommand(this),
-            new ServerCommand(this),
+            new TaskAssignCommand(this),
             new PMForwarderCommand(this),
             new PMRepeaterCommand(this),
             new ChannelCleanupCommand(this)
         });
         
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+        }
+        
+        
+        DateTimeParser[] dateParsers = {DateTimeFormat.forPattern("M/d/yyyy ha").getParser()};
+        DateTimeFormatter dateFormatter;
+        
+        dateFormatter = new DateTimeFormatterBuilder().append(null, dateParsers).toFormatter();
+        Date date = dateFormatter.parseDateTime("8/1/2020 9pm").toDate();
+        
+        
+        verifyGuildFilesExist();
+        //loadMeetings();
         initializeGitHubClients();
     }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
-            command.run(event);
+            if (event.getAuthor().getIdLong() != getJDA().getSelfUser().getIdLong()) {
+                command.run(event);
+            }
         }
     }
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
-            command.run(event);
+            if (event.getAuthor().getIdLong() != getJDA().getSelfUser().getIdLong()) {
+                command.run(event);
+            }
         }
     }
     
@@ -97,21 +132,31 @@ public class GitManager extends BotBase {
     
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        File file = new File("data/" + getName() + "/guilds/" + event.getGuild().getId() + "/settings.json");
-        
-        if (!file.exists()) {
-            IOUtils.writeGson(file, new GuildSettings(event.getGuild().getIdLong()), true);
+        verifyGuildFilesExist(event.getGuild().getIdLong());
+    }
+    
+    private void verifyGuildFilesExist() {
+        for (Guild guild : getJDA().getGuilds()) {
+            verifyGuildFilesExist(guild.getIdLong());
+        }
+    }
+
+    private void verifyGuildFilesExist(long guildID) {
+        File guildSettingsFile = GuildSettings.getFile(this, guildID);
+        File meetingManagerFile = MeetingManager.getFile(this, guildID);
+
+        if (!guildSettingsFile.exists()) {
+            writeGuildSettings(new GuildSettings(guildID));
+        }
+
+        if (!meetingManagerFile.exists()) {
+            writeMeetingManager(new MeetingManager(guildID));
         }
     }
     
     private void initializeGitHubClients() {
-        try {
-            Thread.sleep(1000);
-        } catch (Exception e) {
-        }
-        
         for (Guild guild : getJDA().getGuilds()) {
-            File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/settings.json");
+            File file = GuildSettings.getFile(this, guild.getIdLong());
             GitHubClient client;
             GuildSettings guildSettings;
             
@@ -138,18 +183,14 @@ public class GitManager extends BotBase {
     
     private void checkNewPRs() {
         for (Guild guild : getJDA().getGuilds()) {
-            if (!ghClients.containsKey(guild.getIdLong())) {
+            GuildSettings gs = readGuildSettings(guild.getIdLong());
+            
+            if (!ghClients.containsKey(guild.getIdLong()) || Utils.isNullOrEmpty(gs.getOAuthToken())) {
                 continue;
             }
             
             try {
-                GuildSettings gs = readGuildSettings(guild.getIdLong());
                 GitHubClient client = ghClients.get(guild.getIdLong());
-                
-                if (Utils.isNullOrEmpty(gs.getOAuthToken())) {
-                    continue;
-                }
-                
                 RepositoryService rs = new RepositoryService(client);
                 Repository repo = rs.getRepository(gs.getRepoOwnerName(), gs.getRepoName());
                 List<PullRequest> prs = new PullRequestService(client).getPullRequests(repo, IssueService.STATE_OPEN);
@@ -165,7 +206,7 @@ public class GitManager extends BotBase {
                 
                 for (PullRequest pr : prs) {
                     if (!oldPRs.contains(String.valueOf(pr.getId()))) {
-                        if (!Utils.isNullOrEmpty(gs.getPrUpdateChannel())) {
+                        if (!Utils.isNullOrEmpty(gs.getPrAnnouncementChannel())) {
                             sendPRUpdateMessage(gs, pr);
                         }
                         
@@ -192,7 +233,7 @@ public class GitManager extends BotBase {
         int taskID = -1;
         int beginningIndex = -1;
         
-        if (Utils.isNullOrEmpty(gs.getPrUpdateChannel())) {
+        if (Utils.isNullOrEmpty(gs.getPrAnnouncementChannel())) {
             return;
         }
         
@@ -229,7 +270,7 @@ public class GitManager extends BotBase {
         }
         
         eb.addField(prName, pr.getTitle(), false);
-        JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, gs.getPrUpdateChannel()), eb.build());
+        JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, gs.getPrAnnouncementChannel()), eb.build());
     }
     
     private List<String> getTaskChannelNames(long guildID) {
@@ -263,24 +304,44 @@ public class GitManager extends BotBase {
         JDAUtils.addReaction(message, "red_circle");
     }
     
-    public Task readTask(long guildID, int taskID) {
-        File file = new File("data/" + getName() + "/guilds/" + guildID + "/tasks/" + taskID + ".json");
-        return IOUtils.readGson(file, Task.class);
-    }
-    
-    public void writeTask(Task task) {
-        File file = new File("data/" + getName() + "/guilds/" + task.getGuildID() + "/tasks/" + task.getID() + ".json");
-        IOUtils.writeGson(file, task);
-    }
-    
     public GuildSettings readGuildSettings(long guildID) {
-        File file = new File("data/" + getName() + "/guilds/" + guildID + "/settings.json");
+        File file = GuildSettings.getFile(this, guildID);
         return IOUtils.readGson(file, GuildSettings.class);
     }
     
     public void writeGuildSettings(GuildSettings guildSettings) {
-        File file = new File("data/" + getName() + "/guilds/" + guildSettings.getID() + ".json");
+        File file = GuildSettings.getFile(this, guildSettings.getID());
         IOUtils.writeGson(file, guildSettings, true);
+    }
+    
+    public MeetingManager readMeetingManager(long guildID) {
+        File file = MeetingManager.getFile(this, guildID);
+        return IOUtils.readGson(file, MeetingManager.class);
+    }
+    
+    public void writeMeetingManager(MeetingManager meetingManager) {
+        File file = MeetingManager.getFile(this, meetingManager.getGuildID());
+        IOUtils.writeGson(file, meetingManager, true);
+    }
+    
+    public Task readTask(long guildID, int taskID) {
+        File file = Task.getFile(this, guildID, taskID);
+        return IOUtils.readGson(file, Task.class);
+    }
+    
+    public void writeTask(Task task) {
+        File file = Task.getFile(this, task.getGuildID(), task.getID());
+        IOUtils.writeGson(file, task, true);
+    }
+    
+    public UserSettings readUserSettings(long userID) {
+        File file = UserSettings.getFile(this, userID);
+        return IOUtils.readGson(file, UserSettings.class);
+    }
+    
+    public void writeUserSettings(UserSettings userSettings) {
+        File file = UserSettings.getFile(this, userSettings.getID());
+        IOUtils.writeGson(file, userSettings, true);
     }
     
     public MessageEmbed generateTaskEmbed(Task task) {
@@ -303,6 +364,39 @@ public class GitManager extends BotBase {
         eb.appendDescription("Date Created " + sdf.format(new Date(task.getEpochMilli()))
                 + "\nLast Updated " + sdf.format(new Date(Instant.now().toEpochMilli())));
         return eb.build();
+    }
+
+    public void purgeTasks(long guildID) {
+        File taskCounterFile = TaskBuilder.getCounterFile(this, guildID);
+        Guild guild = getJDA().getGuildById(guildID);
+        Date date = new Date();
+        Integer taskCount = IOUtils.readGson(taskCounterFile, Integer.class);
+        
+        if (taskCount == null) {
+            return;
+        }
+        
+        for (int i = 1; i <= taskCount; i++) {
+            File taskFile = Task.getFile(this, guildID, i);
+            File restoreFile = Task.getRestoreFile(this, date, guildID, i);
+            Task task;
+            
+            if (!taskFile.exists()) {
+                continue;
+            }
+            
+            task = readTask(guildID, i);
+            
+            try {
+                guild.getTextChannelById(task.getChannelID()).retrieveMessageById(task.getMessageID()).complete().delete().complete();
+            } catch (Exception e) {
+            }
+            
+            IOUtils.writeGson(restoreFile, task);
+            taskFile.delete();
+        }
+        
+        taskCounterFile.delete();
     }
     
 }

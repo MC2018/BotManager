@@ -1,7 +1,11 @@
 package botmanager.gitmanager.objects;
 
+import botmanager.generic.BotBase;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -11,6 +15,7 @@ public class Task {
 
     private String title;
     private String description;
+    private long author;
     private long assignee;
     private long guildID;
     private long channelID;
@@ -19,10 +24,12 @@ public class Task {
     private int status;
     private int id;
     private ArrayList<UpdateLog> updateLogs;
+    private boolean deleted = false;
     
-    public Task(String title, String description, long assignee, long guildID, long channelID, long messageID, int status, int id) {
+    public Task(String title, String description, long author, long assignee, long guildID, long channelID, long messageID, int status, int id) {
         this.title = title;
         this.description = description;
+        this.author = author;
         this.assignee = assignee;
         this.guildID = guildID;
         this.channelID = channelID;
@@ -33,11 +40,20 @@ public class Task {
         updateLogs = new ArrayList();
     }
 
+    public static File getFile(BotBase bot, long guildID, int taskID) {
+        return new File("data/" + bot.getName() + "/guilds/" + guildID + "/tasks/" + taskID + ".json");
+    }
+    
+    public static File getRestoreFile(BotBase bot, Date date, long guildID, int taskID) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
+        return new File("data/" + bot.getName() + "/guilds/" + guildID + "/tasks/purge_" + sdf.format(date) + "/" + taskID + ".json");
+    }
+    
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String name, long userID) {
+    public void setTitle(String title, long userID) {
         updateLogs.add(new UpdateLog("Updated name", this.title, title, userID));
         this.title = title;
     }
@@ -51,6 +67,10 @@ public class Task {
         this.description = description;
     }
 
+    public long getAuthor() {
+        return author;
+    }
+    
     public long getAssignee() {
         return assignee;
     }
@@ -103,6 +123,11 @@ public class Task {
     
     public int getID() {
         return id;
+    }
+
+    public void setDeleted(boolean deleted, String reason, long userID) {
+        updateLogs.add(new UpdateLog("Updated deleted, reason:" + reason, String.valueOf(this.deleted), String.valueOf(deleted), userID));
+        this.deleted = deleted;
     }
     
     public class UpdateLog {

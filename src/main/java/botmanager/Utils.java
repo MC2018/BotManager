@@ -4,8 +4,14 @@ import botmanager.speedrunbot.SpeedrunBot;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+import org.joda.time.format.DateTimeParser;
 
 /**
  *
@@ -146,6 +152,23 @@ public class Utils {
         }
         
         return costs[s2.length()];
+    }
+    
+    public static Date parseDate(String potentialDate, ArrayList<String> dateFormats) {
+        DateTimeParser[] dateParsers = new DateTimeParser[dateFormats.size()];
+        DateTimeFormatter dateFormatter;
+                
+        for (int i = 0; i < dateParsers.length; i++) {
+            dateParsers[i] = DateTimeFormat.forPattern(dateFormats.get(i)).getParser();
+        }
+        
+        dateFormatter = new DateTimeFormatterBuilder().append(null, dateParsers).toFormatter();
+        return dateFormatter.parseDateTime(potentialDate).toDate();
+    }
+    
+    public static String formatDate(Date date, String dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        return sdf.format(date);
     }
     
 }

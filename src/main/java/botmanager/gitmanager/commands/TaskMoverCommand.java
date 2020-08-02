@@ -7,7 +7,6 @@ import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;
 import botmanager.gitmanager.objects.Task;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;

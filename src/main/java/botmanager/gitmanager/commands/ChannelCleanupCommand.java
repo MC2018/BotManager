@@ -27,14 +27,18 @@ public class ChannelCleanupCommand extends GitManagerCommandBase {
 
         event = (GuildMessageReceivedEvent) genericEvent;
         
-        if (bot.isTaskChannel(event.getChannel()) && !event.getAuthor().isBot()) {
-            event.getMessage().delete().queue();
+        if (bot.isTaskChannel(event.getChannel()) && !event.getAuthor().getId().equals(bot.getJDA().getSelfUser().getId())) {
+            try {
+                event.getMessage().delete().queue();
+            } catch (Exception e) {
+            }
         }
     }
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("", "Any commands sent in the server will be deleted for the sake of cleanliness.", false);
+        return new MessageEmbed.Field("", "All commands sent in the server and all non-bot task channel messages "
+                + "will be deleted for the sake of cleanliness.", false);
     }
 
     @Override
