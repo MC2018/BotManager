@@ -84,7 +84,7 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
         try {
             guildSettings = bot.getGuildSettings(guildID);
             input = input.substring(input.split(" ")[0].length() + 1, input.length());
-            guildSettings.getMeetingAtIndex(meetingNumber).setDescription(input);
+            guildSettings.getMeetingAtIndex(meetingNumber - 1).setDescription(input);
             bot.writeGuildSettings(guildSettings);
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
