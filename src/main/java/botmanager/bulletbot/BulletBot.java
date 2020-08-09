@@ -39,6 +39,8 @@ public class BulletBot extends BotBase {
             new PMRepeaterCommand(this),
             new PMForwarderCommand(this)
         });
+        
+        loadDirtyWords();
     }
     
     @Override
