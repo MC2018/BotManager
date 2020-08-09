@@ -39,8 +39,6 @@ public class BulletBot extends BotBase {
             new PMRepeaterCommand(this),
             new PMForwarderCommand(this)
         });
-        
-        dirtyWords = IOUtils.readLines(new File("data/" + getName() + "/dirty_words.txt"));
     }
     
     @Override
@@ -55,6 +53,16 @@ public class BulletBot extends BotBase {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
+    }
+    
+    public void loadDirtyWords() {
+        File file = new File("data/" + getName() + "/dirty_words.txt");
+        
+        if (!file.exists()) {
+            IOUtils.write(file, "");
+        }
+        
+        dirtyWords = IOUtils.readLines(file);
     }
 
     public String getPrefix() {
