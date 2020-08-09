@@ -1,8 +1,9 @@
-package botmanager.jigsaw.commands;
+package botmanager.bulletbot.commands;
 
 import botmanager.JDAUtils;
-import botmanager.jigsaw.Jigsaw;
-import botmanager.jigsaw.generic.JigsawCommandBase;
+import botmanager.bulletbot.BulletBot;
+import botmanager.bulletbot.generic.BulletBotCommandBase;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -11,7 +12,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class WordTrackerCommand extends JigsawCommandBase {
+public class WordTrackerCommand extends BulletBotCommandBase {
 
     String[][] characterReplacements = {
         {"1", "i"},
@@ -22,13 +23,14 @@ public class WordTrackerCommand extends JigsawCommandBase {
         {"0", "o"}
     };
     
-    public WordTrackerCommand(Jigsaw bot) {
+    public WordTrackerCommand(BulletBot bot) {
         super(bot);
     }
 
     @Override
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent event;
+        EmbedBuilder eb;
         String message;
         boolean found = false;
         
@@ -43,18 +45,24 @@ public class WordTrackerCommand extends JigsawCommandBase {
             message = message.replaceAll(characterReplacement[0], characterReplacement[1]);
         }
         
-        for (String dirtyWord : getBot().getDirtyWords()) {
+        for (String dirtyWord : bot.getDirtyWords()) {
             if (message.contains(dirtyWord)) {
                 found = true;
                 break;
             }
         }
         
-        if (!found || JDAUtils.hasRole(event.getMember(), "Mod")) {
+        if (!found) {
             return;
         }
         
-        bot.incrementUserDirtyWords(event.getGuild(), event.getAuthor());
+        eb = new EmbedBuilder();
+        eb.setTitle("Dirty Word Usage");
+        eb.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
+        eb.addField("User", event.getAuthor().getAsMention(), false);
+        eb.addField("Message", event.getMessage().getContentRaw(), false);
+        
+        JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(event.getGuild(), "toxicity-tracker"), eb.build());
     }
 
     

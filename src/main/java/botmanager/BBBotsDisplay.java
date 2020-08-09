@@ -1,7 +1,6 @@
 package botmanager;
 
 import botmanager.bulletbot.BulletBot;
-import botmanager.jigsaw.Jigsaw;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.suggestionbox.SuggestionBox;
 import botmanager.generic.BotBase;
@@ -181,8 +180,7 @@ public class BBBotsDisplay extends javax.swing.JFrame {
             bots = new BotBase[] {
                 new NSFWPolice(tokens.get(0), "NSFW Police"),
                 new SuggestionBox(tokens.get(1), "Suggestion Box"),
-                new BulletBot(tokens.get(2), "Bullet Bot"),
-                new Jigsaw(tokens.get(3), "Jigsaw")
+                new BulletBot(tokens.get(2), "Bullet Bot")
             };
         } catch (Exception e) {
             e.printStackTrace();

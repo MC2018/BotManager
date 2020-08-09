@@ -2,7 +2,6 @@ package botmanager.suggestionbox;
 
 import botmanager.suggestionbox.commands.ReactionManagerCommand;
 import botmanager.suggestionbox.commands.SuggestionCommand;
-import botmanager.suggestionbox.generic.SuggestionBoxCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
