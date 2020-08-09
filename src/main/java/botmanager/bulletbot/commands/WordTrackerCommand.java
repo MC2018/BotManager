@@ -45,6 +45,8 @@ public class WordTrackerCommand extends BulletBotCommandBase {
             message = message.replaceAll(characterReplacement[0], characterReplacement[1]);
         }
         
+        message = message.replaceAll(" ", "");
+        
         for (String dirtyWord : bot.getDirtyWords()) {
             if (message.contains(dirtyWord)) {
                 found = true;
