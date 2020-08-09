@@ -66,7 +66,7 @@ public class SuggestionBox extends BotBase {
     }
     
     @Override
-    public void onPrivateMessageReceived​(PrivateMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
             command.run(event);
         }

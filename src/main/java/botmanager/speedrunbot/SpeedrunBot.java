@@ -79,7 +79,7 @@ public final class SpeedrunBot extends BotBase {
     }
 
     @Override
-    public void onPrivateMessageReceived​(PrivateMessageReceivedEvent event) {
+    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
         Thread thread = new Thread() {
             @Override
             public void run() {
@@ -93,7 +93,7 @@ public final class SpeedrunBot extends BotBase {
     }
 
     @Override
-    public void onGuildMessageReceived​(GuildMessageReceivedEvent event) {
+    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
         Thread thread = new Thread() {
             @Override
             public void run() {
