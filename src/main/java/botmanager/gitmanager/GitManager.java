@@ -197,14 +197,15 @@ public class GitManager extends BotBase {
     }
     
     private void initializeGitHubClients() {
-        for (Guild guild : getJDA().getGuilds()) {
-            File file = GuildSettings.getFile(this, guild.getIdLong());
+        for (GuildSettings gs : guildSettingsList.values()) {
+            File file = GuildSettings.getFile(this, gs.getID());
             GitHubClient client;
-            GuildSettings guildSettings = IOUtils.readGson(file, GuildSettings.class);
             
-            client = new GitHubClient();
-            client.setOAuth2Token(guildSettings.getOAuthToken());
-            ghClients.put(guild.getIdLong(), client);
+            if (!Utils.isNullOrEmpty(gs.getOAuthToken())) {
+                client = new GitHubClient();
+                client.setOAuth2Token(gs.getOAuthToken());
+                ghClients.put(gs.getID(), client);
+            }
         }
         
         prTimerTask = new TimerTask() {
