@@ -52,6 +52,15 @@ public class WordTrackerCommand extends BulletBotCommandBase {
             }
         }
         
+        message = event.getMessage().getContentDisplay();
+        
+        for (String dirtyWord : bot.getDirtyWords()) {
+            if (message.contains(dirtyWord)) {
+                found = true;
+                break;
+            }
+        }
+        
         if (!found) {
             return;
         }
