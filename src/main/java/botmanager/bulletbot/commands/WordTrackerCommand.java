@@ -45,8 +45,6 @@ public class WordTrackerCommand extends BulletBotCommandBase {
             message = message.replaceAll(characterReplacement[0], characterReplacement[1]);
         }
         
-        message = message.replaceAll(" ", "");
-        
         for (String dirtyWord : bot.getDirtyWords()) {
             if (message.contains(dirtyWord)) {
                 found = true;
@@ -61,7 +59,9 @@ public class WordTrackerCommand extends BulletBotCommandBase {
         eb = new EmbedBuilder();
         eb.setTitle("Dirty Word Usage");
         eb.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
-        eb.addField("User and Channel", event.getAuthor().getAsMention() + ", " + event.getChannel().getAsMention(), false);
+        eb.addField("User and Channel", event.getAuthor().getAsMention()
+                + " (" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "), "
+                + event.getChannel().getAsMention(), false);
         eb.addField("Message", event.getMessage().getContentRaw(), false);
         
         JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(event.getGuild(), "toxicity-tracker"), eb.build());
