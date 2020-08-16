@@ -71,8 +71,7 @@ public class WordTrackerCommand extends BulletBotCommandBase {
         eb.addField("User and Channel", event.getAuthor().getAsMention()
                 + ", " + event.getChannel().getAsMention()
                 + "\n(" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ")", false);
-        eb.addField("Message", event.getMessage().getContentRaw(), false);
-        eb.addField("", event.getMessage().getJumpUrl(), false);
+        eb.addField("Message", event.getMessage().getContentRaw() + "\n" + event.getMessage().getJumpUrl(), false);
         
         JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(event.getGuild(), "toxicity-tracker"), eb.build());
     }
