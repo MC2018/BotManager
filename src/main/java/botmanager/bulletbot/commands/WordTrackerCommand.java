@@ -66,12 +66,13 @@ public class WordTrackerCommand extends BulletBotCommandBase {
         }
         
         eb = new EmbedBuilder();
-        eb.setTitle("Dirty Word Usage (Click Here to Jump to Message)", event.getMessage().getJumpUrl());
+        eb.setTitle("Dirty Word Usage");
         eb.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
         eb.addField("User and Channel", event.getAuthor().getAsMention()
                 + " (" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "), "
                 + event.getChannel().getAsMention(), false);
         eb.addField("Message", event.getMessage().getContentRaw(), false);
+        eb.addField("", event.getMessage().getJumpUrl(), false);
         
         JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(event.getGuild(), "toxicity-tracker"), eb.build());
     }
