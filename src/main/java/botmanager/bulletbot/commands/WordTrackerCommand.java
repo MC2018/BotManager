@@ -69,8 +69,8 @@ public class WordTrackerCommand extends BulletBotCommandBase {
         eb.setTitle("Dirty Word Usage");
         eb.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
         eb.addField("User and Channel", event.getAuthor().getAsMention()
-                + " (" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + "), "
-                + event.getChannel().getAsMention(), false);
+                + event.getChannel().getAsMention()
+                + "\n(" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ")", false);
         eb.addField("Message", event.getMessage().getContentRaw(), false);
         eb.addField("", event.getMessage().getJumpUrl(), false);
         
