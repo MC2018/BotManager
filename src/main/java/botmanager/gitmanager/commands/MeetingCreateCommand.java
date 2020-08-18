@@ -22,7 +22,11 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
         bot.getPrefix() + "meeting create",
-        bot.getPrefix() + "create meeting"
+        bot.getPrefix() + "meetings create",
+        bot.getPrefix() + "create meeting",
+        bot.getPrefix() + "meeting add",
+        bot.getPrefix() + "meetings add",
+        bot.getPrefix() + "add meeting",
     };
     
     public MeetingCreateCommand(GitManager bot) {
@@ -70,11 +74,23 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
         }
         
         try {
+            EmbedBuilder eb = new EmbedBuilder();
             Date date;
             guildSettings = bot.getGuildSettings(guildID);
             date = Utils.parseDate(input, guildSettings.getDateFormats());
+            
+            if ((new Date()).after(date)) {
+                JDAUtils.sendPrivateMessage(user, getEarlyFailureEmbed());
+                return;
+            }
+            
             guildSettings.addMeeting(date);
             bot.writeGuildSettings(guildSettings);
+            
+            eb.setTitle("Meeting Set (Index " + (guildSettings.getMeetingIndexAtDate(date) + 1) + ")");
+            eb.setDescription("Date: " + input);
+            eb.addField("Want to set a description?", "```" + bot.getPrefix() + "meeting description " + (guildSettings.getMeetingIndexAtDate(date) + 1) + " New Description```", false);
+            JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
             if (guildID == -1) {
                 JDAUtils.sendPrivateMessage(user, getFailureEmbed());
@@ -89,6 +105,13 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
         return new MessageEmbed.Field("Creating a Meeting", "```" + KEYWORDS[0] + " Time```", false);
     }
 
+    public MessageEmbed getEarlyFailureEmbed() {
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        eb.addField("Command Failed", "You submitted a time that has already occurred!", false);
+        return eb.build();
+    }
+    
     @Override
     public MessageEmbed getFailureEmbed() {
         EmbedBuilder eb = new EmbedBuilder();

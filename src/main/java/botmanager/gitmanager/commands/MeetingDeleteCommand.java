@@ -5,6 +5,7 @@ import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;
+import botmanager.gitmanager.objects.Meeting;
 import java.util.Date;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -22,7 +23,11 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
         bot.getPrefix() + "meeting delete",
-        bot.getPrefix() + "delete meeting"
+        bot.getPrefix() + "meetings delete",
+        bot.getPrefix() + "delete meeting",
+        bot.getPrefix() + "meeting remove",
+        bot.getPrefix() + "meetings remove",
+        bot.getPrefix() + "remove meeting",
     };
     
     public MeetingDeleteCommand(GitManager bot) {
@@ -70,10 +75,17 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
         }
         
         try {
+            EmbedBuilder eb = new EmbedBuilder();
+            Meeting meeting;
             int index = Integer.parseInt(input);
             guildSettings = bot.getGuildSettings(guildID);
-            guildSettings.removeMeeting(guildSettings.getMeetingAtIndex(index - 1).getDate());
+            meeting = guildSettings.getMeetingAtIndex(index - 1);
+            guildSettings.removeMeeting(meeting.getDate());
             bot.writeGuildSettings(guildSettings);
+            
+            eb.setTitle("Meeting Deleted");
+            eb.addField(Utils.formatDate(meeting.getDate(), guildSettings.getDateFormats().get(0)), meeting.getDescription(), false);
+            JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
             if (guildID == -1) {
                 JDAUtils.sendPrivateMessage(user, getFailureEmbed());

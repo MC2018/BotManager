@@ -138,6 +138,16 @@ public class GuildSettings {
         removeMeeting(date);
         addMeeting(date);
     }
+
+    public int getMeetingIndexAtDate(Date date) {
+        for (int i = 0; i < meetings.size(); i++) {
+            if (meetings.get(i).getDate().equals(date)) {
+                return i;
+            }
+        }
+        
+        return -1;
+    }
     
     private class TaskChannel {
         

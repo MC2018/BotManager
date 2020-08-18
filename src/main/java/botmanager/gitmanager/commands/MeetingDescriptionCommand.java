@@ -1,6 +1,7 @@
 package botmanager.gitmanager.commands;
 
 import botmanager.JDAUtils;
+import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;
@@ -21,7 +22,10 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
     private String[] KEYWORDS = {
         bot.getPrefix() + "meeting description",
         bot.getPrefix() + "meeting desc",
-        bot.getPrefix() + "meeting d"
+        bot.getPrefix() + "meeting d",
+        bot.getPrefix() + "meetings description",
+        bot.getPrefix() + "meetings desc",
+        bot.getPrefix() + "meetings d",
     };
     
     public MeetingDescriptionCommand(GitManager bot) {
@@ -82,10 +86,15 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
         }
         
         try {
+            EmbedBuilder eb = new EmbedBuilder();
             guildSettings = bot.getGuildSettings(guildID);
             input = input.substring(input.split(" ")[0].length() + 1, input.length());
             guildSettings.getMeetingAtIndex(meetingNumber - 1).setDescription(input);
             bot.writeGuildSettings(guildSettings);
+            
+            eb.setTitle("Meeting Description Updated");
+            eb.addField(Utils.formatDate(guildSettings.getMeetingAtIndex(meetingNumber - 1).getDate(), guildSettings.getDateFormats().get(0)), input, false);
+            JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
         }

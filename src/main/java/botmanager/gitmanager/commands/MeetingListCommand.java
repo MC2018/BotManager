@@ -6,11 +6,8 @@ import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;
 import botmanager.gitmanager.objects.Meeting;
-import botmanager.gitmanager.objects.Task;
 import java.util.ArrayList;
-import java.util.List;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.User;
@@ -26,7 +23,8 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 public class MeetingListCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting list"
+        bot.getPrefix() + "meeting list",
+        bot.getPrefix() + "meetings list"
     };
     
     public MeetingListCommand(GitManager bot) {
