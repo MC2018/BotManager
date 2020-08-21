@@ -287,14 +287,14 @@ public class GitManager extends BotBase {
             taskID = Integer.parseInt(prName.substring(beginningIndex, prName.length()));
         }
         
-        if (taskID != -1) {
+        try {
             task = readTask(guild.getIdLong(), taskID);
             eb.setTitle("PR Uploaded: " + task.getTitle(), pr.getHtmlUrl());
             
             if (task.getAssignee() != -1) {
                 member = guild.getMemberById(task.getAssignee());
             }
-        } else {
+        } catch (Exception e) {
             eb.setTitle("PR Uploaded: " + prName, pr.getIssueUrl());
         }
         
