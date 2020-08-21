@@ -278,20 +278,20 @@ public class GitManager extends BotBase {
             return;
         }
         
-        for (int i = 0; i < prName.length(); i++) {
-            if ('0' <= prName.charAt(i) && prName.charAt(i) <= '9' && beginningIndex == -1) {
-                beginningIndex = i;
-            } else if ((prName.charAt(i) < '0' ||  '9' < prName.charAt(i)) && beginningIndex != -1) {
-                taskID = Integer.parseInt(prName.substring(beginningIndex, i));
-                break;
-            }
-        }
-        
-        if (beginningIndex != -1 && taskID == -1) {
-            taskID = Integer.parseInt(prName.substring(beginningIndex, prName.length()));
-        }
-        
         try {
+            for (int i = 0; i < prName.length(); i++) {
+                if ('0' <= prName.charAt(i) && prName.charAt(i) <= '9' && beginningIndex == -1) {
+                    beginningIndex = i;
+                } else if ((prName.charAt(i) < '0' || '9' < prName.charAt(i)) && beginningIndex != -1) {
+                    taskID = Integer.parseInt(prName.substring(beginningIndex, i));
+                    break;
+                }
+            }
+            
+            if (beginningIndex != -1 && taskID == -1) {
+                taskID = Integer.parseInt(prName.substring(beginningIndex, prName.length()));
+            }
+            
             task = readTask(guild.getIdLong(), taskID);
             eb.setTitle("PR Uploaded: " + task.getTitle(), pr.getHtmlUrl());
             
@@ -299,7 +299,7 @@ public class GitManager extends BotBase {
                 member = guild.getMemberById(task.getAssignee());
             }
         } catch (Exception e) {
-            eb.setTitle("PR Uploaded: " + prName, pr.getIssueUrl());
+            eb.setTitle("PR Uploaded: " + prName, pr.getHtmlUrl());
         }
         
         if (member != null) {
