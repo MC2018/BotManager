@@ -148,6 +148,10 @@ public class GitManager extends BotBase {
     
     public void checkMeetingTimes() {
         for (GuildSettings guildSettings : guildSettingsList.values()) {
+            if (guildSettings.getMeetings() == null) {
+                continue;
+            }
+            
             for (Meeting meeting : guildSettings.getMeetings()) {
                 Guild guild = getJDA().getGuildById(guildSettings.getID());
                 Date twoDaysPrior = new Date(meeting.getDate().toInstant().minusSeconds(60 * 60 * 2 * 24).toEpochMilli());
