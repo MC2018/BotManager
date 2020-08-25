@@ -162,7 +162,7 @@ public class GitManager extends BotBase {
                 if (Utils.formatDate(twoDaysPrior, dateFormat).equals(Utils.formatDate(date, dateFormat))) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Reminder");
-                    eb.addField("There is a meeting two days from now!", Utils.formatDate(date, dateFormat), false);
+                    eb.addField("There is a meeting two days from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
                     
                     if (meeting.getDescription() != null) {
                         eb.addField("Description", meeting.getDescription(), false);
@@ -179,7 +179,7 @@ public class GitManager extends BotBase {
                         eb.addField("Description", meeting.getDescription(), false);
                     }
                     
-                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
+                    JDAUtils.sendGuildMessageReturn(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
                     JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
                 } else if (Utils.formatDate(new Date(), dateFormat).equals(Utils.formatDate(meeting.getDate(), dateFormat))) {
                     guildSettings.removeMeeting(meeting.getDate());
