@@ -168,8 +168,8 @@ public class GitManager extends BotBase {
                         eb.addField("Description", meeting.getDescription(), false);
                     }
                     
-                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
                     JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
+                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
                 } else if (Utils.formatDate(twoHoursPrior, dateFormat).equals(Utils.formatDate(date, dateFormat))) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Reminder");
@@ -179,7 +179,7 @@ public class GitManager extends BotBase {
                         eb.addField("Description", meeting.getDescription(), false);
                     }
                     
-                    JDAUtils.sendGuildMessageReturn(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
+                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
                     JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
                 } else if (Utils.formatDate(new Date(), dateFormat).equals(Utils.formatDate(meeting.getDate(), dateFormat))) {
                     guildSettings.removeMeeting(meeting.getDate());
