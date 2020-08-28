@@ -1,7 +1,6 @@
 package botmanager.gitmanager.objects;
 
 import botmanager.generic.BotBase;
-import botmanager.gitmanager.GitManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,6 +21,7 @@ public class GuildSettings {
     private String repoName = "";
     private String prAnnouncementChannel = "pr-announcements";
     private String meetingAnnouncementChannel = "general";
+    private String bumpReactionName = "";
     private long id;
     private int defaultTaskChannelIndex = 0;
     
@@ -37,6 +37,20 @@ public class GuildSettings {
         dateFormats.add("M/d/yy ha");
     }
 
+    public void clean() {
+        if (meetings == null) {
+            meetings = new ArrayList();
+        }
+        
+        if (dateFormats == null) {
+            dateFormats = new ArrayList();
+        }
+        
+        if (taskChannels == null) {
+            taskChannels = new ArrayList();
+        }
+    }
+    
     public static File getFile(BotBase bot, long guildID) {
         return new File("data/" + bot.getName() + "/guilds/" + guildID + "/settings.json");
     }
@@ -107,6 +121,14 @@ public class GuildSettings {
 
     public void setMeetingAnnouncementChannel(String meetingAnnouncementChannel) {
         this.meetingAnnouncementChannel = meetingAnnouncementChannel;
+    }
+
+    public String getBumpReactionName() {
+        return bumpReactionName;
+    }
+
+    public void setBumpReactionName(String bumpReactionName) {
+        this.bumpReactionName = bumpReactionName;
     }
 
     public long getID() {

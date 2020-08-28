@@ -1,9 +1,12 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.meetings;
 
 import botmanager.JDAUtils;
+import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
-import botmanager.gitmanager.objects.Task;
+import botmanager.gitmanager.objects.GuildSettings;
+import botmanager.gitmanager.objects.Meeting;
+import java.util.ArrayList;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
@@ -16,14 +19,15 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class TaskDeleteCommand extends GitManagerCommandBase {
+
+public class MeetingListCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task delete",
-        bot.getPrefix() + "delete task",
+        bot.getPrefix() + "meeting list",
+        bot.getPrefix() + "meetings list"
     };
     
-    public TaskDeleteCommand(GitManager bot) {
+    public MeetingListCommand(GitManager bot) {
         super(bot);
     }
 
@@ -31,11 +35,10 @@ public class TaskDeleteCommand extends GitManagerCommandBase {
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent guildEvent = null;
         PrivateMessageReceivedEvent privateEvent = null;
+        GuildSettings guildSettings;
         User user;
-        Task task;
         String input;
         long guildID;
-        int taskNumber;
         boolean found = false;
 
         if (genericEvent instanceof GuildMessageReceivedEvent) {
@@ -53,12 +56,9 @@ public class TaskDeleteCommand extends GitManagerCommandBase {
         }
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 
@@ -69,46 +69,45 @@ public class TaskDeleteCommand extends GitManagerCommandBase {
         }
         
         try {
-            taskNumber = Integer.parseInt(input.split(" ")[0]);
+            ArrayList<Meeting> meetings;
+            EmbedBuilder eb = new EmbedBuilder();
+            
+            guildSettings = bot.getGuildSettings(guildID);
+            meetings = guildSettings.getMeetings();
+            eb.setTitle("Future Meetings");
+            
+            for (int i = 0; i < meetings.size(); i++) {
+                eb.addField(
+                        "Index " + (i + 1) + ": " + (meetings.get(i).getDescription() == null ? "No Description" : meetings.get(i).getDescription()),
+                        Utils.formatDate(meetings.get(i).getDate(), guildSettings.getDateFormats().get(0)),
+                        false);
+                
+                if (i + 1 < meetings.size()) {
+                    eb.addBlankField(false);
+                }
+            }
+            
+            JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
-        if (input.split(" ").length < 2) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
-        try {
-            input = input.substring(input.split(" ")[0].length() + 1, input.length());
-            task = bot.readTask(guildID, taskNumber);
-            bot.getTaskChannel(task.getGuildID(), task.getStatus()).deleteMessageById(task.getMessageID()).queue();
-            task.setDeleted(true, input, user.getIdLong());
-            bot.writeTask(task);
-        } catch (Exception e) {
-
         }
     }
-
     
     @Override
-    public Field info() {
-        return new Field("Removing a Task", "```" + KEYWORDS[0] + " 102 Duplicate```", false);
+    public MessageEmbed.Field info() {
+        return new Field("Listing all Meetings", "```" + KEYWORDS[0] + "```", false);
     }
-    
+
     @Override
     public MessageEmbed getFailureEmbed() {
         EmbedBuilder eb = new EmbedBuilder();
         
         eb.addField(
                 "Command Failed",
-                "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TASK_ID REASON```",
+                "There was a problem with the command, if this issue persists please notify the bot manager.",
                 false);
         
         return eb.build();
     }
 
-    
 }

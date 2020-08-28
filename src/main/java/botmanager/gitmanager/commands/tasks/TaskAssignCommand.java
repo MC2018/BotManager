@@ -1,4 +1,4 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.tasks;
 
 import botmanager.Utils;
 import botmanager.gitmanager.GitManager;

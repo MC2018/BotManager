@@ -1,12 +1,10 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.meetings;
 
 import botmanager.JDAUtils;
 import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;
-import botmanager.gitmanager.objects.Meeting;
-import java.util.ArrayList;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
@@ -19,15 +17,18 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-
-public class MeetingListCommand extends GitManagerCommandBase {
+public class MeetingDescriptionCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting list",
-        bot.getPrefix() + "meetings list"
+        bot.getPrefix() + "meeting description",
+        bot.getPrefix() + "meeting desc",
+        bot.getPrefix() + "meeting d",
+        bot.getPrefix() + "meetings description",
+        bot.getPrefix() + "meetings desc",
+        bot.getPrefix() + "meetings d",
     };
     
-    public MeetingListCommand(GitManager bot) {
+    public MeetingDescriptionCommand(GitManager bot) {
         super(bot);
     }
 
@@ -39,6 +40,7 @@ public class MeetingListCommand extends GitManagerCommandBase {
         User user;
         String input;
         long guildID;
+        int meetingNumber;
         boolean found = false;
 
         if (genericEvent instanceof GuildMessageReceivedEvent) {
@@ -54,11 +56,14 @@ public class MeetingListCommand extends GitManagerCommandBase {
         } else {
             return;
         }
-        
+
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword)) {
+            if (input.toLowerCase().startsWith(keyword + " ")) {
+                input = input.substring(keyword.length() + 1, input.length());
                 found = true;
                 break;
+            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
+                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 
@@ -69,45 +74,50 @@ public class MeetingListCommand extends GitManagerCommandBase {
         }
         
         try {
-            ArrayList<Meeting> meetings;
+            meetingNumber = Integer.parseInt(input.split(" ")[0]);
+        } catch (Exception e) {
+            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+            return;
+        }
+        
+        if (input.split(" ").length < 2) {
+            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+            return;
+        }
+        
+        try {
             EmbedBuilder eb = new EmbedBuilder();
-            
             guildSettings = bot.getGuildSettings(guildID);
-            meetings = guildSettings.getMeetings();
-            eb.setTitle("Future Meetings");
+            input = input.substring(input.split(" ")[0].length() + 1, input.length());
+            guildSettings.getMeetingAtIndex(meetingNumber - 1).setDescription(input);
+            bot.writeGuildSettings(guildSettings);
             
-            for (int i = 0; i < meetings.size(); i++) {
-                eb.addField(
-                        "Index " + (i + 1) + ": " + (meetings.get(i).getDescription() == null ? "No Description" : meetings.get(i).getDescription()),
-                        Utils.formatDate(meetings.get(i).getDate(), guildSettings.getDateFormats().get(0)),
-                        false);
-                
-                if (i + 1 < meetings.size()) {
-                    eb.addBlankField(false);
-                }
-            }
-            
+            eb.setTitle("Meeting Description Updated");
+            eb.addField(Utils.formatDate(guildSettings.getMeetingAtIndex(meetingNumber - 1).getDate(), guildSettings.getDateFormats().get(0)), input, false);
             JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
         }
     }
+
     
     @Override
-    public MessageEmbed.Field info() {
-        return new Field("Listing all Meetings", "```" + KEYWORDS[0] + "```", false);
+    public Field info() {
+        return new Field("Changing a Meeting Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
     }
-
+    
     @Override
     public MessageEmbed getFailureEmbed() {
         EmbedBuilder eb = new EmbedBuilder();
         
         eb.addField(
                 "Command Failed",
-                "There was a problem with the command, if this issue persists please notify the bot manager.",
-                false);
+                "Please use proper syntax:\n"
+                        + "```" + KEYWORDS[0] + " MEETING_ID NEW_DESCRIPTION```",
+                true);
         
         return eb.build();
     }
 
+    
 }

@@ -1,13 +1,13 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.meetings;
 
 import botmanager.JDAUtils;
 import botmanager.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;
+import java.util.Date;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -17,18 +17,19 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class MeetingDescriptionCommand extends GitManagerCommandBase {
+
+public class MeetingCreateCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting description",
-        bot.getPrefix() + "meeting desc",
-        bot.getPrefix() + "meeting d",
-        bot.getPrefix() + "meetings description",
-        bot.getPrefix() + "meetings desc",
-        bot.getPrefix() + "meetings d",
+        bot.getPrefix() + "meeting create",
+        bot.getPrefix() + "meetings create",
+        bot.getPrefix() + "create meeting",
+        bot.getPrefix() + "meeting add",
+        bot.getPrefix() + "meetings add",
+        bot.getPrefix() + "add meeting",
     };
     
-    public MeetingDescriptionCommand(GitManager bot) {
+    public MeetingCreateCommand(GitManager bot) {
         super(bot);
     }
 
@@ -40,7 +41,6 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
         User user;
         String input;
         long guildID;
-        int meetingNumber;
         boolean found = false;
 
         if (genericEvent instanceof GuildMessageReceivedEvent) {
@@ -56,7 +56,7 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
         } else {
             return;
         }
-
+        
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
                 input = input.substring(keyword.length() + 1, input.length());
@@ -74,36 +74,42 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
         }
         
         try {
-            meetingNumber = Integer.parseInt(input.split(" ")[0]);
-        } catch (Exception e) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
-        if (input.split(" ").length < 2) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
-        try {
             EmbedBuilder eb = new EmbedBuilder();
+            Date date;
             guildSettings = bot.getGuildSettings(guildID);
-            input = input.substring(input.split(" ")[0].length() + 1, input.length());
-            guildSettings.getMeetingAtIndex(meetingNumber - 1).setDescription(input);
+            date = Utils.parseDate(input, guildSettings.getDateFormats());
+            
+            if ((new Date()).after(date)) {
+                JDAUtils.sendPrivateMessage(user, getEarlyFailureEmbed());
+                return;
+            }
+            
+            guildSettings.addMeeting(date);
             bot.writeGuildSettings(guildSettings);
             
-            eb.setTitle("Meeting Description Updated");
-            eb.addField(Utils.formatDate(guildSettings.getMeetingAtIndex(meetingNumber - 1).getDate(), guildSettings.getDateFormats().get(0)), input, false);
+            eb.setTitle("Meeting Set (Index " + (guildSettings.getMeetingIndexAtDate(date) + 1) + ")");
+            eb.setDescription("Date: " + input);
+            eb.addField("Want to set a description?", "```" + bot.getPrefix() + "meeting description " + (guildSettings.getMeetingIndexAtDate(date) + 1) + " New Description```", false);
             JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+            if (guildID == -1) {
+                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+            } else {
+                JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
+            }
         }
     }
-
     
     @Override
-    public Field info() {
-        return new Field("Changing a Meeting Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+    public MessageEmbed.Field info() {
+        return new MessageEmbed.Field("Creating a Meeting", "```" + KEYWORDS[0] + " Time```", false);
+    }
+
+    public MessageEmbed getEarlyFailureEmbed() {
+        EmbedBuilder eb = new EmbedBuilder();
+        
+        eb.addField("Command Failed", "You submitted a time that has already occurred!", false);
+        return eb.build();
     }
     
     @Override
@@ -113,11 +119,27 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " MEETING_ID NEW_DESCRIPTION```",
-                true);
+                        + "```" + KEYWORDS[0] + " TIME```",
+                false);
+        
+        return eb.build();
+    }
+    
+    public MessageEmbed getFailureEmbed(long guildID) {
+        EmbedBuilder eb = new EmbedBuilder();
+        GuildSettings guildSettings = bot.getGuildSettings(guildID);
+        StringBuilder formats = new StringBuilder();
+        Date date = new Date();
+        
+        guildSettings.getDateFormats().forEach(x -> formats.append(Utils.formatDate(date, x)).append("\n"));
+        eb.addField(
+                "Command Failed",
+                "Please use proper syntax:\n"
+                        + "```" + KEYWORDS[0] + " TIME```",
+                false);
+        eb.addField("Formats Allowed", "```" + formats.toString().trim() + "```", false);
         
         return eb.build();
     }
 
-    
 }

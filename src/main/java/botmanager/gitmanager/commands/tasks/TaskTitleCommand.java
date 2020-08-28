@@ -1,4 +1,4 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.tasks;
 
 import botmanager.JDAUtils;
 import botmanager.gitmanager.GitManager;
@@ -16,15 +16,14 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class TaskDescriptionCommand extends GitManagerCommandBase {
+public class TaskTitleCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task description",
-        bot.getPrefix() + "task desc",
-        bot.getPrefix() + "task d"
+        bot.getPrefix() + "task title",
+        bot.getPrefix() + "task t"
     };
     
-    public TaskDescriptionCommand(GitManager bot) {
+    public TaskTitleCommand(GitManager bot) {
         super(bot);
     }
 
@@ -32,8 +31,8 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent guildEvent = null;
         PrivateMessageReceivedEvent privateEvent = null;
-        User user;
         Task task;
+        User user;
         String input;
         long guildID;
         int taskNumber;
@@ -52,7 +51,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
         } else {
             return;
         }
-
+        
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
                 input = input.substring(keyword.length() + 1, input.length());
@@ -81,17 +80,21 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
             return;
         }
         
-        input = input.substring(input.split(" ")[0].length() + 1, input.length());
-        task = bot.readTask(guildID, taskNumber);
-        task.setDescription(input, user.getIdLong());
-        bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
-        bot.writeTask(task);
+        try {
+            input = input.substring(input.split(" ")[0].length() + 1, input.length());
+            task = bot.readTask(guildID, taskNumber);
+            task.setTitle(input, user.getIdLong());
+            bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
+            bot.writeTask(task);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     
     @Override
     public Field info() {
-        return new Field("Changing a Task Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+        return new Field("Changing a Title", "```" + KEYWORDS[0] + " 102 New Title```", false);
     }
     
     @Override
@@ -101,7 +104,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION```",
+                        + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION",
                 true);
         
         return eb.build();

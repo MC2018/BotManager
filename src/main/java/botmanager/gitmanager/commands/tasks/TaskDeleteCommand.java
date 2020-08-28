@@ -1,4 +1,4 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.tasks;
 
 import botmanager.JDAUtils;
 import botmanager.gitmanager.GitManager;
@@ -16,14 +16,14 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class TaskTitleCommand extends GitManagerCommandBase {
+public class TaskDeleteCommand extends GitManagerCommandBase {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task title",
-        bot.getPrefix() + "task t"
+        bot.getPrefix() + "task delete",
+        bot.getPrefix() + "delete task",
     };
     
-    public TaskTitleCommand(GitManager bot) {
+    public TaskDeleteCommand(GitManager bot) {
         super(bot);
     }
 
@@ -31,8 +31,8 @@ public class TaskTitleCommand extends GitManagerCommandBase {
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent guildEvent = null;
         PrivateMessageReceivedEvent privateEvent = null;
-        Task task;
         User user;
+        Task task;
         String input;
         long guildID;
         int taskNumber;
@@ -83,18 +83,18 @@ public class TaskTitleCommand extends GitManagerCommandBase {
         try {
             input = input.substring(input.split(" ")[0].length() + 1, input.length());
             task = bot.readTask(guildID, taskNumber);
-            task.setTitle(input, user.getIdLong());
-            bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
+            bot.getTaskChannel(task.getGuildID(), task.getStatus()).deleteMessageById(task.getMessageID()).queue();
+            task.setDeleted(true, input, user.getIdLong());
             bot.writeTask(task);
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
     }
 
     
     @Override
     public Field info() {
-        return new Field("Changing a Title", "```" + KEYWORDS[0] + " 102 New Title```", false);
+        return new Field("Removing a Task", "```" + KEYWORDS[0] + " 102 Duplicate```", false);
     }
     
     @Override
@@ -104,8 +104,8 @@ public class TaskTitleCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION",
-                true);
+                        + "```" + KEYWORDS[0] + " TASK_ID REASON```",
+                false);
         
         return eb.build();
     }

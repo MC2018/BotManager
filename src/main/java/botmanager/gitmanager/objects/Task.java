@@ -113,6 +113,10 @@ public class Task {
     }
 
     public void updateStatus(int status, long channelID, long messageID, long userID) {
+        if (this.status == status) {
+            updateLogs.add(new UpdateLog("Updated messageID (Bump)", String.valueOf(this.messageID), String.valueOf(messageID), userID));
+        }
+        
         updateLogs.add(new UpdateLog("Updated status", String.valueOf(this.status), String.valueOf(status), userID));
         updateLogs.add(new UpdateLog("Updated channelID", String.valueOf(this.channelID), String.valueOf(channelID), userID));
         updateLogs.add(new UpdateLog("Updated messageID", String.valueOf(this.messageID), String.valueOf(messageID), userID));

@@ -7,20 +7,20 @@ import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
-import botmanager.gitmanager.commands.TaskAssignCommand;
+import botmanager.gitmanager.commands.tasks.TaskAssignCommand;
 import botmanager.gitmanager.commands.ChannelCleanupCommand;
-import botmanager.gitmanager.commands.TaskCreateCommand;
-import botmanager.gitmanager.commands.TaskDescriptionCommand;
+import botmanager.gitmanager.commands.tasks.TaskCreateCommand;
+import botmanager.gitmanager.commands.tasks.TaskDescriptionCommand;
 import botmanager.gitmanager.commands.HelpCommand;
-import botmanager.gitmanager.commands.TaskPurgeCommand;
+import botmanager.gitmanager.commands.tasks.TaskPurgeCommand;
 import botmanager.gitmanager.commands.DefaultGuildCommand;
-import botmanager.gitmanager.commands.MeetingCreateCommand;
-import botmanager.gitmanager.commands.MeetingDeleteCommand;
-import botmanager.gitmanager.commands.MeetingDescriptionCommand;
-import botmanager.gitmanager.commands.MeetingListCommand;
-import botmanager.gitmanager.commands.TaskDeleteCommand;
-import botmanager.gitmanager.commands.TaskMoverCommand;
-import botmanager.gitmanager.commands.TaskTitleCommand;
+import botmanager.gitmanager.commands.meetings.MeetingCreateCommand;
+import botmanager.gitmanager.commands.meetings.MeetingDeleteCommand;
+import botmanager.gitmanager.commands.meetings.MeetingDescriptionCommand;
+import botmanager.gitmanager.commands.meetings.MeetingListCommand;
+import botmanager.gitmanager.commands.tasks.TaskDeleteCommand;
+import botmanager.gitmanager.commands.tasks.TaskMoverCommand;
+import botmanager.gitmanager.commands.tasks.TaskTitleCommand;
 import botmanager.gitmanager.objects.GuildSettings;
 import botmanager.gitmanager.objects.Meeting;
 import botmanager.gitmanager.objects.Task;
@@ -156,24 +156,20 @@ public class GitManager extends BotBase {
                 Guild guild = getJDA().getGuildById(guildSettings.getID());
                 Date twoDaysPrior = new Date(meeting.getDate().toInstant().minusSeconds(60 * 60 * 2 * 24).toEpochMilli());
                 Date twoHoursPrior = new Date(meeting.getDate().toInstant().minusSeconds(60 * 60 * 2).toEpochMilli());
-                Date date = new Date();
+                Date currentDate = new Date();
                 String dateFormat = guildSettings.getDateFormats().get(0);
                 
-                if (Utils.formatDate(twoDaysPrior, dateFormat).equals(Utils.formatDate(date, dateFormat))) {
+                if (Utils.formatDate(twoDaysPrior, dateFormat).equals(Utils.formatDate(currentDate, dateFormat))
+                        || Utils.formatDate(twoHoursPrior, dateFormat).equals(Utils.formatDate(currentDate, dateFormat))) {
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("Reminder");
-                    eb.addField("There is a meeting two days from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
                     
-                    if (meeting.getDescription() != null) {
-                        eb.addField("Description", meeting.getDescription(), false);
+                    eb.setTitle("Reminder");
+                    
+                    if (Utils.formatDate(twoHoursPrior, dateFormat).equals(Utils.formatDate(currentDate, dateFormat))) {
+                        eb.addField("There is a meeting two days from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
+                    } else {
+                        eb.addField("There is a meeting two hours from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
                     }
-                    
-                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), "@everyone");
-                    JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
-                } else if (Utils.formatDate(twoHoursPrior, dateFormat).equals(Utils.formatDate(date, dateFormat))) {
-                    EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("Reminder");
-                    eb.addField("There is a meeting two hours from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
                     
                     if (meeting.getDescription() != null) {
                         eb.addField("Description", meeting.getDescription(), false);
@@ -196,7 +192,8 @@ public class GitManager extends BotBase {
         }
         
         if (!guildSettingsList.containsKey(guildID)) {
-            guildSettingsList.put(guildID, readGuildSettings(guildID));
+            GuildSettings guildSettings = readGuildSettings(guildID);
+            guildSettingsList.put(guildID, guildSettings);
         }
     }
     
@@ -268,9 +265,9 @@ public class GitManager extends BotBase {
     private void sendPRUpdateMessage(GuildSettings gs, PullRequest pr) {
         EmbedBuilder eb = new EmbedBuilder();
         Guild guild = getJDA().getGuildById(gs.getID());
+        String prName = pr.getHead().getRef();
         Member member = null;
         Task task;
-        String prName = pr.getHead().getRef();
         int taskID = -1;
         int beginningIndex = -1;
         
@@ -336,6 +333,10 @@ public class GitManager extends BotBase {
         ArrayList<String> taskReactionNames = gs.getTaskReactionNames();
         taskReactionNames.set(selectedIndex, null);
         
+        if (!Utils.isNullOrEmpty(gs.getBumpReactionName())) {
+            JDAUtils.addReaction(message, gs.getBumpReactionName());
+        }
+        
         for (String reaction : taskReactionNames) {
             if (!Utils.isNullOrEmpty(reaction)) {
                 JDAUtils.addReaction(message, reaction);
@@ -351,7 +352,10 @@ public class GitManager extends BotBase {
     
     private GuildSettings readGuildSettings(long guildID) {
         File file = GuildSettings.getFile(this, guildID);
-        return IOUtils.readGson(file, GuildSettings.class);
+        GuildSettings guildSettings = IOUtils.readGson(file, GuildSettings.class);
+        
+        guildSettings.clean();
+        return guildSettings;
     }
     
     public void writeGuildSettings(GuildSettings guildSettings) {

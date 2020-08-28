@@ -1,4 +1,4 @@
-package botmanager.gitmanager.commands;
+package botmanager.gitmanager.commands.tasks;
 
 import botmanager.JDAUtils;
 import botmanager.Utils;
@@ -56,22 +56,6 @@ public class TaskMoverCommand extends GitManagerCommandBase {
         
         gs = bot.getGuildSettings(event.getGuild().getIdLong());
         taskReactionNames = gs.getTaskReactionNames();
-        
-        if (event.getReactionEmote().isEmote() && taskReactionNames.contains(event.getReactionEmote().getName())) {
-            newStatus = taskReactionNames.indexOf(event.getReactionEmote().getName());
-        } else if (event.getReactionEmote().isEmoji()) {
-            for (String taskReactionName : taskReactionNames) {
-                if (Utils.getEmoji(taskReactionName).getUnicode().equals(event.getReactionEmote().getName())) {
-                    newStatus = taskReactionNames.indexOf(taskReactionName);
-                    break;
-                }
-            }
-        }
-        
-        if (newStatus == -1) {
-            return;
-        }
-        
         embeds = originalMessage.getEmbeds();
         
         if (embeds.isEmpty() || Utils.isNullOrEmpty(embeds.get(0).getTitle())) {
@@ -95,9 +79,27 @@ public class TaskMoverCommand extends GitManagerCommandBase {
         
         if (taskID <= 0) {
             return;
+        } else {
+            task = bot.readTask(event.getGuild().getIdLong(), taskID);
         }
         
-        task = bot.readTask(event.getGuild().getIdLong(), taskID);
+        if (event.getReactionEmote().isEmote() && taskReactionNames.contains(event.getReactionEmote().getName())) {
+            newStatus = taskReactionNames.indexOf(event.getReactionEmote().getName());
+        } else if (!Utils.isNullOrEmpty(gs.getBumpReactionName()) && event.getReactionEmote().getName().contains(Utils.getEmoji(gs.getBumpReactionName()).getUnicode())) {
+            newStatus = task.getStatus();
+        } else if (event.getReactionEmote().isEmoji()) {
+            for (String taskReactionName : taskReactionNames) {
+                if (Utils.getEmoji(taskReactionName).getUnicode().equals(event.getReactionEmote().getName())) {
+                    newStatus = taskReactionNames.indexOf(taskReactionName);
+                    break;
+                }
+            }
+        }
+        
+        if (newStatus == -1) {
+            return;
+        }
+        
         newMessage = JDAUtils.sendGuildMessageReturn(bot.getTaskChannel(event.getGuild().getIdLong(), newStatus), bot.generateTaskEmbed(task));
         GitManager.addTaskReactions(newMessage, gs, newStatus);
         originalMessage.delete().queue();
