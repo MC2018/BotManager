@@ -52,3 +52,4 @@ data/
 .gradle
 #git rm --cached .gradle -r
 .nb-gradle/
+src/main/java/botmanager/display/Test.java

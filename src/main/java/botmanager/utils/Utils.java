@@ -1,6 +1,6 @@
 package botmanager.utils;
 
-import botmanager.speedrunbot.SpeedrunBot;
+import botmanager.bots.speedrunbot.SpeedrunBot;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;

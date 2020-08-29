@@ -1,9 +1,9 @@
 package botmanager.display;
 
 import botmanager.utils.IOUtils;
-import botmanager.bulletbot.BulletBot;
-import botmanager.nsfwpolice.NSFWPolice;
-import botmanager.suggestionbox.SuggestionBox;
+import botmanager.bots.bulletbot.BulletBot;
+import botmanager.bots.nsfwpolice.NSFWPolice;
+import botmanager.bots.suggestionbox.SuggestionBox;
 import botmanager.generic.BotBase;
 import java.awt.Frame;
 import java.io.File;

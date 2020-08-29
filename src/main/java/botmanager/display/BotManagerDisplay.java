@@ -2,10 +2,10 @@ package botmanager.display;
 
 import botmanager.utils.IOUtils;
 import botmanager.generic.BotBase;
-import botmanager.boteyy_.Boteyy_;
-import botmanager.gitmanager.GitManager;
-import botmanager.maidiscordbot.MaiDiscordBot;
-import botmanager.speedrunbot.SpeedrunBot;
+import botmanager.bots.boteyy_.Boteyy_;
+import botmanager.bots.gitmanager.GitManager;
+import botmanager.bots.maidiscordbot.MaiDiscordBot;
+import botmanager.bots.speedrunbot.SpeedrunBot;
 import java.io.File;
 import java.util.List;
 
