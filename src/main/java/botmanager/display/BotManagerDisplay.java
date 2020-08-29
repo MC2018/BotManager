@@ -1,5 +1,6 @@
-package botmanager;
+package botmanager.display;
 
+import botmanager.utils.IOUtils;
 import botmanager.generic.BotBase;
 import botmanager.boteyy_.Boteyy_;
 import botmanager.gitmanager.GitManager;

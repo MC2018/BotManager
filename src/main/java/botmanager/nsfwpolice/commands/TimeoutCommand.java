@@ -1,6 +1,6 @@
 package botmanager.nsfwpolice.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.nsfwpolice.generic.NSFWPoliceCommandBase;
 import net.dv8tion.jda.api.entities.Member;
@@ -31,7 +31,7 @@ public class TimeoutCommand extends NSFWPoliceCommandBase {
 
     public void runRoleAdd(GuildMemberRoleAddEvent event) {
         Member member = event.getMember();
-        Role role = JDAUtils.getRole(event, "Member");
+        Role role = JDAUtils.findRole(event, "Member");
         boolean hasTimeout = JDAUtils.hasRole(member, "Timeout");
         boolean hasMember = JDAUtils.hasRole(member, "Member");
         
@@ -46,7 +46,7 @@ public class TimeoutCommand extends NSFWPoliceCommandBase {
     
     public void runRoleRemove(GuildMemberRoleRemoveEvent event) {
         Member member = event.getMember();
-        Role role = JDAUtils.getRole(event, "Member");
+        Role role = JDAUtils.findRole(event, "Member");
         boolean hasTimeout = JDAUtils.hasRole(member, "Timeout");
         boolean hasMember = JDAUtils.hasRole(member, "Member");
         

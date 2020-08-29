@@ -1,6 +1,6 @@
 package botmanager.nsfwpolice.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.nsfwpolice.generic.NSFWPoliceCommandBase;
 import net.dv8tion.jda.api.events.Event;

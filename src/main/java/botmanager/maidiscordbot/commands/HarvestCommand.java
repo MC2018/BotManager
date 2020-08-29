@@ -1,6 +1,6 @@
 package botmanager.maidiscordbot.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;
 import botmanager.maidiscordbot.generic.MaiDiscordBotCommandBase;
 import net.dv8tion.jda.api.entities.Guild;

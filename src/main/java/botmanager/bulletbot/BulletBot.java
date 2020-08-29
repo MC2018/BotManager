@@ -1,6 +1,6 @@
 package botmanager.bulletbot;
 
-import botmanager.IOUtils;
+import botmanager.utils.IOUtils;
 import botmanager.bulletbot.commands.BirthDateCommand;
 import botmanager.bulletbot.commands.InfoCommand;
 import botmanager.bulletbot.commands.JoinDateCommand;

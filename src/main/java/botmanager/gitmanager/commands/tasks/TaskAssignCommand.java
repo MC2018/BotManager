@@ -1,6 +1,6 @@
 package botmanager.gitmanager.commands.tasks;
 
-import botmanager.Utils;
+import botmanager.utils.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.Task;

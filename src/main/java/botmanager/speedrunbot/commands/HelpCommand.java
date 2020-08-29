@@ -1,6 +1,6 @@
 package botmanager.speedrunbot.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.speedrunbot.generic.SpeedrunBotCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;

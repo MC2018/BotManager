@@ -1,6 +1,6 @@
 package botmanager.bulletbot.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.bulletbot.generic.BulletBotCommandBase;
 import net.dv8tion.jda.api.EmbedBuilder;

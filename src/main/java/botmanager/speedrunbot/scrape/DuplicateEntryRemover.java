@@ -1,6 +1,6 @@
 package botmanager.speedrunbot.scrape;
 
-import botmanager.IOUtils;
+import botmanager.utils.IOUtils;
 import botmanager.speedrunbot.webdriver.SingleWebDriver;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

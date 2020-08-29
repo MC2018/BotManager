@@ -1,6 +1,6 @@
 package botmanager.gitmanager.commands.tasks;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;

@@ -1,7 +1,7 @@
 package botmanager.gitmanager.commands.meetings;
 
-import botmanager.JDAUtils;
-import botmanager.Utils;
+import botmanager.utils.JDAUtils;
+import botmanager.utils.Utils;
 import botmanager.gitmanager.GitManager;
 import botmanager.gitmanager.generic.GitManagerCommandBase;
 import botmanager.gitmanager.objects.GuildSettings;

@@ -1,6 +1,6 @@
 package botmanager.nsfwpolice.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.nsfwpolice.generic.NSFWPoliceCommandBase;
 import java.text.DateFormat;
@@ -53,7 +53,7 @@ public class NSFWBanCommand extends NSFWPoliceCommandBase {
         event = (GuildMemberRoleAddEvent) genericEvent;
         
         member = event.getMember();
-        role = JDAUtils.getRole(event, "NSFW");
+        role = JDAUtils.findRole(event, "NSFW");
         hasNSFWBan = JDAUtils.hasRole(member, "NSFW-Ban");
         hasNSFW = JDAUtils.hasRole(member, "NSFW");
         

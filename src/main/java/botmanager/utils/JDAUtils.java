@@ -1,4 +1,4 @@
-package botmanager;
+package botmanager.utils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -49,7 +49,7 @@ public class JDAUtils {
     }
 
     public static void sendGuildMessage(TextChannel channel, String message) {
-        if (message.length() > 1950) {
+        if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
         }
 
@@ -75,7 +75,7 @@ public class JDAUtils {
     public static void sendGuildMessageWithReactions(TextChannel channel, String message, String[] reactionNames) {
         Message sentMessage;
 
-        if (message.length() > 1950) {
+        if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
         }
 
@@ -89,7 +89,7 @@ public class JDAUtils {
     public static void sendGuildMessageWithReactions(TextChannel channel, String message, String[] reactionNames, File file) {
         Message sentMessage;
 
-        if (message.length() > 1950) {
+        if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
         }
 
@@ -101,7 +101,7 @@ public class JDAUtils {
     }
 
     public static void sendPrivateMessage(User user, String message) {
-        if (message.length() > 1950) {
+        if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
         }
 
@@ -115,7 +115,7 @@ public class JDAUtils {
     public static void sendPrivateMessageWithReactions(TextChannel channel, String message, String[] reactionNames) {
         Message sentMessage;
 
-        if (message.length() > 1950) {
+        if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
         }
 
@@ -126,7 +126,7 @@ public class JDAUtils {
         }
     }
 
-    public static Role getRole(GenericGuildEvent event, String roleName) {
+    public static Role findRole(GenericGuildEvent event, String roleName) {
         List<Role> roles = event.getGuild().getRoles();
 
         for (Role role : roles) {

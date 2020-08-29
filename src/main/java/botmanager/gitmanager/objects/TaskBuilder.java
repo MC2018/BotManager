@@ -1,7 +1,7 @@
 package botmanager.gitmanager.objects;
 
-import botmanager.IOUtils;
-import botmanager.Utils;
+import botmanager.utils.IOUtils;
+import botmanager.utils.Utils;
 import botmanager.generic.BotBase;
 import java.io.File;
 

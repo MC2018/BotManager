@@ -1,4 +1,4 @@
-package botmanager;
+package botmanager.utils;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;

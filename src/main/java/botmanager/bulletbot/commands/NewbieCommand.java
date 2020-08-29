@@ -5,7 +5,7 @@ package botmanager.bulletbot.commands;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.bulletbot.generic.BulletBotCommandBase;
 import java.text.SimpleDateFormat;

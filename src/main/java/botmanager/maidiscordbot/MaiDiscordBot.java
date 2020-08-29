@@ -1,7 +1,7 @@
 package botmanager.maidiscordbot;
 
-import botmanager.IOUtils;
-import botmanager.Utils;
+import botmanager.utils.IOUtils;
+import botmanager.utils.Utils;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;

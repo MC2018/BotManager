@@ -1,8 +1,8 @@
 package botmanager.gitmanager;
 
-import botmanager.JDAUtils;
-import botmanager.IOUtils;
-import botmanager.Utils;
+import botmanager.utils.JDAUtils;
+import botmanager.utils.IOUtils;
+import botmanager.utils.Utils;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;

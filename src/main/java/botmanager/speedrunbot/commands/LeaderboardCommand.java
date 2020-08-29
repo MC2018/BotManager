@@ -1,6 +1,6 @@
 package botmanager.speedrunbot.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;
 import botmanager.speedrunbot.SpeedrunBot;
 import com.tsunderebug.speedrun4j.game.Category;

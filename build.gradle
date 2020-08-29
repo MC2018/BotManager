@@ -6,7 +6,7 @@ sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'botmanager.BotManagerDisplay'
+    ext.mainClass = 'botmanager.display.BotManagerDisplay'
 }
 
 repositories {
@@ -26,7 +26,7 @@ dependencies {
 }
 
 task(debug, dependsOn: 'classes', type: JavaExec) {
-    main = 'botmanager.GitManagerDisplay'
+    main = 'botmanager.display.SingularTest'
     classpath = sourceSets.main.runtimeClasspath
     args 'server'
     debug true

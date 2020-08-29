@@ -1,6 +1,6 @@
 package botmanager.suggestionbox.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.suggestionbox.SuggestionBox;
 import botmanager.suggestionbox.generic.SuggestionBoxCommandBase;
 import java.io.File;

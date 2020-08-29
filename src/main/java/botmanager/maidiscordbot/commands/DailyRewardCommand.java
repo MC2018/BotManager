@@ -1,6 +1,6 @@
 package botmanager.maidiscordbot.commands;
 
-import botmanager.JDAUtils;
+import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;
 import java.text.SimpleDateFormat;
 import java.util.Date;

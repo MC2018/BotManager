@@ -1,5 +1,6 @@
-package botmanager;
+package botmanager.display;
 
+import botmanager.utils.IOUtils;
 import botmanager.bulletbot.BulletBot;
 import botmanager.nsfwpolice.NSFWPolice;
 import botmanager.suggestionbox.SuggestionBox;

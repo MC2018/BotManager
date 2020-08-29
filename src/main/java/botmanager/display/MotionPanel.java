@@ -1,4 +1,4 @@
-package botmanager;
+package botmanager.display;
 
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
