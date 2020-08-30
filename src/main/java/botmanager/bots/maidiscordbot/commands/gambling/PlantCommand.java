@@ -1,4 +1,4 @@
-package botmanager.bots.maidiscordbot.commands;
+package botmanager.bots.maidiscordbot.commands.gambling;
 
 import botmanager.utils.JDAUtils;
 import botmanager.utils.IOUtils;

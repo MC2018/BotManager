@@ -1,4 +1,4 @@
-package botmanager.bots.maidiscordbot.commands;
+package botmanager.bots.maidiscordbot.commands.money;
 
 import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;

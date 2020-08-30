@@ -1,4 +1,4 @@
-package botmanager.bots.maidiscordbot.commands;
+package botmanager.bots.maidiscordbot.commands.money;
 
 import botmanager.generic.BotBase;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package botmanager.bots.maidiscordbot.commands;
+package botmanager.bots.maidiscordbot.commands.money;
 
 import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;
@@ -13,17 +13,18 @@ import botmanager.bots.maidiscordbot.generic.MaiDiscordBotCommandBase;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class BalanceTopCommand extends MaiDiscordBotCommandBase {
+
+public class AlltimeBaltopCommand extends MaiDiscordBotCommandBase {
 
     final String[] KEYWORDS = {
-        "baltop",
-        "balancetop",
-        "leaderboard",
-        "lb",
-        "top"
+        "alltimebaltop",
+        "alltimebalancetop",
+        "alltimeleaderboard",
+        "alltimelb",
+        "alltimetop"
     };
-
-    public BalanceTopCommand(BotBase bot) {
+    
+    public AlltimeBaltopCommand(BotBase bot) {
         super(bot);
     }
 
@@ -32,11 +33,9 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
         GuildMessageReceivedEvent event;
         Guild guild;
         File[] files;
-        String message = null;
-        String result = "";
-        int size = 5;
+        String result;
         boolean found = false;
-        
+
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
             return;
         }
@@ -45,7 +44,6 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
 
         for (String keyword : KEYWORDS) {
             if (event.getMessage().getContentRaw().startsWith(bot.getPrefix() + keyword)) {
-                message = event.getMessage().getContentRaw().replace(bot.getPrefix() + keyword, "").replaceAll(" ", "");
                 found = true;
                 break;
             }
@@ -55,28 +53,12 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
             return;
         }
 
-        if (!message.isEmpty()) {
-            try {
-                size = Integer.parseInt(message);
-                
-                if (size > 20) {
-                    result += "Limiting the search to the top 20 members.\n\n";
-                    size = 20;
-                }
-            } catch (Exception e) {
-            }
-        }
-        
         guild = event.getGuild();
         files = new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/members/").listFiles();
 
-        int[] baltop = new int[size];
-        String[] baltopNames = new String[size];
-        
-        for (int i = 0; i < baltop.length; i++) {
-            baltop[i] = 0;
-        }
-        
+        int[] baltop = {0, 0, 0, 0, 0};
+        String[] baltopNames = new String[5];
+
         for (File file : files) {
             try {
                 Member member = guild.getMemberById(file.getName().replace(".csv", ""));
@@ -88,7 +70,7 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
                 }
                 
                 memberName = member.getEffectiveName();
-                balance = bot.getUserBalance(member);
+                balance = bot.getUserBaltop(member);
                 
                 if (balance < 0 || member.getUser().isBot()) {
                     continue;
@@ -108,17 +90,14 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
                     }
                 }
             } catch (Exception e) {
+                
             }
         }
         
-        result += "__**Balance Top:**__\n";
+        result = "Alltime Balance Top:\n";
         
         for (int i = 0; i < baltop.length; i++) {
-            if (baltopNames[i] == null) {
-                i = baltop.length;
-            } else {
-                result += getNumericalSuffix(i) + ": " + baltopNames[i] + " with $" + baltop[i] + "\n";
-            }
+            result += getNumericalSuffix(i) + ": " + baltopNames[i] + " with $" + baltop[i] + "\n";
         }
         
         JDAUtils.sendGuildMessage(event.getChannel(), result);
@@ -126,9 +105,7 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
 
     @Override
     public String info() {
-        return ""
-                + "**" + bot.getPrefix() + "baltop** - shows the richest people on the server\n"
-                + "**" + bot.getPrefix() + "baltop AMOUNT** - shows a set number of the richest people on the server";
+        return "**" + bot.getPrefix() + "alltimetop** - shows the richest people have ever been at any point on the server";
     }
     
     public String getNumericalSuffix(int index) {
@@ -150,5 +127,5 @@ public class BalanceTopCommand extends MaiDiscordBotCommandBase {
         
         return result;
     }
-
+    
 }
