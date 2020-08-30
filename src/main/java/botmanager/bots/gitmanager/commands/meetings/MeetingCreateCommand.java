@@ -63,7 +63,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+                JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
             }
         }
 
@@ -92,11 +92,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
             eb.addField("Want to set a description?", "```" + bot.getPrefix() + "meeting description " + (guildSettings.getMeetingIndexAtDate(date) + 1) + " New Description```", false);
             JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
-            if (guildID == -1) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            } else {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
-            }
+            JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
         }
     }
     
@@ -130,7 +126,11 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
         GuildSettings guildSettings = bot.getGuildSettings(guildID);
         StringBuilder formats = new StringBuilder();
         Date date = new Date();
-        
+
+        if (guildSettings == null) {
+            return getFailureEmbed();
+        }
+
         guildSettings.getDateFormats().forEach(x -> formats.append(Utils.formatDate(date, x)).append("\n"));
         eb.addField(
                 "Command Failed",

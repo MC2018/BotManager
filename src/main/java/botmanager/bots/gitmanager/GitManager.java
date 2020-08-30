@@ -62,16 +62,14 @@ public class GitManager extends BotBase {
 
     private HashMap<Long, GitHubClient> ghClients = new HashMap();
     private HashMap<Long, GuildSettings> guildSettingsList = new HashMap();
-    private TimerTask prTimerTask;
-    private Timer prTimer = new Timer();
-    private TimerTask meetingTimerTask;
-    private Timer meetingTimer = new Timer();
+    private TimerTask timerTask;
+    private Timer timer = new Timer();
     private String prefix = ".";
     
     public GitManager(String botToken, String name) {
         super(botToken, name);
         getJDA().getPresence().setActivity(Activity.watching(prefix + "help in Guild or DM!"));
-        
+
         this.setCommands(new ICommand[] {
             new DefaultGuildCommand(this),
             new HelpCommand(this),
@@ -96,8 +94,9 @@ public class GitManager extends BotBase {
         } catch (Exception e) {
         }
         
-        loadGuildFiles();
+        initializeGuildSettings();
         initializeGitHubClients();
+        startTimer();
     }
 
     @Override
@@ -127,23 +126,51 @@ public class GitManager extends BotBase {
     
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        verifyGuildFilesExist(event.getGuild().getIdLong());
-        
+        initializeGuildSettings(event.getGuild().getIdLong());
     }
-    
-    private void loadGuildFiles() {
+
+    private void initializeGuildSettings() {
         for (Guild guild : getJDA().getGuilds()) {
-            verifyGuildFilesExist(guild.getIdLong());
+            initializeGuildSettings(guild.getIdLong());
         }
-        
-        meetingTimerTask = new TimerTask() {
+    }
+
+    private void initializeGuildSettings(long guildID) {
+        File guildSettingsFile = GuildSettings.getFile(this, guildID);
+
+        if (!guildSettingsFile.exists()) {
+            writeGuildSettings(new GuildSettings(guildID));
+        }
+
+        if (!guildSettingsList.containsKey(guildID)) {
+            GuildSettings guildSettings = readGuildSettings(guildID);
+            guildSettingsList.put(guildID, guildSettings);
+        }
+    }
+
+    private void initializeGitHubClients() {
+        for (GuildSettings gs : guildSettingsList.values()) {
+            File file = GuildSettings.getFile(this, gs.getID());
+            GitHubClient client;
+
+            if (!Utils.isNullOrEmpty(gs.getOAuthToken())) {
+                client = new GitHubClient();
+                client.setOAuth2Token(gs.getOAuthToken());
+                ghClients.put(gs.getID(), client);
+            }
+        }
+    }
+
+    private void startTimer() {
+        timerTask = new TimerTask() {
             @Override
             public void run() {
                 checkMeetingTimes();
+                checkNewPRs();
             }
         };
-        
-        meetingTimer.schedule(meetingTimerTask, 3000, 60000);
+
+        timer.schedule(timerTask, 5000, 60000);
     }
     
     public void checkMeetingTimes() {
@@ -182,41 +209,6 @@ public class GitManager extends BotBase {
                 }
             }
         }
-    }
-
-    private void verifyGuildFilesExist(long guildID) {
-        File guildSettingsFile = GuildSettings.getFile(this, guildID);
-
-        if (!guildSettingsFile.exists()) {
-            writeGuildSettings(new GuildSettings(guildID));
-        }
-        
-        if (!guildSettingsList.containsKey(guildID)) {
-            GuildSettings guildSettings = readGuildSettings(guildID);
-            guildSettingsList.put(guildID, guildSettings);
-        }
-    }
-    
-    private void initializeGitHubClients() {
-        for (GuildSettings gs : guildSettingsList.values()) {
-            File file = GuildSettings.getFile(this, gs.getID());
-            GitHubClient client;
-            
-            if (!Utils.isNullOrEmpty(gs.getOAuthToken())) {
-                client = new GitHubClient();
-                client.setOAuth2Token(gs.getOAuthToken());
-                ghClients.put(gs.getID(), client);
-            }
-        }
-        
-        prTimerTask = new TimerTask() {
-            @Override
-            public void run() {
-                checkNewPRs();
-            }
-        };
-        
-        prTimer.schedule(prTimerTask, 3000, 60000);
     }
     
     private void checkNewPRs() {
@@ -310,12 +302,11 @@ public class GitManager extends BotBase {
         eb.addField(prName, pr.getTitle(), false);
         JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, gs.getPrAnnouncementChannel()), eb.build());
     }
-    
+
     private List<String> getTaskChannelNames(long guildID) {
-        GuildSettings gs = readGuildSettings(guildID);
-        return gs.getTaskChannelNames();
+        return guildSettingsList.get(guildID).getTaskChannelNames();
     }
-    
+
     public boolean isTaskChannel(TextChannel channel) {
         List<String> taskChannels = getTaskChannelNames(channel.getGuild().getIdLong());
         return taskChannels.contains(channel.getName());
