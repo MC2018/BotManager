@@ -53,7 +53,7 @@ public class NSFWBanCommand extends NSFWPoliceCommandBase {
         event = (GuildMemberRoleAddEvent) genericEvent;
         
         member = event.getMember();
-        role = JDAUtils.findRole(event, "NSFW");
+        role = JDAUtils.findRole(event.getGuild(), "NSFW");
         hasNSFWBan = JDAUtils.hasRole(member, "NSFW-Ban");
         hasNSFW = JDAUtils.hasRole(member, "NSFW");
         

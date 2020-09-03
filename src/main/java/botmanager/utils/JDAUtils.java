@@ -126,8 +126,8 @@ public class JDAUtils {
         }
     }
 
-    public static Role findRole(GenericGuildEvent event, String roleName) {
-        List<Role> roles = event.getGuild().getRoles();
+    public static Role findRole(Guild guild, String roleName) {
+        List<Role> roles = guild.getRoles();
 
         for (Role role : roles) {
             if (role.getName().equals(roleName)) {

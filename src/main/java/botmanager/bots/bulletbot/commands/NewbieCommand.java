@@ -11,6 +11,8 @@ import botmanager.bots.bulletbot.generic.BulletBotCommandBase;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 
@@ -24,6 +26,7 @@ public class NewbieCommand extends BulletBotCommandBase {
     public void run(Event genericEvent) {
         GuildMemberJoinEvent event;
         Date userCreationDate;
+        Date lastWeek = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 7));
         Date lastMonth = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30));
         SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy");
         
@@ -33,8 +36,21 @@ public class NewbieCommand extends BulletBotCommandBase {
         
         event = (GuildMemberJoinEvent) genericEvent;
         userCreationDate = Date.from(event.getUser().getTimeCreated().toInstant());
-        
-        if (userCreationDate.after(lastMonth)) {
+
+        if (userCreationDate.after(lastWeek)) {
+            Role role = JDAUtils.findRole(event.getGuild(),"New Account");
+
+            if (role != null) {
+                event.getGuild().addRoleToMember(event.getMember(), JDAUtils.findRole(event.getGuild(),"New Account")).complete();
+                JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("action-logs", true).get(0),
+                        "The user " + event.getMember().getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". " +
+                                "They have been added to the new account waiting room.");
+            } else {
+                JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("action-logs", true).get(0),
+                        "The user " + event.getMember().getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". " +
+                                "There was an issue and they were not added to the new account waiting room.");
+            }
+        } else if (userCreationDate.after(lastMonth)) {
             JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("action-logs", true).get(0),
                     "The user " + event.getMember().getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". Watch out for em!");
         }
