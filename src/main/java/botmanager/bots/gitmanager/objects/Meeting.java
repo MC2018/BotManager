@@ -13,6 +13,7 @@ public class Meeting {
 
     public Meeting(Date date) {
         this.date = date;
+        this.description = "No Description";
     }
 
     @Override

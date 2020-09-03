@@ -206,6 +206,7 @@ public class GitManager extends BotBase {
                     JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getMeetingAnnouncementChannel()), eb.build());
                 } else if (Utils.formatDate(new Date(), dateFormat).equals(Utils.formatDate(meeting.getDate(), dateFormat))) {
                     guildSettings.removeMeeting(meeting.getDate());
+                    writeGuildSettings(guildSettings);
                 }
             }
         }

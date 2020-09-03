@@ -6,8 +6,11 @@ import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.GuildSettings;
 import botmanager.bots.gitmanager.objects.Meeting;
+
+import java.util.ArrayList;
 import java.util.Date;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
@@ -64,7 +67,7 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+                JDAUtils.sendPrivateMessage(user, guildID == -1 ? getFailureEmbed() : getFailureEmbed(guildID));
             }
         }
 
@@ -84,14 +87,10 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
             bot.writeGuildSettings(guildSettings);
             
             eb.setTitle("Meeting Deleted");
-            eb.addField(Utils.formatDate(meeting.getDate(), guildSettings.getDateFormats().get(0)), meeting.getDescription(), false);
+            eb.addField(Utils.formatDate(meeting.getDate(), guildSettings.getDateFormats().get(0)), meeting.getDescription(),false);
             JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
-            if (guildID == -1) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            } else {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
-            }
+            JDAUtils.sendPrivateMessage(user, guildID == -1 ? getFailureEmbed() : getFailureEmbed(guildID));
         }
     }
     
@@ -107,25 +106,34 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TIME```",
+                        + "```" + KEYWORDS[0] + " INDEX```\n" +
+                        "(The index can be found from using the meeting list command)",
                 false);
         
         return eb.build();
     }
-    
+
     public MessageEmbed getFailureEmbed(long guildID) {
         EmbedBuilder eb = new EmbedBuilder();
         GuildSettings guildSettings = bot.getGuildSettings(guildID);
-        StringBuilder formats = new StringBuilder();
-        Date date = new Date();
-        
-        guildSettings.getDateFormats().forEach(x -> formats.append(Utils.formatDate(date, x)).append("\n"));
-        eb.addField(
-                "Command Failed",
-                "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " INDEX```",
-                false);
-        
+        ArrayList<Meeting> meetings = guildSettings.getMeetings();
+        StringBuilder list = new StringBuilder();
+
+        for (int i = 0; i < meetings.size() && list.length() < Message.MAX_CONTENT_LENGTH - 1000; i++) {
+            list.append("Index " + (i + 1) + ": " + Utils.formatDate(meetings.get(i).getDate(), guildSettings.getDateFormats().get(0)) + "\n");
+            list.append(meetings.get(i).getDescription());
+
+            if (i + 1 < meetings.size()) {
+                list.append("\n\n");
+            }
+        }
+
+        for (MessageEmbed.Field field : getFailureEmbed().getFields()) {
+            eb.addField(field);
+        }
+
+        eb.addField("List of soonest planned meetings", list.toString(), false);
+
         return eb.build();
     }
 
