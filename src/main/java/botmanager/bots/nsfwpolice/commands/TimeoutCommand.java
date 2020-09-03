@@ -49,7 +49,13 @@ public class TimeoutCommand extends NSFWPoliceCommandBase {
         Role role = JDAUtils.findRole(event.getGuild(), "Member");
         boolean hasTimeout = JDAUtils.hasRole(member, "Timeout");
         boolean hasMember = JDAUtils.hasRole(member, "Member");
-        
+
+        for (Role removedRole : event.getRoles()) {
+            if (removedRole.getName().equals("New Account")) {
+                return;
+            }
+        }
+
         if (!hasMember && !hasTimeout) {
             try {
                 event.getGuild().addRoleToMember(member, role).complete();
