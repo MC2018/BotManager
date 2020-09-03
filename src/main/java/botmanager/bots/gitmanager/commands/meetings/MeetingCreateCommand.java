@@ -88,7 +88,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase {
             bot.writeGuildSettings(guildSettings);
             
             eb.setTitle("Meeting Set (Index " + (guildSettings.getMeetingIndexAtDate(date) + 1) + ")");
-            eb.setDescription("Date: " + input);
+            eb.setDescription("Date: " + Utils.formatDate(date, guildSettings.getDateFormats().get(0)));
             eb.addField("Want to set a description?", "```" + bot.getPrefix() + "meeting description " + (guildSettings.getMeetingIndexAtDate(date) + 1) + " New Description```", false);
             JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
