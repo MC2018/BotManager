@@ -192,7 +192,7 @@ public class GitManager extends BotBase {
                     
                     eb.setTitle("Reminder");
                     
-                    if (Utils.formatDate(twoHoursPrior, dateFormat).equals(Utils.formatDate(currentDate, dateFormat))) {
+                    if (Utils.formatDate(twoDaysPrior, dateFormat).equals(Utils.formatDate(currentDate, dateFormat))) {
                         eb.addField("There is a meeting two days from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
                     } else {
                         eb.addField("There is a meeting two hours from now!", Utils.formatDate(meeting.getDate(), dateFormat), false);
