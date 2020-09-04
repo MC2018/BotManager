@@ -29,7 +29,7 @@ public class BanLogCommand extends BulletBotCommandBase {
         auditLogEntries = event.getGuild().retrieveAuditLogs();
         entry = auditLogEntries.getLast();
 
-        if (entry.getType() == ActionType.BAN) {
+        if (entry.getType() == ActionType.BAN && !entry.getUser().isBot()) {
             JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("action-logs", true).get(0),
                     "The user " + event.getUser().getAsMention() + " was banned by "
                     + entry.getUser().getAsMention() + ". Please give the reasoning for the ban below."
