@@ -1,11 +1,7 @@
 package botmanager.bots.bulletbot;
 
+import botmanager.bots.bulletbot.commands.*;
 import botmanager.utils.IOUtils;
-import botmanager.bots.bulletbot.commands.BirthDateCommand;
-import botmanager.bots.bulletbot.commands.InfoCommand;
-import botmanager.bots.bulletbot.commands.JoinDateCommand;
-import botmanager.bots.bulletbot.commands.NewbieCommand;
-import botmanager.bots.bulletbot.commands.WordTrackerCommand;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
@@ -49,7 +45,8 @@ public class BulletBot extends BotBase {
             new InfoCommand(this),
             new WordTrackerCommand(this),
             new PMRepeaterCommand(this),
-            new PMForwarderCommand(this)
+            new PMForwarderCommand(this),
+            new BanLogCommand(this)
         });
         
         loadDirtyWords();
