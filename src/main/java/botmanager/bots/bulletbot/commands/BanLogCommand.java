@@ -21,7 +21,7 @@ public class BanLogCommand extends BulletBotCommandBase {
         AuditLogPaginationAction auditLogEntries;
         AuditLogEntry entry;
 
-        if (genericEvent instanceof GuildBanEvent) {
+        if (!(genericEvent instanceof GuildBanEvent)) {
             return;
         }
 
