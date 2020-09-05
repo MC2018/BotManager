@@ -75,7 +75,7 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
                 tempFile.mkdirs();
                 tempFile = new File(tempFile.getAbsolutePath() + "/" + attachments.get(0).getFileName());
                 attachments.get(0).downloadToFile(tempFile).get();
-                channel = (TextChannel) JDAUtils.findChannelByName(event.getGuild(), "emote-suggestions");
+                channel = (TextChannel) JDAUtils.findChannelByName(event.getGuild(), event.getGuild().getId() == "551565232867246080" ? "user-suggestions" : "emote-suggestions");
                 if (channel == null) {
                     return;
                 }
