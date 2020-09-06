@@ -101,7 +101,7 @@ public class BulletBot extends BotBase {
 
             if (userCreationDate.before(lastWeek)) {
                 guild.removeRoleFromMember(member, role).complete();
-                JDAUtils.sendGuildMessage(guild.getTextChannelsByName("action-logs", true).get(0),
+                JDAUtils.sendGuildMessage(guild.getTextChannelsByName("bulletbot-logs", true).get(0),
                         "The user " + member.getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". " +
                                 "They have just been released from the new account waiting room. Watch out for em!");
             }
