@@ -96,10 +96,10 @@ public class BulletBot extends BotBase {
 
         for (Member member : members) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy");
-            Date lastWeek = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 7));
+            Date lastFiveDays = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 5));
             Date userCreationDate = Date.from(member.getTimeCreated().toInstant());
 
-            if (userCreationDate.before(lastWeek)) {
+            if (userCreationDate.before(lastFiveDays)) {
                 guild.removeRoleFromMember(member, role).complete();
                 JDAUtils.sendGuildMessage(guild.getTextChannelsByName("bulletbot-logs", true).get(0),
                         "The user " + member.getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". " +

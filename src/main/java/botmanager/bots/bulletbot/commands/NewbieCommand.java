@@ -27,7 +27,7 @@ public class NewbieCommand extends BulletBotCommandBase {
         GuildMemberJoinEvent event;
         Date userCreationDate;
         Date lastTwoDays = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 2));
-        Date lastWeek = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 7));
+        Date lastFiveDays = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 5));
         Date lastMonth = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30));
         SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy");
         
@@ -38,12 +38,7 @@ public class NewbieCommand extends BulletBotCommandBase {
         event = (GuildMemberJoinEvent) genericEvent;
         userCreationDate = Date.from(event.getUser().getTimeCreated().toInstant());
 
-        if (userCreationDate.after(lastTwoDays)) {
-            event.getMember().ban(0).reason("Logging in with a fresh account").queue();
-            JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("bulletbot-logs", true).get(0),
-                    "The user " + event.getUser().getAsMention() + " was made within the last two days " +
-                            "and was subsequently banned.");
-        } else if (userCreationDate.after(lastWeek)) {
+        if (userCreationDate.after(lastFiveDays)) {
             Role role = JDAUtils.findRole(event.getGuild(),"New Account");
 
             if (role != null) {
