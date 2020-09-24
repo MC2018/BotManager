@@ -308,9 +308,15 @@ public class GitManager extends BotBase {
         return guildSettingsList.get(guildID).getTaskChannelNames();
     }
 
-    public boolean isTaskChannel(TextChannel channel) {
-        List<String> taskChannels = getTaskChannelNames(channel.getGuild().getIdLong());
-        return taskChannels.contains(channel.getName());
+    public boolean isBotChannel(TextChannel channel) {
+        List<String> botChannels = getTaskChannelNames(channel.getGuild().getIdLong());
+        String logChannel = guildSettingsList.get(channel.getIdLong()).getLogChannel();
+
+        if (!Utils.isNullOrEmpty(logChannel)) {
+            botChannels.add(logChannel);
+        }
+
+        return botChannels.contains(channel.getName());
     }
     
     public String getPrefix() {

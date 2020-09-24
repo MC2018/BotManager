@@ -22,6 +22,7 @@ public class GuildSettings {
     private String prAnnouncementChannel = "pr-announcements";
     private String meetingAnnouncementChannel = "general";
     private String bumpReactionName = "";
+    private String logChannel = "work-logs";
     private long id;
     private int defaultTaskChannelIndex = 0;
     
@@ -81,6 +82,10 @@ public class GuildSettings {
         }
         
         return taskReactionNames;
+    }
+
+    public String getLogChannel() {
+        return logChannel;
     }
     
     public String getOAuthToken() {

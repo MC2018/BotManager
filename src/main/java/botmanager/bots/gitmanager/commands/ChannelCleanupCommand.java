@@ -27,7 +27,7 @@ public class ChannelCleanupCommand extends GitManagerCommandBase {
 
         event = (GuildMessageReceivedEvent) genericEvent;
         
-        if (bot.isTaskChannel(event.getChannel()) && !event.getAuthor().getId().equals(bot.getJDA().getSelfUser().getId())) {
+        if (bot.isBotChannel(event.getChannel()) && !event.getAuthor().getId().equals(bot.getJDA().getSelfUser().getId())) {
             try {
                 event.getMessage().delete().queue();
             } catch (Exception e) {

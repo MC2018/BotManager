@@ -8,7 +8,7 @@ import botmanager.bots.gitmanager.objects.GuildSettings;
 import botmanager.bots.gitmanager.objects.Meeting;
 
 import java.util.ArrayList;
-import java.util.Date;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -73,7 +73,7 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
 
         if (!found) {
             return;
-        } else if (guildEvent != null && !bot.isTaskChannel(guildEvent.getChannel())) {
+        } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
             guildEvent.getMessage().delete().queue();
         }
         

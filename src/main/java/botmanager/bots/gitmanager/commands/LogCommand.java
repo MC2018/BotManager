@@ -1,30 +1,22 @@
-package botmanager.bots.gitmanager.commands.tasks;
+package botmanager.bots.gitmanager.commands;
 
-import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
-import botmanager.bots.gitmanager.objects.Task;
-import net.dv8tion.jda.api.EmbedBuilder;
+import botmanager.bots.gitmanager.objects.GuildSettings;
+import botmanager.utils.JDAUtils;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
-/**
- *
- * @author MC_2018 <mc2018.git@gmail.com>
- */
-public class TaskDescriptionCommand extends GitManagerCommandBase {
+public class LogCommand extends GitManagerCommandBase {
 
-    private String[] KEYWORDS = {
-        bot.getPrefix() + "task description",
-        bot.getPrefix() + "task desc",
-        bot.getPrefix() + "task d"
+    private final String[] KEYWORDS = {
+            bot.getPrefix() + "log"
     };
-    
-    public TaskDescriptionCommand(GitManager bot) {
+
+    public LogCommand(GitManager bot) {
         super(bot);
     }
 
@@ -32,11 +24,10 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
     public void run(Event genericEvent) {
         GuildMessageReceivedEvent guildEvent = null;
         PrivateMessageReceivedEvent privateEvent = null;
+        GuildSettings guildSettings;
         User user;
-        Task task;
         String input;
         long guildID;
-        int taskNumber;
         boolean found = false;
 
         if (genericEvent instanceof GuildMessageReceivedEvent) {
@@ -59,7 +50,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
+                JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
             }
         }
 
@@ -68,44 +59,20 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
         } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
             guildEvent.getMessage().delete().queue();
         }
-        
-        try {
-            taskNumber = Integer.parseInt(input.split(" ")[0]);
-        } catch (Exception e) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
-        if (input.split(" ").length < 2) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
-        input = input.substring(input.split(" ")[0].length() + 1, input.length());
-        task = bot.readTask(guildID, taskNumber);
-        task.setDescription(input, user.getIdLong());
-        bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
-        bot.writeTask(task);
     }
 
-    
     @Override
-    public Field info() {
-        return new Field("Changing a Task Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+    public MessageEmbed.Field info() {
+        return new MessageEmbed.Field("", "", false);
     }
-    
+
     @Override
     public MessageEmbed getFailureEmbed() {
-        EmbedBuilder eb = new EmbedBuilder();
-        
-        eb.addField(
-                "Command Failed",
-                "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION```",
-                true);
-        
-        return eb.build();
+        return null;
     }
 
-    
+    public MessageEmbed getFailureEmbed(long guildID) {
+        return null;
+    }
+
 }

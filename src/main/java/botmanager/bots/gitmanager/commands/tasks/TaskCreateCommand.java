@@ -68,7 +68,7 @@ public class TaskCreateCommand extends GitManagerCommandBase {
 
         if (!found) {
             return;
-        } else if (guildEvent != null && !bot.isTaskChannel(guildEvent.getChannel())) {
+        } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
             guildEvent.getMessage().delete().queue();
         }
         
