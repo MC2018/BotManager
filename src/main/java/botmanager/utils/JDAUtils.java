@@ -23,31 +23,6 @@ import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 
 public class JDAUtils {
 
-    public static String findUserId(Guild guild, String potentialName) {
-        ArrayList<Member> names = new ArrayList<>();
-        User potentialUser;
-
-        names.addAll(guild.getMembersByName(potentialName, true));
-        names.addAll(guild.getMembersByEffectiveName(potentialName, true));
-        names.addAll(guild.getMembersByNickname(potentialName, true));
-
-        if (names.size() > 0) {
-            return names.get(0).getUser().getId();
-        }
-
-        try {
-            potentialUser = guild.getJDA().getUserById(potentialName);
-
-            if (potentialUser != null) {
-                return potentialUser.getId();
-            }
-        } catch (Exception e) {
-
-        }
-
-        return null;
-    }
-
     public static void sendGuildMessage(TextChannel channel, String message) {
         if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
@@ -72,7 +47,7 @@ public class JDAUtils {
         return channel.sendMessage(me).complete();
     }
 
-    public static void sendGuildMessageWithReactions(TextChannel channel, String message, String[] reactionNames) {
+    public static void sendGuildMessage(TextChannel channel, String message, String[] reactionNames) {
         Message sentMessage;
 
         if (message.length() > Message.MAX_CONTENT_LENGTH) {
@@ -86,7 +61,7 @@ public class JDAUtils {
         }
     }
 
-    public static void sendGuildMessageWithReactions(TextChannel channel, String message, String[] reactionNames, File file) {
+    public static void sendGuildMessage(TextChannel channel, String message, String[] reactionNames, File file) {
         Message sentMessage;
 
         if (message.length() > Message.MAX_CONTENT_LENGTH) {
@@ -112,7 +87,7 @@ public class JDAUtils {
         user.openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
     }
 
-    public static void sendPrivateMessageWithReactions(TextChannel channel, String message, String[] reactionNames) {
+    public static void sendPrivateMessage(TextChannel channel, String message, String[] reactionNames) {
         Message sentMessage;
 
         if (message.length() > Message.MAX_CONTENT_LENGTH) {
@@ -123,6 +98,24 @@ public class JDAUtils {
 
         for (String reactionName : reactionNames) {
             JDAUtils.addReaction(sentMessage, reactionName);
+        }
+    }
+
+    public static String findUserId(Guild guild, String potentialName) {
+        ArrayList<Member> names = new ArrayList<>();
+
+        names.addAll(guild.getMembersByName(potentialName, true));
+        names.addAll(guild.getMembersByEffectiveName(potentialName, true));
+        names.addAll(guild.getMembersByNickname(potentialName, true));
+
+        if (names.size() > 0) {
+            return names.get(0).getUser().getId();
+        }
+
+        try {
+            return guild.getJDA().getUserById(potentialName).getId();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -146,12 +139,28 @@ public class JDAUtils {
         }
     }
 
-    public static GuildChannel findChannelByName(Guild guild, String name) {
+    public static GuildChannel findChannelByName(Guild guild, String potentialName) {
         List<GuildChannel> channels = guild.getChannels();
 
         for (GuildChannel channel : channels) {
-            if (channel.getName().equalsIgnoreCase(name)) {
+            if (channel.getName().equalsIgnoreCase(potentialName)) {
                 return channel;
+            }
+        }
+
+        return null;
+    }
+
+    public static TextChannel findTextChannel(Guild guild, String potentialName) {
+        List<GuildChannel> guildChannels = guild.getChannels();
+
+        for (GuildChannel guildChannel : guildChannels) {
+            if (guildChannel instanceof TextChannel) {
+                TextChannel textChannel = (TextChannel) guildChannel;
+
+                if (textChannel.getName().equalsIgnoreCase(potentialName)) {
+                    return textChannel;
+                }
             }
         }
 
@@ -180,22 +189,6 @@ public class JDAUtils {
         } else {
             message.addReaction(Utils.getEmoji(potentialName).getUnicode()).queue();
         }
-    }
-    
-    public static TextChannel findTextChannel(Guild guild, String potentialName) {
-        List<GuildChannel> guildChannels = guild.getChannels();
-        
-        for (GuildChannel guildChannel : guildChannels) {
-            if (guildChannel instanceof TextChannel) {
-                TextChannel textChannel = (TextChannel) guildChannel;
-                
-                if (textChannel.getName().equalsIgnoreCase(potentialName)) {
-                    return textChannel;
-                }
-            }
-        }
-        
-        return null;
     }
     
 }

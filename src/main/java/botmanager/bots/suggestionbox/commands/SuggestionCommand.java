@@ -65,7 +65,7 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
         attachments = event.getMessage().getAttachments();
 
         if (attachments.isEmpty()) {
-            JDAUtils.sendGuildMessageWithReactions(channel, message, reactionNames);
+            JDAUtils.sendGuildMessage(channel, message, reactionNames);
         } else if (attachments.size() > 1) {
             JDAUtils.sendGuildMessage(event.getChannel(), "Send a max of 1 file.");
             return;
@@ -79,7 +79,7 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
                 if (channel == null) {
                     return;
                 }
-                JDAUtils.sendGuildMessageWithReactions(channel, message, reactionNames, tempFile);
+                JDAUtils.sendGuildMessage(channel, message, reactionNames, tempFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
