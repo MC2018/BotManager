@@ -18,12 +18,12 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class MeetingDeleteCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting delete",
-        bot.getPrefix() + "meetings delete",
-        bot.getPrefix() + "delete meeting",
-        bot.getPrefix() + "meeting remove",
-        bot.getPrefix() + "meetings remove",
-        bot.getPrefix() + "remove meeting",
+        bot.prefix + "meeting delete",
+        bot.prefix + "meetings delete",
+        bot.prefix + "delete meeting",
+        bot.prefix + "meeting remove",
+        bot.prefix + "meetings remove",
+        bot.prefix + "remove meeting",
     };
     
     public MeetingDeleteCommand(GitManager bot) {
@@ -39,12 +39,10 @@ public class MeetingDeleteCommand extends GitManagerCommandBase implements IMess
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, guildID == -1 ? getFailureEmbed() : getFailureEmbed(guildID));
             }
         }
 

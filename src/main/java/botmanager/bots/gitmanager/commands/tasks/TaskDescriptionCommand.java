@@ -16,9 +16,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class TaskDescriptionCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task description",
-        bot.getPrefix() + "task desc",
-        bot.getPrefix() + "task d"
+        bot.prefix + "task description",
+        bot.prefix + "task desc",
+        bot.prefix + "task d"
     };
     
     public TaskDescriptionCommand(GitManager bot) {
@@ -35,12 +35,10 @@ public class TaskDescriptionCommand extends GitManagerCommandBase implements IMe
         boolean found = false;
 
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 

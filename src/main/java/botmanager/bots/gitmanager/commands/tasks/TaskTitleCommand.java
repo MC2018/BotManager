@@ -16,8 +16,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class TaskTitleCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task title",
-        bot.getPrefix() + "task t"
+        bot.prefix + "task title",
+        bot.prefix + "task t"
     };
     
     public TaskTitleCommand(GitManager bot) {
@@ -34,12 +34,10 @@ public class TaskTitleCommand extends GitManagerCommandBase implements IMessageR
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 
@@ -51,18 +49,17 @@ public class TaskTitleCommand extends GitManagerCommandBase implements IMessageR
         
         try {
             taskNumber = Integer.parseInt(input.split(" ")[0]);
+
+            if (input.split(" ").length < 2) {
+                throw new Exception();
+            }
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             return;
         }
         
-        if (input.split(" ").length < 2) {
-            JDAUtils.sendPrivateMessage(user, getFailureEmbed());
-            return;
-        }
-        
         try {
-            input = input.substring(input.split(" ")[0].length() + 1, input.length());
+            input = input.substring(input.split(" ")[0].length() + 1);
             task = bot.readTask(guildID, taskNumber);
             task.setTitle(input, user.getIdLong());
             bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();

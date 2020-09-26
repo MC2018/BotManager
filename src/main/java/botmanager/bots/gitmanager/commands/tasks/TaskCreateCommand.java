@@ -5,6 +5,7 @@ import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.*;
+import botmanager.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -16,9 +17,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class TaskCreateCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task create",
-        bot.getPrefix() + "task c",
-        bot.getPrefix() + "create task",
+        bot.prefix + "task create",
+        bot.prefix + "task c",
+        bot.prefix + "create task",
     };
     
     public TaskCreateCommand(GitManager bot) {
@@ -36,12 +37,10 @@ public class TaskCreateCommand extends GitManagerCommandBase implements IMessage
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 
@@ -52,6 +51,10 @@ public class TaskCreateCommand extends GitManagerCommandBase implements IMessage
         }
         
         try {
+            if (Utils.isNullOrEmpty(input)) {
+                throw new Exception();
+            }
+
             task = new TaskBuilder(bot)
                     .setName(input)
                     .setAuthor(user.getIdLong())

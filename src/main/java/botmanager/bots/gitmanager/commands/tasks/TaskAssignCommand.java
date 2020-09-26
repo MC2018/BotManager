@@ -57,12 +57,13 @@ public class TaskAssignCommand extends GitManagerCommandBase implements IMessage
                 beginningIndex = i;
             } else if ((title.charAt(i) < '0' ||  '9' < title.charAt(i)) && beginningIndex != -1) {
                 taskID = Integer.parseInt(title.substring(beginningIndex, i));
-                break;
+
+                if (taskID <= 0) {
+                    return;
+                } else {
+                    break;
+                }
             }
-        }
-        
-        if (taskID <= 0) {
-            return;
         }
         
         task = bot.readTask(event.getGuild().getIdLong(), taskID);

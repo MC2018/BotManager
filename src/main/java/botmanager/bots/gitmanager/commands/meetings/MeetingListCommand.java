@@ -18,8 +18,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class MeetingListCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting list",
-        bot.getPrefix() + "meetings list"
+        bot.prefix + "meeting list",
+        bot.prefix + "meetings list"
     };
     
     public MeetingListCommand(GitManager bot) {

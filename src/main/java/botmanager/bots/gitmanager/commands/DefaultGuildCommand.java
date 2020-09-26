@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class DefaultGuildCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "default"
+        bot.prefix + "default"
     };
     
     public DefaultGuildCommand(GitManager bot) {
@@ -41,12 +41,8 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
         userSettings = verifyDefaultGuildValidity(user, bot.readUserSettings(user.getIdLong()));
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
-                found = true;
-                break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
-                input = input.substring(keyword.length(), input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length() + 1).trim();
                 found = true;
                 break;
             }
@@ -93,7 +89,7 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
                 
                 if (guildIDs.size() > 1) {
                     eb.addField("", "You may select another default guild with "
-                            + "`" + bot.getPrefix() + "default GUILD_ID`, using your guild's ID.", false);
+                            + "`" + bot.prefix + "default GUILD_ID`, using your guild's ID.", false);
                 }
             } else {
                 userSettings.setDefaultGuildID(-1);
@@ -111,7 +107,7 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Changing Default Guilds for PM Commands", "```" + bot.getPrefix() + "default GUILD_ID```", false);
+        return new MessageEmbed.Field("Changing Default Guilds for PM Commands", "```" + bot.prefix + "default GUILD_ID```", false);
     }
 
     @Override

@@ -16,8 +16,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class TaskDeleteCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task delete",
-        bot.getPrefix() + "delete task",
+        bot.prefix + "task delete",
+        bot.prefix + "delete task",
     };
     
     public TaskDeleteCommand(GitManager bot) {
@@ -34,12 +34,10 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 
@@ -68,7 +66,7 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
             task.setDeleted(true, input, user.getIdLong());
             bot.writeTask(task);
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 

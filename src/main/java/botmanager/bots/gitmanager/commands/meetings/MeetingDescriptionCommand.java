@@ -16,12 +16,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class MeetingDescriptionCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting description",
-        bot.getPrefix() + "meeting desc",
-        bot.getPrefix() + "meeting d",
-        bot.getPrefix() + "meetings description",
-        bot.getPrefix() + "meetings desc",
-        bot.getPrefix() + "meetings d",
+        bot.prefix + "meeting description",
+        bot.prefix + "meeting desc",
+        bot.prefix + "meetings description",
+        bot.prefix + "meetings desc",
     };
     
     public MeetingDescriptionCommand(GitManager bot) {
@@ -38,12 +36,10 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase implements 
         boolean found = false;
 
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed());
             }
         }
 

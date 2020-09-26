@@ -25,7 +25,7 @@ public class BotManagerDisplay extends javax.swing.JFrame {
             new MaiDiscordBot(tokens.get(0), "MaiDiscordBot"),
             new Boteyy_(tokens.get(1), "Boteyy_"),
             new SpeedrunBot(tokens.get(2), "Speedrun Bot"),
-            new GitManager(tokens.get(3), "Git Manager")
+            new GitManager(tokens.get(3), "Git Manager", ".")
         };
     }
 

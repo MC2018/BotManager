@@ -31,10 +31,11 @@ public class GitManager extends BotBase {
     private HashMap<Long, GuildSettings> guildSettingsList = new HashMap();
     private TimerTask timerTask;
     private Timer timer = new Timer();
-    private String prefix = ".";
+    final public String prefix;
     
-    public GitManager(String botToken, String name) {
+    public GitManager(String botToken, String name, String prefix) {
         super(botToken, name);
+        this.prefix = prefix;
         getJDA().getPresence().setActivity(Activity.watching(prefix + "help in Guild or DM!"));
 
         this.setCommands(new ICommand[] {
@@ -275,10 +276,6 @@ public class GitManager extends BotBase {
         }
 
         return botChannels.contains(channel.getName());
-    }
-    
-    public String getPrefix() {
-        return prefix;
     }
     
     public TextChannel getTaskChannel(long guildID, int statusType) {

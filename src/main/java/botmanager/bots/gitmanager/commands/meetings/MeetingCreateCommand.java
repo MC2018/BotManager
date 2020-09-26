@@ -18,12 +18,12 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class MeetingCreateCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
-        bot.getPrefix() + "meeting create",
-        bot.getPrefix() + "meetings create",
-        bot.getPrefix() + "create meeting",
-        bot.getPrefix() + "meeting add",
-        bot.getPrefix() + "meetings add",
-        bot.getPrefix() + "add meeting",
+        bot.prefix + "meeting create",
+        bot.prefix + "meetings create",
+        bot.prefix + "create meeting",
+        bot.prefix + "meeting add",
+        bot.prefix + "meetings add",
+        bot.prefix + "add meeting",
     };
     
     public MeetingCreateCommand(GitManager bot) {
@@ -39,12 +39,10 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
             }
         }
 
@@ -70,7 +68,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
             
             eb.setTitle("Meeting Set (Index " + (guildSettings.getMeetingIndexAtDate(date) + 1) + ")");
             eb.setDescription("Date: " + Utils.formatDate(date, guildSettings.getDateFormats().get(0)));
-            eb.addField("Want to set a description?", "```" + bot.getPrefix() + "meeting description " + (guildSettings.getMeetingIndexAtDate(date) + 1) + " New Description```", false);
+            eb.addField("Want to set a description?", "```" + bot.prefix + "meeting description " + (guildSettings.getMeetingIndexAtDate(date) + 1) + " New Description```", false);
             JDAUtils.sendPrivateMessage(user, eb.build());
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));

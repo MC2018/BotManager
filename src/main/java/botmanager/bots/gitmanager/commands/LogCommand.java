@@ -11,7 +11,21 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class LogCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private final String[] KEYWORDS = {
-            bot.getPrefix() + "log"
+            bot.prefix + "log"
+    };
+    private final String[] HOURS = {
+            "hours",
+            "hour",
+            "hrs",
+            "hr",
+            "h",
+    };
+    private final String[] MINUTES = {
+            "minutes",
+            "minute",
+            "mins",
+            "min",
+            "m",
     };
 
     public LogCommand(GitManager bot) {
@@ -24,16 +38,36 @@ public class LogCommand extends GitManagerCommandBase implements IMessageReceive
         User user = event.getAuthor();
         String input = event.getMessage().getContentRaw();
         long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        int[] parsedNumbers = new int[2];
         boolean found = false;
 
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
+                input = input.substring(keyword.length() + 1);
                 found = true;
                 break;
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
                 JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
             }
+        }
+
+        if (!found) {
+            return;
+        }
+
+        for (String hour : HOURS) {
+            input = input.replaceAll(hour, "h");
+        }
+
+        for (String minute : MINUTES) {
+            input = input.replaceAll(minute, "m");
+        }
+
+        try {
+            Integer.parseInt(input.replaceFirst("m", "").replaceFirst("h", ""));
+
+        } catch (Exception e) {
+            JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
         }
     }
 

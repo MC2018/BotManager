@@ -47,7 +47,7 @@ public class TaskPurgeCommand extends GitManagerCommandBase implements IMessageR
     
     private HashMap<Long, GuildResetInfo> guildResetInfos = new HashMap();
     private String[] KEYWORDS = {
-        bot.getPrefix() + "task purge"
+        bot.prefix + "task purge"
     };
     
     public TaskPurgeCommand(GitManager bot) {
@@ -69,12 +69,8 @@ public class TaskPurgeCommand extends GitManagerCommandBase implements IMessageR
         }
         
         for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.substring(keyword.length() + 1, input.length());
-                found = true;
-                break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
-                input = input.substring(keyword.length(), input.length());
+            if (input.toLowerCase().startsWith(keyword)) {
+                input = input.substring(keyword.length()).trim();
                 found = true;
                 break;
             }
