@@ -1,58 +1,25 @@
 package botmanager.bots.gitmanager;
 
-import botmanager.utils.JDAUtils;
-import botmanager.utils.IOUtils;
-import botmanager.utils.Utils;
-import botmanager.generic.BotBase;
-import botmanager.generic.ICommand;
-import botmanager.generic.commands.PMForwarderCommand;
-import botmanager.generic.commands.PMRepeaterCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskAssignCommand;
-import botmanager.bots.gitmanager.commands.ChannelCleanupCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskCreateCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskDescriptionCommand;
-import botmanager.bots.gitmanager.commands.HelpCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskPurgeCommand;
-import botmanager.bots.gitmanager.commands.DefaultGuildCommand;
-import botmanager.bots.gitmanager.commands.meetings.MeetingCreateCommand;
-import botmanager.bots.gitmanager.commands.meetings.MeetingDeleteCommand;
-import botmanager.bots.gitmanager.commands.meetings.MeetingDescriptionCommand;
-import botmanager.bots.gitmanager.commands.meetings.MeetingListCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskDeleteCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskMoverCommand;
-import botmanager.bots.gitmanager.commands.tasks.TaskTitleCommand;
-import botmanager.bots.gitmanager.objects.GuildSettings;
-import botmanager.bots.gitmanager.objects.Meeting;
-import botmanager.bots.gitmanager.objects.Task;
-import botmanager.bots.gitmanager.objects.TaskBuilder;
-import botmanager.bots.gitmanager.objects.UserSettings;
+import botmanager.utils.*;
+import botmanager.generic.*;
+import botmanager.generic.commands.*;
+import botmanager.bots.gitmanager.commands.tasks.*;
+import botmanager.bots.gitmanager.commands.*;
+import botmanager.bots.gitmanager.commands.meetings.*;
+import botmanager.bots.gitmanager.objects.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-import org.eclipse.egit.github.core.PullRequest;
-import org.eclipse.egit.github.core.Repository;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import org.eclipse.egit.github.core.*;
 import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.IssueService;
-import org.eclipse.egit.github.core.service.PullRequestService;
-import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.egit.github.core.service.*;
 
 /**
  *
@@ -100,16 +67,7 @@ public class GitManager extends BotBase {
     }
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        for (ICommand command : getCommands()) {
-            if (event.getAuthor().getIdLong() != getJDA().getSelfUser().getIdLong()) {
-                command.run(event);
-            }
-        }
-    }
-
-    @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         for (ICommand command : getCommands()) {
             if (event.getAuthor().getIdLong() != getJDA().getSelfUser().getIdLong()) {
                 command.run(event);
@@ -118,7 +76,7 @@ public class GitManager extends BotBase {
     }
     
     @Override
-    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
+    public void onMessageReactionAdd(MessageReactionAddEvent event) {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
@@ -310,7 +268,7 @@ public class GitManager extends BotBase {
 
     public boolean isBotChannel(TextChannel channel) {
         List<String> botChannels = getTaskChannelNames(channel.getGuild().getIdLong());
-        String logChannel = guildSettingsList.get(channel.getIdLong()).getLogChannel();
+        String logChannel = guildSettingsList.get(channel.getGuild().getIdLong()).getLogChannel();
 
         if (!Utils.isNullOrEmpty(logChannel)) {
             botChannels.add(logChannel);
@@ -370,9 +328,25 @@ public class GitManager extends BotBase {
         File file = Task.getFile(this, task.getGuildID(), task.getID());
         IOUtils.writeGson(file, task, true);
     }
-    
+
+    private UserSettings generateUserSettings(User user) {
+        File file = UserSettings.getFile(this, user.getIdLong());
+        ArrayList<Long> guildIDs = new ArrayList();
+        UserSettings userSettings;
+
+        user.getMutualGuilds().forEach(x -> guildIDs.add(x.getIdLong()));
+        userSettings = new UserSettings(user.getIdLong(), guildIDs.size() > 0 ? guildIDs.get(0) : -1);
+        writeUserSettings(userSettings);
+        return userSettings;
+    }
+
     public UserSettings readUserSettings(long userID) {
         File file = UserSettings.getFile(this, userID);
+
+        if (!file.exists()) {
+            return generateUserSettings(getJDA().getUserById(userID));
+        }
+
         return IOUtils.readGson(file, UserSettings.class);
     }
     

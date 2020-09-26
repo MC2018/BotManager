@@ -1,22 +1,19 @@
 package botmanager.bots.gitmanager.commands.tasks;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.Task;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class TaskDescriptionCommand extends GitManagerCommandBase {
+public class TaskDescriptionCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
         bot.getPrefix() + "task description",
@@ -29,29 +26,13 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent guildEvent = null;
-        PrivateMessageReceivedEvent privateEvent = null;
-        User user;
+    public void runOnMessage(MessageReceivedEvent event) {
+        User user = event.getAuthor();
         Task task;
-        String input;
-        long guildID;
+        String input = event.getMessage().getContentRaw();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
         int taskNumber;
         boolean found = false;
-
-        if (genericEvent instanceof GuildMessageReceivedEvent) {
-            guildEvent = (GuildMessageReceivedEvent) genericEvent;
-            input = guildEvent.getMessage().getContentRaw();
-            user = guildEvent.getAuthor();
-            guildID = guildEvent.getGuild().getIdLong();
-        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
-            privateEvent = (PrivateMessageReceivedEvent) genericEvent;
-            input = privateEvent.getMessage().getContentRaw();
-            user = privateEvent.getAuthor();
-            guildID = bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
-        } else {
-            return;
-        }
 
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
@@ -65,8 +46,8 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
 
         if (!found) {
             return;
-        } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
-            guildEvent.getMessage().delete().queue();
+        } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
+            event.getMessage().delete().queue();
         }
         
         try {
@@ -90,8 +71,8 @@ public class TaskDescriptionCommand extends GitManagerCommandBase {
 
     
     @Override
-    public Field info() {
-        return new Field("Changing a Task Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+    public MessageEmbed.Field info() {
+        return new MessageEmbed.Field("Changing a Task Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
     }
     
     @Override

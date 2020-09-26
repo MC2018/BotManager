@@ -5,16 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import net.dv8tion.jda.api.entities.Emote;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.GuildChannel;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
 /**
  *
@@ -33,18 +25,6 @@ public class JDAUtils {
 
     public static void sendGuildMessage(TextChannel channel, MessageEmbed me) {
         channel.sendMessage(me).queue();
-    }
-
-    public static Message sendGuildMessageReturn(TextChannel channel, String message) {
-        if (message.length() >= Message.MAX_CONTENT_LENGTH) {
-            throw new RuntimeException("Message attempted to send too long:\n" + message);
-        }
-
-        return channel.sendMessage(message).complete();
-    }
-
-    public static Message sendGuildMessageReturn(TextChannel channel, MessageEmbed me) {
-        return channel.sendMessage(me).complete();
     }
 
     public static void sendGuildMessage(TextChannel channel, String message, String[] reactionNames) {
@@ -75,6 +55,18 @@ public class JDAUtils {
         }
     }
 
+    public static Message sendGuildMessageReturn(TextChannel channel, String message) {
+        if (message.length() >= Message.MAX_CONTENT_LENGTH) {
+            throw new RuntimeException("Message attempted to send too long:\n" + message);
+        }
+
+        return channel.sendMessage(message).complete();
+    }
+
+    public static Message sendGuildMessageReturn(TextChannel channel, MessageEmbed me) {
+        return channel.sendMessage(me).complete();
+    }
+
     public static void sendPrivateMessage(User user, String message) {
         if (message.length() > Message.MAX_CONTENT_LENGTH) {
             throw new RuntimeException("Message attempted to send too long:\n" + message);
@@ -84,21 +76,62 @@ public class JDAUtils {
     }
 
     public static void sendPrivateMessage(User user, MessageEmbed message) {
-        user.openPrivateChannel().queue((channel) -> channel.sendMessage(message).queue());
+        user.openPrivateChannel().queue((channel) -> {
+            channel.sendMessage(message).queue();
+        });
     }
 
-    public static void sendPrivateMessage(TextChannel channel, String message, String[] reactionNames) {
-        Message sentMessage;
+    public static Message sendMessage(User user, TextChannel channel, String message, MessageEmbed messageEmbed, File[] files, String[] reactionNames, boolean returnMessage) {
+        MessageChannel messageChannel;
 
-        if (message.length() > Message.MAX_CONTENT_LENGTH) {
-            throw new RuntimeException("Message attempted to send too long:\n" + message);
+        if (channel != null) {
+            messageChannel = channel;
+        } else {
+            messageChannel = user.openPrivateChannel().complete();
         }
 
-        sentMessage = channel.sendMessage(message).complete();
+        return sendMessage(messageChannel, message, messageEmbed, files, reactionNames, returnMessage);
+    }
 
-        for (String reactionName : reactionNames) {
-            JDAUtils.addReaction(sentMessage, reactionName);
+    public static Message sendMessage(MessageChannel messageChannel, String message, MessageEmbed messageEmbed, File[] files, String[] reactionNames, boolean returnMessage) {
+        MessageAction messageAction = null;
+        Message sentMessage = null;
+
+        if (message != null) {
+            messageAction = messageChannel.sendMessage(message);
         }
+
+        if (messageEmbed != null) {
+            if (messageAction != null) {
+                messageAction = messageAction.embed(messageEmbed);
+            } else {
+                messageAction = messageChannel.sendMessage(messageEmbed);
+            }
+        }
+
+        if (files != null) {
+            for (File file : files) {
+                messageAction = messageAction.addFile(file);
+            }
+        }
+
+        if (!returnMessage) {
+            messageAction.queue();
+        } else if (returnMessage || reactionNames != null) {
+            sentMessage = messageAction.complete();
+        }
+
+        if (reactionNames != null) {
+            for (String reactionName : reactionNames) {
+                JDAUtils.addReaction(sentMessage, reactionName);
+            }
+
+            if (!returnMessage) {
+                sentMessage = null;
+            }
+        }
+
+        return sentMessage;
     }
 
     public static String findUserId(Guild guild, String potentialName) {

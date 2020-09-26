@@ -1,25 +1,19 @@
 package botmanager.bots.gitmanager.commands.tasks;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
-import botmanager.bots.gitmanager.objects.GuildSettings;
-import botmanager.bots.gitmanager.objects.Task;
-import botmanager.bots.gitmanager.objects.TaskBuilder;
+import botmanager.bots.gitmanager.objects.*;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class TaskCreateCommand extends GitManagerCommandBase {
+public class TaskCreateCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
         bot.getPrefix() + "task create",
@@ -32,29 +26,14 @@ public class TaskCreateCommand extends GitManagerCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent guildEvent = null;
-        PrivateMessageReceivedEvent privateEvent = null;
+    public void runOnMessage(MessageReceivedEvent event) {
+        GuildSettings gs;
         Message taskMessage;
-        User user;
+        User user = event.getAuthor();
         Task task;
-        String input;
-        long guildID;
+        String input = event.getMessage().getContentRaw();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
         boolean found = false;
-
-        if (genericEvent instanceof GuildMessageReceivedEvent) {
-            guildEvent = (GuildMessageReceivedEvent) genericEvent;
-            input = guildEvent.getMessage().getContentRaw();
-            user = guildEvent.getAuthor();
-            guildID = guildEvent.getGuild().getIdLong();
-        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
-            privateEvent = (PrivateMessageReceivedEvent) genericEvent;
-            input = privateEvent.getMessage().getContentRaw();
-            user = privateEvent.getAuthor();
-            guildID = bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
-        } else {
-            return;
-        }
         
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
@@ -68,8 +47,8 @@ public class TaskCreateCommand extends GitManagerCommandBase {
 
         if (!found) {
             return;
-        } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
-            guildEvent.getMessage().delete().queue();
+        } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
+            event.getMessage().delete().queue();
         }
         
         try {
@@ -83,7 +62,7 @@ public class TaskCreateCommand extends GitManagerCommandBase {
             return;
         }
         
-        GuildSettings gs = bot.getGuildSettings(guildID);
+        gs = bot.getGuildSettings(guildID);
         
         taskMessage = JDAUtils.sendGuildMessageReturn(
                 bot.getTaskChannel(guildID, gs.getDefaultTaskChannelIndex()),
@@ -98,8 +77,8 @@ public class TaskCreateCommand extends GitManagerCommandBase {
 
     
     @Override
-    public Field info() {
-        return new Field("Creating a Task", "```" + KEYWORDS[0] + " Title```", false);
+    public MessageEmbed.Field info() {
+        return new MessageEmbed.Field("Creating a Task", "```" + KEYWORDS[0] + " Title```", false);
     }
     
     @Override

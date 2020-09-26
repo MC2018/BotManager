@@ -2,15 +2,13 @@ package botmanager.generic.commands;
 
 import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;
-import botmanager.generic.ICommand;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class PMForwarderCommand implements ICommand {
+public class PMForwarderCommand implements IMessageReceivedCommand {
 
     BotBase bot;
     
@@ -26,17 +24,15 @@ public class PMForwarderCommand implements ICommand {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        PrivateMessageReceivedEvent event;
+    public void runOnMessage(MessageReceivedEvent event) {
         String input;
         String userID;
         boolean found = false;
 
-        if (!(genericEvent instanceof PrivateMessageReceivedEvent)) {
+        if (event.isFromGuild()) {
             return;
         }
 
-        event = (PrivateMessageReceivedEvent) genericEvent;
         input = event.getMessage().getContentRaw();
 
         for (String keyword : KEYWORDS) {

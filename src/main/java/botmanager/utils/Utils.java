@@ -1,17 +1,10 @@
 package botmanager.utils;
 
 import botmanager.bots.speedrunbot.SpeedrunBot;
-import com.vdurmont.emoji.Emoji;
-import com.vdurmont.emoji.EmojiManager;
-import com.vdurmont.emoji.EmojiParser;
+import com.vdurmont.emoji.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.DateTimeFormatterBuilder;
-import org.joda.time.format.DateTimeParser;
+import java.util.*;
+import org.joda.time.format.*;
 
 /**
  *

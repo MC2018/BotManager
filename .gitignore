@@ -54,3 +54,4 @@ data/
 .nb-gradle/
 src/main/java/botmanager/display/Test.java
 out/
+mergedtesting/

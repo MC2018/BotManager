@@ -1,28 +1,21 @@
 package botmanager.bots.gitmanager.commands.tasks;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import java.awt.Color;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import java.util.*;
+import net.dv8tion.jda.api.*;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class TaskPurgeCommand extends GitManagerCommandBase {
+public class TaskPurgeCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private class GuildResetInfo {
 
@@ -62,29 +55,14 @@ public class TaskPurgeCommand extends GitManagerCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent guildEvent;
-        PrivateMessageReceivedEvent privateEvent;
+    public void runOnMessage(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         GuildResetInfo guildResetInfo;
-        Guild guild;
-        Member member;
-        String input;
+        Guild guild = event.isFromGuild() ? event.getGuild() : bot.getJDA().getGuildById(bot.readUserSettings(event.getAuthor().getIdLong()).getDefaultGuildID());
+        Member member = event.isFromGuild() ? event.getMember() : guild.getMember(event.getAuthor());
+        String input = event.getMessage().getContentRaw();
         boolean found = false;
 
-        if (genericEvent instanceof GuildMessageReceivedEvent) {
-            guildEvent = (GuildMessageReceivedEvent) genericEvent;
-            input = guildEvent.getMessage().getContentRaw();
-            guild = guildEvent.getGuild();
-            member = guildEvent.getMember();
-        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
-            privateEvent = (PrivateMessageReceivedEvent) genericEvent;
-            input = privateEvent.getMessage().getContentRaw();
-            guild = bot.getJDA().getGuildById(bot.readUserSettings(privateEvent.getAuthor().getIdLong()).getDefaultGuildID());
-            member = guild.getMember(privateEvent.getAuthor());
-        } else {
-            return;
-        }
         
         if (!member.hasPermission(Permission.ADMINISTRATOR) && !member.getId().equals("106949500500738048")) {
             return;
@@ -132,8 +110,8 @@ public class TaskPurgeCommand extends GitManagerCommandBase {
     
 
     @Override
-    public Field info() {
-        return new Field("Purging all Tasks", "```" + KEYWORDS[0] + "```(Only accessible by admins)", false);
+    public MessageEmbed.Field info() {
+        return new MessageEmbed.Field("Purging all Tasks", "```" + KEYWORDS[0] + "```(Only accessible by admins)", false);
     }
 
     @Override

@@ -6,8 +6,10 @@ import net.dv8tion.jda.api.events.Event;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public abstract interface ICommand {
+public interface ICommand {
     
-    public abstract void run(Event genericEvent);
+    public default void run(Event genericEvent) {
+        throw new UnsupportedOperationException("This method was never implemented");
+    }
     
 }

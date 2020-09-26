@@ -1,28 +1,21 @@
 package botmanager.bots.gitmanager.commands.meetings;
 
-import botmanager.utils.JDAUtils;
-import botmanager.utils.Utils;
+import botmanager.generic.commands.IMessageReceivedCommand;
+import botmanager.utils.*;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
-import botmanager.bots.gitmanager.objects.GuildSettings;
-import botmanager.bots.gitmanager.objects.Meeting;
-
+import botmanager.bots.gitmanager.objects.*;
 import java.util.ArrayList;
-
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class MeetingDeleteCommand extends GitManagerCommandBase {
+public class MeetingDeleteCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
         bot.getPrefix() + "meeting delete",
@@ -38,28 +31,12 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent guildEvent = null;
-        PrivateMessageReceivedEvent privateEvent = null;
+    public void runOnMessage(MessageReceivedEvent event) {
         GuildSettings guildSettings;
-        User user;
-        String input;
-        long guildID;
+        User user = event.getAuthor();
+        String input = event.getMessage().getContentRaw();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
         boolean found = false;
-
-        if (genericEvent instanceof GuildMessageReceivedEvent) {
-            guildEvent = (GuildMessageReceivedEvent) genericEvent;
-            input = guildEvent.getMessage().getContentRaw();
-            user = guildEvent.getAuthor();
-            guildID = guildEvent.getGuild().getIdLong();
-        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
-            privateEvent = (PrivateMessageReceivedEvent) genericEvent;
-            input = privateEvent.getMessage().getContentRaw();
-            user = privateEvent.getAuthor();
-            guildID = bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
-        } else {
-            return;
-        }
         
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
@@ -73,8 +50,8 @@ public class MeetingDeleteCommand extends GitManagerCommandBase {
 
         if (!found) {
             return;
-        } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
-            guildEvent.getMessage().delete().queue();
+        } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
+            event.getMessage().delete().queue();
         }
         
         try {

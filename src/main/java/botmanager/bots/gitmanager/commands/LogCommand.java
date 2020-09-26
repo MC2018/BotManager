@@ -3,14 +3,12 @@ package botmanager.bots.gitmanager.commands;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.GuildSettings;
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class LogCommand extends GitManagerCommandBase {
+public class LogCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private final String[] KEYWORDS = {
             bot.getPrefix() + "log"
@@ -21,28 +19,12 @@ public class LogCommand extends GitManagerCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent guildEvent = null;
-        PrivateMessageReceivedEvent privateEvent = null;
+    public void runOnMessage(MessageReceivedEvent event) {
         GuildSettings guildSettings;
-        User user;
-        String input;
-        long guildID;
+        User user = event.getAuthor();
+        String input = event.getMessage().getContentRaw();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
         boolean found = false;
-
-        if (genericEvent instanceof GuildMessageReceivedEvent) {
-            guildEvent = (GuildMessageReceivedEvent) genericEvent;
-            input = guildEvent.getMessage().getContentRaw();
-            user = guildEvent.getAuthor();
-            guildID = guildEvent.getGuild().getIdLong();
-        } else if (genericEvent instanceof PrivateMessageReceivedEvent) {
-            privateEvent = (PrivateMessageReceivedEvent) genericEvent;
-            input = privateEvent.getMessage().getContentRaw();
-            user = privateEvent.getAuthor();
-            guildID = bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
-        } else {
-            return;
-        }
 
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
@@ -52,12 +34,6 @@ public class LogCommand extends GitManagerCommandBase {
             } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword.replaceAll(" ", ""))) {
                 JDAUtils.sendPrivateMessage(user, getFailureEmbed(guildID));
             }
-        }
-
-        if (!found) {
-            return;
-        } else if (guildEvent != null && !bot.isBotChannel(guildEvent.getChannel())) {
-            guildEvent.getMessage().delete().queue();
         }
     }
 

@@ -1,25 +1,21 @@
 package botmanager.bots.gitmanager.commands;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.UserSettings;
-import java.io.File;
 import java.util.ArrayList;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class DefaultGuildCommand extends GitManagerCommandBase {
+public class DefaultGuildCommand extends GitManagerCommandBase implements IMessageReceivedCommand {
 
     private String[] KEYWORDS = {
         bot.getPrefix() + "default"
@@ -31,30 +27,18 @@ public class DefaultGuildCommand extends GitManagerCommandBase {
     // make it so their default guild gets changed when they leave a guild, DM em
     
     @Override
-    public void run(Event genericEvent) {
+    public void runOnMessage(MessageReceivedEvent event) {
         UserSettings userSettings;
-        User user;
+        User user = event.getAuthor();
         String input;
         boolean found = false;
-
-        if (genericEvent instanceof PrivateMessageReceivedEvent) {
-            PrivateMessageReceivedEvent event = (PrivateMessageReceivedEvent) genericEvent;
-            user = event.getAuthor();
-            input = event.getMessage().getContentRaw();
-        } else if (genericEvent instanceof GuildMessageReceivedEvent) {
-            GuildMessageReceivedEvent event = (GuildMessageReceivedEvent) genericEvent;
-            user = event.getAuthor();
-            input = event.getMessage().getContentRaw();
-        } else {
-            return;
-        }
         
         if (user.getIdLong() == bot.getJDA().getSelfUser().getIdLong()) {
             return;
         }
-        
-        userSettings = getUserSettings(user);
-        userSettings = verifyDefaultGuildValidity(user, userSettings);
+
+        input = event.getMessage().getContentRaw();
+        userSettings = verifyDefaultGuildValidity(user, bot.readUserSettings(user.getIdLong()));
         
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword + " ")) {
@@ -92,29 +76,12 @@ public class DefaultGuildCommand extends GitManagerCommandBase {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
         }
     }
-    
-    public UserSettings getUserSettings(User user) {
-        File file = UserSettings.getFile(bot, user.getIdLong());
-        
-        if (!file.exists()) {
-            ArrayList<Long> guildIDs = new ArrayList();
-            UserSettings userSettings;
-            
-            user.getMutualGuilds().forEach(x -> guildIDs.add(x.getIdLong()));
-            userSettings = new UserSettings(user.getIdLong(), guildIDs.size() > 0 ? guildIDs.get(0) : -1);
-            bot.writeUserSettings(userSettings);
-            return userSettings;
-        } else {
-            return bot.readUserSettings(user.getIdLong());
-        }
-    }
-    
+
     public UserSettings verifyDefaultGuildValidity(User user, UserSettings userSettings) {
         ArrayList<Long> guildIDs = new ArrayList();
         EmbedBuilder eb = new EmbedBuilder();
         user.getMutualGuilds().forEach(x -> guildIDs.add(x.getIdLong()));
-        
-        
+
         if (!guildIDs.contains(userSettings.getDefaultGuildID()) && userSettings.getDefaultGuildID() != -1) {
             eb.setTitle("Default Guild Changed");
             eb.setDescription("Either you left the guild (" + userSettings.getDefaultGuildID() + "), or this bot was removed from the guild.");
@@ -144,7 +111,7 @@ public class DefaultGuildCommand extends GitManagerCommandBase {
     
     @Override
     public MessageEmbed.Field info() {
-        return new Field("Changing Default Guilds for PM Commands", "```" + bot.getPrefix() + "default GUILD_ID```", false);
+        return new MessageEmbed.Field("Changing Default Guilds for PM Commands", "```" + bot.getPrefix() + "default GUILD_ID```", false);
     }
 
     @Override
