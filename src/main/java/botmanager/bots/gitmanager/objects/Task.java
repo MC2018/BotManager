@@ -21,8 +21,8 @@ public class Task {
     private long channelID;
     private long messageID;
     private long epochMilli;
+    private long id;
     private int status;
-    private int id;
     private ArrayList<UpdateLog> updateLogs;
     private boolean deleted = false;
     
@@ -40,11 +40,11 @@ public class Task {
         updateLogs = new ArrayList();
     }
 
-    public static File getFile(BotBase bot, long guildID, int taskID) {
+    public static File getFile(BotBase bot, long guildID, long taskID) {
         return new File("data/" + bot.getName() + "/guilds/" + guildID + "/tasks/" + taskID + ".json");
     }
     
-    public static File getRestoreFile(BotBase bot, Date date, long guildID, int taskID) {
+    public static File getRestoreFile(BotBase bot, Date date, long guildID, long taskID) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM_dd_yyyy_HH_mm_ss");
         return new File("data/" + bot.getName() + "/guilds/" + guildID + "/tasks/purge_" + sdf.format(date) + "/" + taskID + ".json");
     }
@@ -125,7 +125,7 @@ public class Task {
         this.messageID = messageID;
     }
     
-    public int getID() {
+    public long getID() {
         return id;
     }
 

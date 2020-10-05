@@ -29,7 +29,7 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
         User user = event.getAuthor();
         Task task;
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         int taskNumber;
         boolean found = false;
         
@@ -61,7 +61,7 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
         
         try {
             input = input.substring(input.split(" ")[0].length() + 1, input.length());
-            task = bot.readTask(guildID, taskNumber);
+            task = bot.getTask(guildID, taskNumber);
             bot.getTaskChannel(task.getGuildID(), task.getStatus()).deleteMessageById(task.getMessageID()).queue();
             task.setDeleted(true, input, user.getIdLong());
             bot.writeTask(task);
@@ -73,7 +73,7 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Removing a Task", "```" + KEYWORDS[0] + " 102 Duplicate```", false);
+        return new MessageEmbed.Field("Deleting a Task", "```" + KEYWORDS[0] + " <task id> <reason for deletion>```", false);
     }
     
     @Override
@@ -83,7 +83,7 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TASK_ID REASON```",
+                        + "```" + KEYWORDS[0] + " <task id> <reason for deletion>```",
                 false);
         
         return eb.build();

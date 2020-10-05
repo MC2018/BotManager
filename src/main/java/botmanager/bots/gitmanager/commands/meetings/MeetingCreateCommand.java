@@ -35,7 +35,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
         GuildSettings guildSettings;
         User user = event.getAuthor();
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
@@ -46,7 +46,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
             }
         }
 
-        if (!found) {
+        if (!found || guildID == -1) {
             return;
         } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
             event.getMessage().delete().queue();
@@ -77,7 +77,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Creating a Meeting", "```" + KEYWORDS[0] + " Time```", false);
+        return new MessageEmbed.Field("Creating a Meeting", "```" + KEYWORDS[0] + " <date and time>```", false);
     }
 
     public MessageEmbed getEarlyFailureEmbed() {
@@ -94,7 +94,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TIME```",
+                        + "```" + KEYWORDS[0] + " <date and time>```",
                 false);
         
         return eb.build();
@@ -114,7 +114,7 @@ public class MeetingCreateCommand extends GitManagerCommandBase implements IMess
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TIME```",
+                        + "```" + KEYWORDS[0] + " <date and time>```",
                 false);
         eb.addField("Formats Allowed", "```" + formats.toString().trim() + "```", false);
         

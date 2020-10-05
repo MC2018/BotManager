@@ -35,7 +35,7 @@ public class MeetingDeleteCommand extends GitManagerCommandBase implements IMess
         GuildSettings guildSettings;
         User user = event.getAuthor();
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
@@ -71,7 +71,7 @@ public class MeetingDeleteCommand extends GitManagerCommandBase implements IMess
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Deleting a Meeting", "```" + KEYWORDS[0] + " 102```", false);
+        return new MessageEmbed.Field("Deleting a Meeting", "```" + KEYWORDS[0] + " <meeting id>```", false);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class MeetingDeleteCommand extends GitManagerCommandBase implements IMess
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " INDEX```\n" +
+                        + "```" + KEYWORDS[0] + " <meeting id>```\n" +
                         "(The index can be found from using the meeting list command)",
                 false);
         

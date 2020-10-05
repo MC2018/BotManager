@@ -33,7 +33,7 @@ public class TaskCreateCommand extends GitManagerCommandBase implements IMessage
         User user = event.getAuthor();
         Task task;
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         boolean found = false;
         
         for (String keyword : KEYWORDS) {
@@ -81,7 +81,7 @@ public class TaskCreateCommand extends GitManagerCommandBase implements IMessage
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Creating a Task", "```" + KEYWORDS[0] + " Title```", false);
+        return new MessageEmbed.Field("Creating a Task", "```" + KEYWORDS[0] + " <title>```", false);
     }
     
     @Override
@@ -91,7 +91,7 @@ public class TaskCreateCommand extends GitManagerCommandBase implements IMessage
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " Title```",
+                        + "```" + KEYWORDS[0] + " <title>```",
                 true);
         
         return eb.build();

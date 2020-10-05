@@ -27,16 +27,24 @@ public class HelpCommand extends GitManagerCommandBase implements IMessageReceiv
 
         if (words.length > 0 && words[0].equals(bot.prefix + "help")) {
             boolean taskHelp = words.length > 1 && words[1].contains("task");
-            boolean meetingHelp = !taskHelp && words.length > 1 && words[1].contains("meeting");
+            boolean meetingHelp = words.length > 1 && words[1].contains("meeting");
+            boolean logHelp = words.length > 1 && words[1].contains("log");
+
+            if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
+                event.getMessage().delete().queue();
+            }
 
             if (taskHelp) {
                 eb.setTitle(bot.getName() + " Task Commands");
             } else if (meetingHelp) {
                 eb.setTitle(bot.getName() + " Meeting Commands");
+            } else if (logHelp) {
+                eb.setTitle(bot.getName() + " Log Commands");
             } else {
                 eb.setTitle(bot.getName() + " Commands");
                 eb.addField("Task Commands", "```" + bot.prefix + "help tasks```", false);
                 eb.addField("Meeting Commands", "```" + bot.prefix + "help meetings```", false);
+                eb.addField("Log Commands", "```" + bot.prefix + "help logs```", false);
             }
 
             for (ICommand icommand : bot.getCommands()) {
@@ -45,9 +53,10 @@ public class HelpCommand extends GitManagerCommandBase implements IMessageReceiv
                     MessageEmbed.Field field = command.info();
                     String className = icommand.getClass().getName();
 
-                    if (field != null && ((!taskHelp && !meetingHelp && !className.contains("meetings") && !className.contains("tasks"))
+                    if (field != null && ((!taskHelp && !meetingHelp && !logHelp && !className.contains("meetings") && !className.contains("tasks") && !className.contains("logs"))
+                            || (taskHelp && className.contains("tasks"))
                             || (meetingHelp && className.contains("meetings"))
-                            || (taskHelp && className.contains("tasks")))) {
+                            || (logHelp && className.contains("logs")))) {
                         eb.addField(field);
                     }
                 }

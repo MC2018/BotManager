@@ -1,5 +1,7 @@
 package botmanager.bots.gitmanager;
 
+import botmanager.bots.gitmanager.commands.logs.LogCategorizationCommand;
+import botmanager.bots.gitmanager.commands.logs.LogCommand;
 import botmanager.utils.*;
 import botmanager.generic.*;
 import botmanager.generic.commands.*;
@@ -29,6 +31,7 @@ public class GitManager extends BotBase {
 
     private HashMap<Long, GitHubClient> ghClients = new HashMap();
     private HashMap<Long, GuildSettings> guildSettingsList = new HashMap();
+    private HashMap<Long, UserSettings> userSettingsList = new HashMap();
     private TimerTask timerTask;
     private Timer timer = new Timer();
     final public String prefix;
@@ -50,6 +53,8 @@ public class GitManager extends BotBase {
             new MeetingListCommand(this),
             new MeetingDescriptionCommand(this),
             new MeetingDeleteCommand(this),
+            new LogCommand(this),
+            new LogCategorizationCommand(this),
             new TaskMoverCommand(this),
             new TaskAssignCommand(this),
             new PMForwarderCommand(this),
@@ -183,7 +188,7 @@ public class GitManager extends BotBase {
                 GitHubClient client = ghClients.get(guild.getIdLong());
                 RepositoryService rs = new RepositoryService(client);
                 Repository repo = rs.getRepository(gs.getRepoOwnerName(), gs.getRepoName());
-                List<PullRequest> prs = new PullRequestService(client).getPullRequests(repo, IssueService.STATE_OPEN);
+                List<PullRequest> prs = new PullRequestService(client).getPullRequests(repo, IssueService.STATE_CLOSED);
                 File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/repos/" + repo.getName() + "/old_pr_ids.json");
                 ArrayList<String> oldPRs;
                 boolean newPRs = false;
@@ -220,7 +225,7 @@ public class GitManager extends BotBase {
         String prName = pr.getHead().getRef();
         Member member = null;
         Task task;
-        int taskID = -1;
+        long taskID = -1;
         int beginningIndex = -1;
         
         if (Utils.isNullOrEmpty(gs.getPrAnnouncementChannel())) {
@@ -241,7 +246,7 @@ public class GitManager extends BotBase {
                 taskID = Integer.parseInt(prName.substring(beginningIndex, prName.length()));
             }
             
-            task = readTask(guild.getIdLong(), taskID);
+            task = getTask(guild.getIdLong(), taskID);
             eb.setTitle("PR Uploaded: " + task.getTitle(), pr.getHtmlUrl());
             
             if (task.getAssignee() != -1) {
@@ -315,8 +320,73 @@ public class GitManager extends BotBase {
         File file = GuildSettings.getFile(this, guildSettings.getID());
         IOUtils.writeGson(file, guildSettings, true);
     }
-    
-    public Task readTask(long guildID, int taskID) {
+
+    public Log getLog(long guildID, long logID) {
+        File file = Log.getFile(this, guildID, logID);
+
+        if (file.exists()) {
+            return readLog(guildID, logID);
+        } else {
+            return null;
+        }
+    }
+
+    private Log readLog(long guildID, long logID) {
+        File file = Log.getFile(this, guildID, logID);
+        Log log = IOUtils.readGson(file, Log.class);
+        return log;
+    }
+
+    public void writeLog(Log log) {
+        File file = Log.getFile(this, log.getGuildID(), log.getID());
+        IOUtils.writeGson(file, log, true);
+    }
+
+    public static void addLogReactions(Message message, GuildSettings gs) {
+        String logChannel = gs.getLogChannel();
+
+        if (Utils.isNullOrEmpty(logChannel)) {
+            return;
+        }
+
+        for (LogType logType : LogType.values()) {
+            JDAUtils.addReaction(message, logType.getEmoteName());
+        }
+    }
+
+    public MessageEmbed generateLogEmbed(Log log) {
+        EmbedBuilder eb = new EmbedBuilder();
+        User user = getJDA().getUserById(log.getAuthor());
+        String description = "User: " + user.getAsMention() + "\n";
+
+        if (log.getMinutes() >= 60) {
+            description += log.getMinutes() / 60 + (log.getMinutes() / 60 == 1 ? (" Hour ") : (" Hours "));
+        }
+
+        if (log.getMinutes() % 60 != 0) {
+            description += log.getMinutes() % 60 + (log.getMinutes() % 60 == 1 ? (" Minute") : (" Minutes"));
+        }
+
+        description = description.trim();
+        eb.setTitle("Work Log #" + log.getID() + ": " + log.getType().getName());
+        eb.setDescription(description);
+        eb.setThumbnail(user.getEffectiveAvatarUrl());
+        eb.setTimestamp(Instant.now());
+
+        return eb.build();
+    }
+
+    public Task getTask(long guildID, long taskID) {
+        File file = Task.getFile(this, guildID, taskID);
+
+        if (file.exists()) {
+            return readTask(guildID, taskID);
+        } else {
+            return null;
+        }
+    }
+
+    private Task readTask(long guildID, long taskID) {
         File file = Task.getFile(this, guildID, taskID);
         return IOUtils.readGson(file, Task.class);
     }
@@ -324,6 +394,61 @@ public class GitManager extends BotBase {
     public void writeTask(Task task) {
         File file = Task.getFile(this, task.getGuildID(), task.getID());
         IOUtils.writeGson(file, task, true);
+    }
+
+    public MessageEmbed generateTaskEmbed(Task task) {
+        GuildSettings gs = readGuildSettings(task.getGuildID());
+        EmbedBuilder eb = new EmbedBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+        eb.setTitle("Task #" + task.getID() + ": " + task.getTitle());
+        eb.addField("Description", task.getDescription(), false);
+
+        if (task.getAssignee() <= 0) {
+            eb.addField("Assignee", "TBD \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B "
+                    + "Click :red_circle: to be assigned/unassigned", false);
+        } else {
+            User user = getJDA().getUserById(task.getAssignee());
+            eb.addField("Assignee", user.getAsMention(), false);
+            eb.setThumbnail(user.getEffectiveAvatarUrl());
+        }
+
+        eb.appendDescription("Date Created " + sdf.format(new Date(task.getEpochMilli()))
+                + "\nLast Updated " + sdf.format(new Date(Instant.now().toEpochMilli())));
+        return eb.build();
+    }
+
+    public void purgeTasks(long guildID) {
+        File taskCounterFile = TaskBuilder.getCounterFile(this, guildID);
+        Guild guild = getJDA().getGuildById(guildID);
+        Date date = new Date();
+        Integer taskCount = IOUtils.readGson(taskCounterFile, Integer.class);
+
+        if (taskCount == null) {
+            return;
+        }
+
+        for (int i = 1; i <= taskCount; i++) {
+            File taskFile = Task.getFile(this, guildID, i);
+            File restoreFile = Task.getRestoreFile(this, date, guildID, i);
+            Task task;
+
+            if (!taskFile.exists()) {
+                continue;
+            }
+
+            task = readTask(guildID, i);
+
+            try {
+                guild.getTextChannelById(task.getChannelID()).retrieveMessageById(task.getMessageID()).complete().delete().complete();
+            } catch (Exception e) {
+            }
+
+            IOUtils.writeGson(restoreFile, task);
+            taskFile.delete();
+        }
+
+        taskCounterFile.delete();
     }
 
     private UserSettings generateUserSettings(User user) {
@@ -337,7 +462,26 @@ public class GitManager extends BotBase {
         return userSettings;
     }
 
-    public UserSettings readUserSettings(long userID) {
+    public UserSettings getUserSettings(long userID) {
+        File file = UserSettings.getFile(this, userID);
+        UserSettings userSettings;
+
+        if (userSettingsList.containsKey(userID)) {
+            userSettings =  userSettingsList.get(userID);
+        } else if (file.exists()) {
+            userSettings = readUserSettings(userID);
+        } else {
+            userSettings = generateUserSettings(getJDA().getUserById(userID));
+        }
+
+        if (!userSettingsList.containsValue(userID)) {
+            userSettingsList.put(userID, userSettings);
+        }
+
+        return userSettings;
+    }
+
+    private UserSettings readUserSettings(long userID) {
         File file = UserSettings.getFile(this, userID);
 
         if (!file.exists()) {
@@ -350,61 +494,6 @@ public class GitManager extends BotBase {
     public void writeUserSettings(UserSettings userSettings) {
         File file = UserSettings.getFile(this, userSettings.getID());
         IOUtils.writeGson(file, userSettings, true);
-    }
-    
-    public MessageEmbed generateTaskEmbed(Task task) {
-        GuildSettings gs = readGuildSettings(task.getGuildID());
-        EmbedBuilder eb = new EmbedBuilder();
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-        
-        eb.setTitle("Task #" + task.getID() + ": " + task.getTitle());
-        eb.addField("Description", task.getDescription(), false);
-        
-        if (task.getAssignee() <= 0) {
-            eb.addField("Assignee", "TBD \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B "
-                    + "Click :red_circle: to be assigned/unassigned", false);
-        } else {
-            User user = getJDA().getUserById(task.getAssignee());
-            eb.addField("Assignee", user.getAsMention(), false);
-            eb.setThumbnail(user.getEffectiveAvatarUrl());
-        }
-        
-        eb.appendDescription("Date Created " + sdf.format(new Date(task.getEpochMilli()))
-                + "\nLast Updated " + sdf.format(new Date(Instant.now().toEpochMilli())));
-        return eb.build();
-    }
-
-    public void purgeTasks(long guildID) {
-        File taskCounterFile = TaskBuilder.getCounterFile(this, guildID);
-        Guild guild = getJDA().getGuildById(guildID);
-        Date date = new Date();
-        Integer taskCount = IOUtils.readGson(taskCounterFile, Integer.class);
-        
-        if (taskCount == null) {
-            return;
-        }
-        
-        for (int i = 1; i <= taskCount; i++) {
-            File taskFile = Task.getFile(this, guildID, i);
-            File restoreFile = Task.getRestoreFile(this, date, guildID, i);
-            Task task;
-            
-            if (!taskFile.exists()) {
-                continue;
-            }
-            
-            task = readTask(guildID, i);
-            
-            try {
-                guild.getTextChannelById(task.getChannelID()).retrieveMessageById(task.getMessageID()).complete().delete().complete();
-            } catch (Exception e) {
-            }
-            
-            IOUtils.writeGson(restoreFile, task);
-            taskFile.delete();
-        }
-        
-        taskCounterFile.delete();
     }
     
 }

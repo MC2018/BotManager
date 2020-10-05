@@ -18,7 +18,6 @@ public class TaskDescriptionCommand extends GitManagerCommandBase implements IMe
     private String[] KEYWORDS = {
         bot.prefix + "task description",
         bot.prefix + "task desc",
-        bot.prefix + "task d"
     };
     
     public TaskDescriptionCommand(GitManager bot) {
@@ -30,7 +29,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase implements IMe
         User user = event.getAuthor();
         Task task;
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         int taskNumber;
         boolean found = false;
 
@@ -61,7 +60,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase implements IMe
         }
         
         input = input.substring(input.split(" ")[0].length() + 1, input.length());
-        task = bot.readTask(guildID, taskNumber);
+        task = bot.getTask(guildID, taskNumber);
         task.setDescription(input, user.getIdLong());
         bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
         bot.writeTask(task);
@@ -70,7 +69,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase implements IMe
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Changing a Task Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+        return new MessageEmbed.Field("Changing a Task Description", "```" + KEYWORDS[0] + " <task id> <task description>```", false);
     }
     
     @Override
@@ -80,7 +79,7 @@ public class TaskDescriptionCommand extends GitManagerCommandBase implements IMe
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION```",
+                        + "```" + KEYWORDS[0] + " <task id> <task description>```",
                 true);
         
         return eb.build();

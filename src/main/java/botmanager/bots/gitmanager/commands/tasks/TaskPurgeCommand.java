@@ -58,7 +58,7 @@ public class TaskPurgeCommand extends GitManagerCommandBase implements IMessageR
     public void runOnMessage(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
         GuildResetInfo guildResetInfo;
-        Guild guild = event.isFromGuild() ? event.getGuild() : bot.getJDA().getGuildById(bot.readUserSettings(event.getAuthor().getIdLong()).getDefaultGuildID());
+        Guild guild = event.isFromGuild() ? event.getGuild() : bot.getJDA().getGuildById(bot.getUserSettings(event.getAuthor().getIdLong()).getDefaultGuildID());
         Member member = event.isFromGuild() ? event.getMember() : guild.getMember(event.getAuthor());
         String input = event.getMessage().getContentRaw();
         boolean found = false;
@@ -89,7 +89,8 @@ public class TaskPurgeCommand extends GitManagerCommandBase implements IMessageR
         if (!guildResetInfo.recentlyRun && input.equals("")) {
             guildResetInfo.resetRandomNumber();
             eb.setTitle("Confirm Purge");
-            eb.setDescription("Type `" + KEYWORDS[0] + " " + guildResetInfo.randomNumber + "` within 15 seconds to purge all tasks.");
+            eb.setDescription("Type `" + KEYWORDS[0] + " " + guildResetInfo.randomNumber + "` within 15 seconds to purge all tasks.\n\n" +
+                    "***Understand that this will delete ALL tasks!***");
             guildResetInfo.startTimer();
         } else if (guildResetInfo.recentlyRun && input.equals(String.valueOf(guildResetInfo.randomNumber))) {
             eb.setTitle("Purge Successful");

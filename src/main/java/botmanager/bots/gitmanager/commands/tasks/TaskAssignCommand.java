@@ -26,8 +26,8 @@ public class TaskAssignCommand extends GitManagerCommandBase implements IMessage
         List<MessageEmbed> embeds;
         Task task;
         String title;
+        long taskID = -1;
         int beginningIndex = -1;
-        int taskID = -1;
 
         if (!event.isFromGuild() || event.getReactionEmote().isEmote() || !Utils.getEmojiAlias(event.getReactionEmote().getEmoji()).equals("red_circle")) {
             return;
@@ -66,7 +66,7 @@ public class TaskAssignCommand extends GitManagerCommandBase implements IMessage
             }
         }
         
-        task = bot.readTask(event.getGuild().getIdLong(), taskID);
+        task = bot.getTask(event.getGuild().getIdLong(), taskID);
         
         if (task.getAssignee() == event.getUserIdLong()) {
             task.setAssignee(-1, event.getUserIdLong());

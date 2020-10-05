@@ -32,7 +32,7 @@ public class TaskMoverCommand extends GitManagerCommandBase implements IMessageR
         String title;
         int newStatus = -1;
         int beginningIndex = -1;
-        int taskID = -1;
+        long taskID = -1;
         
         if (!event.isFromGuild()) {
             return;
@@ -70,7 +70,7 @@ public class TaskMoverCommand extends GitManagerCommandBase implements IMessageR
         if (taskID <= 0) {
             return;
         } else {
-            task = bot.readTask(event.getGuild().getIdLong(), taskID);
+            task = bot.getTask(event.getGuild().getIdLong(), taskID);
         }
         
         if (event.getReactionEmote().isEmote() && taskReactionNames.contains(event.getReactionEmote().getName())) {

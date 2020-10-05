@@ -38,7 +38,7 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
         }
 
         input = event.getMessage().getContentRaw();
-        userSettings = verifyDefaultGuildValidity(user, bot.readUserSettings(user.getIdLong()));
+        userSettings = verifyDefaultGuildValidity(user, bot.getUserSettings(user.getIdLong()));
         
         for (String keyword : KEYWORDS) {
             if (input.toLowerCase().startsWith(keyword)) {
@@ -50,6 +50,8 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
         
         if (!found) {
             return;
+        } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
+            event.getMessage().delete().queue();
         }
 
         try {
@@ -116,7 +118,7 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " GUILD_ID```\n"
+                        + "```" + KEYWORDS[0] + " <guild id>```\n"
                         + "Make sure you and this bot are in the guild you are trying to set.",
                 true);
         

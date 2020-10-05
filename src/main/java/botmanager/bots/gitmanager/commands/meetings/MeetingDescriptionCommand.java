@@ -31,7 +31,7 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase implements 
         GuildSettings guildSettings;
         User user = event.getAuthor();
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         int meetingNumber;
         boolean found = false;
 
@@ -79,7 +79,7 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase implements 
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Changing a Meeting Description", "```" + KEYWORDS[0] + " 102 New Description```", false);
+        return new MessageEmbed.Field("Changing a Meeting Description", "```" + KEYWORDS[0] + " <meeting id> <meeting description>```", false);
     }
     
     @Override
@@ -89,7 +89,7 @@ public class MeetingDescriptionCommand extends GitManagerCommandBase implements 
         eb.addField(
                 "Command Failed",
                 "Please use proper syntax:\n"
-                        + "```" + KEYWORDS[0] + " MEETING_ID NEW_DESCRIPTION```",
+                        + "```" + KEYWORDS[0] + " <meeting id> <meeting description>```",
                 true);
         
         return eb.build();

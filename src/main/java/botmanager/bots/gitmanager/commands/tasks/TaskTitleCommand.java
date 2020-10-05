@@ -29,7 +29,7 @@ public class TaskTitleCommand extends GitManagerCommandBase implements IMessageR
         Task task;
         User user = event.getAuthor();
         String input = event.getMessage().getContentRaw();
-        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.readUserSettings(user.getIdLong()).getDefaultGuildID();
+        long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         int taskNumber;
         boolean found = false;
         
@@ -60,7 +60,7 @@ public class TaskTitleCommand extends GitManagerCommandBase implements IMessageR
         
         try {
             input = input.substring(input.split(" ")[0].length() + 1);
-            task = bot.readTask(guildID, taskNumber);
+            task = bot.getTask(guildID, taskNumber);
             task.setTitle(input, user.getIdLong());
             bot.getTaskChannel(task.getGuildID(), task.getStatus()).editMessageById(task.getMessageID(), bot.generateTaskEmbed(task)).queue();
             bot.writeTask(task);
@@ -72,7 +72,7 @@ public class TaskTitleCommand extends GitManagerCommandBase implements IMessageR
     
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Changing a Title", "```" + KEYWORDS[0] + " 102 New Title```", false);
+        return new MessageEmbed.Field("Changing a Title", "```" + KEYWORDS[0] + " <task id> <task title>```", false);
     }
     
     @Override
@@ -81,8 +81,8 @@ public class TaskTitleCommand extends GitManagerCommandBase implements IMessageR
         
         eb.addField(
                 "Command Failed",
-                "Please use proper syntax:\n"
-                        + KEYWORDS[0] + " TASK_ID NEW_DESCRIPTION",
+                "Please use proper syntax:```\n"
+                        + KEYWORDS[0] + " <task id> <task title>```",
                 true);
         
         return eb.build();
