@@ -188,7 +188,7 @@ public class GitManager extends BotBase {
                 GitHubClient client = ghClients.get(guild.getIdLong());
                 RepositoryService rs = new RepositoryService(client);
                 Repository repo = rs.getRepository(gs.getRepoOwnerName(), gs.getRepoName());
-                List<PullRequest> prs = new PullRequestService(client).getPullRequests(repo, IssueService.STATE_CLOSED);
+                List<PullRequest> prs = new PullRequestService(client).getPullRequests(repo, IssueService.STATE_OPEN);
                 File file = new File("data/" + getName() + "/guilds/" + guild.getId() + "/repos/" + repo.getName() + "/old_pr_ids.json");
                 ArrayList<String> oldPRs;
                 boolean newPRs = false;
