@@ -100,7 +100,13 @@ public class LogCategorizationCommand extends GitManagerCommandBase implements I
 
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("Assignments", "Press the :red_circle: to assign and unassign yourself from a task.", false);
+        String description = "Emotes used to select differing log categories are as follows:";
+
+        for (LogType logType : LogType.values()) {
+            description += "\n:" + logType.getEmoteName() + ": " + logType.getName();
+        }
+
+        return new MessageEmbed.Field("Log Categories", description, false);
     }
 
     @Override

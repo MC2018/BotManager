@@ -106,7 +106,7 @@ public class LogCommand extends GitManagerCommandBase implements IMessageReceive
 
     @Override
     public MessageEmbed.Field info() {
-        return new MessageEmbed.Field("", "", false);
+        return new MessageEmbed.Field("Creating a Log", "```" + bot.prefix + "log <time spent>```", false);
     }
 
     @Override

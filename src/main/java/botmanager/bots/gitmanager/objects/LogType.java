@@ -7,7 +7,7 @@ public enum LogType {
     ART("art", "Art"),
     STORY("pencil", "Story"),
     MUSIC("musical_note", "Music"),
-    DEVELOPMENT("programming", "Development"),
+    DEVELOPMENT("keyboard", "Development"),
     UNDECIDED_OTHER("shrug", "Undecided/Other");
 
     private String emoteName;
