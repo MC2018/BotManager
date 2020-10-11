@@ -71,6 +71,7 @@ public class LogCommand extends GitManagerCommandBase implements IMessageReceive
         try {
             Message message;
             Log log;
+            Guild guild = bot.getJDA().getGuildById(guildID);
             int hours = 0;
             int minutes = 0;
             Integer.parseInt(input.replaceFirst("h", "").replaceFirst("m", ""));
@@ -96,8 +97,7 @@ public class LogCommand extends GitManagerCommandBase implements IMessageReceive
                     .setMessageID(event.getMessageIdLong())
                     .setMinutes(hours * 60 + minutes)
                     .build();
-
-            JDAUtils.sendGuildMessage(bot.getJDA().getTextChannelById(guildSettings.getLogChannel()), bot.generateLogEmbed(log));
+            JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getLogChannel()), bot.generateLogEmbed(log));
             bot.writeLog(log);
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
