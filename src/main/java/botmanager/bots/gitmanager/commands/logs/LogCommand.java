@@ -97,7 +97,8 @@ public class LogCommand extends GitManagerCommandBase implements IMessageReceive
                     .setMessageID(event.getMessageIdLong())
                     .setMinutes(hours * 60 + minutes)
                     .build();
-            JDAUtils.sendGuildMessage(JDAUtils.findTextChannel(guild, guildSettings.getLogChannel()), bot.generateLogEmbed(log));
+            message = JDAUtils.sendGuildMessageReturn(JDAUtils.findTextChannel(guild, guildSettings.getLogChannel()), bot.generateLogEmbed(log));
+            GitManager.addLogReactions(message, guildSettings);
             bot.writeLog(log);
         } catch (Exception e) {
             JDAUtils.sendPrivateMessage(user, getFailureEmbed());
