@@ -5,6 +5,12 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
+
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  *
@@ -22,9 +28,12 @@ public abstract class BotBase extends ListenerAdapter {
         this.name = name;
         
         try {
-            JDA_INSTANCE = new JDABuilder(AccountType.BOT)
+            EnumSet<GatewayIntent> list = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS);
+            list.remove(GatewayIntent.GUILD_PRESENCES);
+            JDA_INSTANCE = JDABuilder
+                    .create(BOT_TOKEN, list)
                     .addEventListeners(this)
-                    .setToken(BOT_TOKEN)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
                     .build();
         } catch (LoginException e) {
             throw new RuntimeException("Error in creating JDA\n" + e.getLocalizedMessage());
