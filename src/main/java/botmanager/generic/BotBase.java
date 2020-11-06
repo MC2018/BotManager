@@ -4,11 +4,13 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.hooks.EventListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -22,18 +24,25 @@ public abstract class BotBase extends ListenerAdapter {
     private final String BOT_TOKEN;
     private String name;
     private ICommand[] commands;
-    
+
     public BotBase(String botToken, String name) {
+        this(botToken, name, GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS), MemberCachePolicy.ALL, new ArrayList());
+    }
+
+    public BotBase(String botToken, String name, Collection<GatewayIntent> gatewayIntents, MemberCachePolicy memberCachePolicy) {
+        this(botToken, name, gatewayIntents, memberCachePolicy, new ArrayList());
+    }
+
+    public BotBase(String botToken, String name, Collection<GatewayIntent> gatewayIntents, MemberCachePolicy memberCachePolicy, Collection<EventListener> eventListeners) {
         BOT_TOKEN = botToken;
         this.name = name;
         
         try {
-            EnumSet<GatewayIntent> list = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS);
-            list.remove(GatewayIntent.GUILD_PRESENCES);
             JDA_INSTANCE = JDABuilder
-                    .create(BOT_TOKEN, list)
+                    .create(BOT_TOKEN, gatewayIntents)
                     .addEventListeners(this)
-                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .addEventListeners(eventListeners)
+                    .setMemberCachePolicy(memberCachePolicy)
                     .build();
         } catch (LoginException e) {
             throw new RuntimeException("Error in creating JDA\n" + e.getLocalizedMessage());

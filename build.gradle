@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:4.2.0_207'
+    implementation 'net.dv8tion:JDA:4.2.0_214'
     implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     implementation 'org.jsoup:jsoup:1.12.2'
     implementation 'com.vdurmont:emoji-java:5.1.1'
