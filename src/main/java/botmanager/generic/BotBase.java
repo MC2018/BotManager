@@ -38,12 +38,16 @@ public abstract class BotBase extends ListenerAdapter {
         this.name = name;
         
         try {
-            JDA_INSTANCE = JDABuilder
+            JDABuilder builder = JDABuilder
                     .create(BOT_TOKEN, gatewayIntents)
                     .addEventListeners(this)
-                    .addEventListeners(eventListeners)
-                    .setMemberCachePolicy(memberCachePolicy)
-                    .build();
+                    .setMemberCachePolicy(memberCachePolicy);
+
+            if (eventListeners.size() > 0) {
+                builder = builder.addEventListeners(eventListeners);
+            }
+
+            JDA_INSTANCE = builder.build();
         } catch (LoginException e) {
             throw new RuntimeException("Error in creating JDA\n" + e.getLocalizedMessage());
         }
