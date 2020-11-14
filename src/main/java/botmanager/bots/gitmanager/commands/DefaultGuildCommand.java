@@ -6,6 +6,8 @@ import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.UserSettings;
 import java.util.ArrayList;
+
+import botmanager.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -30,27 +32,16 @@ public class DefaultGuildCommand extends GitManagerCommandBase implements IMessa
     public void runOnMessage(MessageReceivedEvent event) {
         UserSettings userSettings;
         User user = event.getAuthor();
-        String input;
+        String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         boolean found = false;
-        
-        if (user.getIdLong() == bot.getJDA().getSelfUser().getIdLong()) {
+
+        if (input == null || user.getIdLong() == bot.getJDA().getSelfUser().getIdLong()) {
             return;
         }
 
-        input = event.getMessage().getContentRaw();
         userSettings = verifyDefaultGuildValidity(user, bot.getUserSettings(user.getIdLong()));
         
-        for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword)) {
-                input = input.substring(keyword.length() + 1).trim();
-                found = true;
-                break;
-            }
-        }
-        
-        if (!found) {
-            return;
-        } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
+        if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
             event.getMessage().delete().queue();
         }
 

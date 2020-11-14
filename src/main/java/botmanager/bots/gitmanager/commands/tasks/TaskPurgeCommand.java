@@ -6,6 +6,8 @@ import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import java.awt.Color;
 import java.util.*;
+
+import botmanager.utils.Utils;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -60,23 +62,9 @@ public class TaskPurgeCommand extends GitManagerCommandBase implements IMessageR
         GuildResetInfo guildResetInfo;
         Guild guild = event.isFromGuild() ? event.getGuild() : bot.getJDA().getGuildById(bot.getUserSettings(event.getAuthor().getIdLong()).getDefaultGuildID());
         Member member = event.isFromGuild() ? event.getMember() : guild.getMember(event.getAuthor());
-        String input = event.getMessage().getContentRaw();
-        boolean found = false;
-
+        String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         
-        if (!member.hasPermission(Permission.ADMINISTRATOR) && !member.getId().equals("106949500500738048")) {
-            return;
-        }
-        
-        for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword)) {
-                input = input.substring(keyword.length()).trim();
-                found = true;
-                break;
-            }
-        }
-        
-        if (!found) {
+        if (input == null || (!member.hasPermission(Permission.ADMINISTRATOR) && !member.getId().equals("106949500500738048"))) {
             return;
         }
         

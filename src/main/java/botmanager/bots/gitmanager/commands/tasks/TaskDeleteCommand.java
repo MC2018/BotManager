@@ -5,6 +5,7 @@ import botmanager.utils.JDAUtils;
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
 import botmanager.bots.gitmanager.objects.Task;
+import botmanager.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -28,20 +29,11 @@ public class TaskDeleteCommand extends GitManagerCommandBase implements IMessage
     public void runOnMessage(MessageReceivedEvent event) {
         User user = event.getAuthor();
         Task task;
-        String input = event.getMessage().getContentRaw();
+        String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
         int taskNumber;
-        boolean found = false;
-        
-        for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword)) {
-                input = input.substring(keyword.length()).trim();
-                found = true;
-                break;
-            }
-        }
 
-        if (!found) {
+        if (input == null) {
             return;
         } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
             event.getMessage().delete().queue();

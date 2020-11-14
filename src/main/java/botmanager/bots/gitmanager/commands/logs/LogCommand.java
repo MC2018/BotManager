@@ -41,20 +41,11 @@ public class LogCommand extends GitManagerCommandBase implements IMessageReceive
     public void runOnMessage(MessageReceivedEvent event) {
         GuildSettings guildSettings;
         User user = event.getAuthor();
-        String input = event.getMessage().getContentRaw();
+        String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
-        boolean found = false;
         guildSettings = bot.getGuildSettings(guildID);
 
-        for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword)) {
-                input = input.substring(keyword.length()).trim().replaceAll(" ", "").replaceAll("and", "");
-                found = true;
-                break;
-            }
-        }
-
-        if (!found || guildID == -1 || guildSettings == null || Utils.isNullOrEmpty(guildSettings.getLogChannel())) {
+        if (input == null || guildID == -1 || guildSettings == null || Utils.isNullOrEmpty(guildSettings.getLogChannel())) {
             return;
         } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
             event.getMessage().delete().queue();

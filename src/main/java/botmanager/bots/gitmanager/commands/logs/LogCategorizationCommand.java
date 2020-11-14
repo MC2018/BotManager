@@ -2,23 +2,11 @@ package botmanager.bots.gitmanager.commands.logs;
 
 import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.gitmanager.generic.GitManagerCommandBase;
-import botmanager.bots.gitmanager.objects.GuildSettings;
-import botmanager.bots.gitmanager.objects.Log;
-import botmanager.bots.gitmanager.objects.LogType;
-import botmanager.bots.gitmanager.objects.Task;
+import botmanager.bots.gitmanager.objects.*;
 import botmanager.generic.commands.IMessageReactionAddCommand;
-import botmanager.generic.commands.IMessageReceivedCommand;
-import botmanager.utils.JDAUtils;
 import botmanager.utils.Utils;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class LogCategorizationCommand extends GitManagerCommandBase implements IMessageReactionAddCommand {
@@ -29,7 +17,6 @@ public class LogCategorizationCommand extends GitManagerCommandBase implements I
 
     @Override
     public void runOnReactionAdd(MessageReactionAddEvent event) {
-        GuildSettings gs;
         Message originalMessage;
         List<MessageEmbed> embeds;
         Log log;
@@ -52,7 +39,6 @@ public class LogCategorizationCommand extends GitManagerCommandBase implements I
             return;
         }
 
-        gs = bot.getGuildSettings(event.getGuild().getIdLong());
         embeds = originalMessage.getEmbeds();
 
         if (embeds.isEmpty() || Utils.isNullOrEmpty(embeds.get(0).getTitle())) {

@@ -166,8 +166,8 @@ public class Utils {
 
     public static String startsWithReplace(String str, String[] comparisons) {
         for (String comparison : comparisons) {
-            if (str.toLowerCase().startsWith(comparison)) {
-                return str.substring(comparison.length());
+            if (str.toLowerCase().startsWith(comparison.toLowerCase())) {
+                return str.substring(comparison.length()).trim();
             }
         }
 

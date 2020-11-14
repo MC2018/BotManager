@@ -30,18 +30,10 @@ public class MeetingListCommand extends GitManagerCommandBase implements IMessag
     public void runOnMessage(MessageReceivedEvent event) {
         GuildSettings guildSettings;
         User user = event.getAuthor();
-        String input = event.getMessage().getContentRaw();
+        String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         long guildID = event.isFromGuild() ? event.getGuild().getIdLong() : bot.getUserSettings(user.getIdLong()).getDefaultGuildID();
-        boolean found = false;
-        
-        for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword)) {
-                found = true;
-                break;
-            }
-        }
 
-        if (!found) {
+        if (input == null) {
             return;
         } else if (event.isFromGuild() && !bot.isBotChannel(event.getTextChannel())) {
             event.getMessage().delete().queue();
