@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
@@ -81,21 +82,7 @@ public final class SpeedrunBot extends BotBase {
     }
 
     @Override
-    public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                for (ICommand command : getCommands()) {
-                    command.run(event);
-                }
-            }
-        };
-        
-        thread.start();
-    }
-
-    @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) {
         Thread thread = new Thread() {
             @Override
             public void run() {

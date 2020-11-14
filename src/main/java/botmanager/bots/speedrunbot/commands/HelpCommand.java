@@ -1,11 +1,13 @@
 package botmanager.bots.speedrunbot.commands;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.speedrunbot.generic.SpeedrunBotCommandBase;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import botmanager.bots.speedrunbot.SpeedrunBot;
 import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
@@ -14,26 +16,17 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class HelpCommand extends SpeedrunBotCommandBase {
+public class HelpCommand extends SpeedrunBotCommandBase implements IMessageReceivedCommand {
 
     public HelpCommand(BotBase bot) {
         super(bot);
     }
-    
-    @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent event;
+
+    public void runOnMessage(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder();
-        String[] words;
+        String[] words = event.getMessage().getContentRaw().split(" ");
         
         eb.setTitle(bot.getName() + " Commands");
-        
-        if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
-            return;
-        }
-        
-        event = (GuildMessageReceivedEvent) genericEvent;
-        words = event.getMessage().getContentRaw().split(" ");
         
         if (words.length > 0 && words[0].equals(bot.getPrefix() + "help")) {
             for (ICommand icommand : bot.getCommands()) {
@@ -55,7 +48,7 @@ public class HelpCommand extends SpeedrunBotCommandBase {
         }
         
         eb.setColor(SpeedrunBot.getEmbedColor());
-        JDAUtils.sendGuildMessage(event.getChannel(), eb.build());
+        JDAUtils.sendMessage(event.getChannel(), null, eb.build(), null, null, false);
     }
 
     @Override

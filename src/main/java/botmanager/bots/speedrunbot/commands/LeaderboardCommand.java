@@ -1,8 +1,10 @@
 package botmanager.bots.speedrunbot.commands;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.generic.BotBase;
 import botmanager.bots.speedrunbot.SpeedrunBot;
+import botmanager.utils.Utils;
 import com.tsunderebug.speedrun4j.game.Category;
 import com.tsunderebug.speedrun4j.game.Game;
 import com.tsunderebug.speedrun4j.game.Leaderboard;
@@ -12,6 +14,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import botmanager.bots.speedrunbot.generic.SpeedrunBotCommandBase;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
@@ -20,7 +23,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed.Field;
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
-public class LeaderboardCommand extends SpeedrunBotCommandBase {
+public class LeaderboardCommand extends SpeedrunBotCommandBase implements IMessageReceivedCommand {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "leaderboard",
@@ -31,40 +34,21 @@ public class LeaderboardCommand extends SpeedrunBotCommandBase {
         super(bot);
     }
 
-    @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent event;
+    public void runOnMessage(MessageReceivedEvent event) {
         Game game;
         Message sentMessage;
-        String input;
+        String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         String gameID;
 
-        boolean found = false;
-
-        if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
+        if (input == null) {
+            return;
+        } else if (input.equals("")) {
+            JDAUtils.sendMessage(event.getChannel(), null, getSyntaxFailureEmbed(), null, null, false);
             return;
         }
 
-        event = (GuildMessageReceivedEvent) genericEvent;
-        input = event.getMessage().getContentRaw();
-
-        for (String keyword : KEYWORDS) {
-            if (input.toLowerCase().startsWith(keyword + " ")) {
-                input = input.toLowerCase().replace(keyword + " ", "");
-                found = true;
-                break;
-            } else if (input.toLowerCase().replaceAll(" ", "").equals(keyword)) {
-                JDAUtils.sendGuildMessage(event.getChannel(), getSyntaxFailureEmbed());
-            }
-        }
-
-        if (!found) {
-            return;
-        }
-
-        sentMessage = JDAUtils.sendGuildMessageReturn(event.getChannel(), getWaitingEmbed());
+        sentMessage = JDAUtils.sendMessage(event.getChannel(), null, getWaitingEmbed(), null, null, true);
         gameID = bot.determineGameID(input.split(bot.getSeparator())[0]);
-
         game = SpeedrunBot.getGame(gameID);
 
         if (game == null) {

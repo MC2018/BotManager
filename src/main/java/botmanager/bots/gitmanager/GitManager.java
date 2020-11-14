@@ -1,7 +1,6 @@
 package botmanager.bots.gitmanager;
 
-import botmanager.bots.gitmanager.commands.logs.LogCategorizationCommand;
-import botmanager.bots.gitmanager.commands.logs.LogCommand;
+import botmanager.bots.gitmanager.commands.logs.*;
 import botmanager.utils.*;
 import botmanager.generic.*;
 import botmanager.generic.commands.*;
@@ -9,8 +8,7 @@ import botmanager.bots.gitmanager.commands.tasks.*;
 import botmanager.bots.gitmanager.commands.*;
 import botmanager.bots.gitmanager.commands.meetings.*;
 import botmanager.bots.gitmanager.objects.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -42,7 +40,7 @@ public class GitManager extends BotBase {
         this.prefix = prefix;
         getJDA().getPresence().setActivity(Activity.watching(prefix + "help in Guild or DM!"));
 
-        this.setCommands(new ICommand[] {
+        setCommands(new ICommand[] {
             new DefaultGuildCommand(this),
             new HelpCommand(this),
             new TaskCreateCommand(this),
