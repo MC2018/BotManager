@@ -4,6 +4,7 @@ import botmanager.utils.IOUtils;
 import botmanager.utils.Utils;
 import botmanager.generic.BotBase;
 import java.io.File;
+import java.io.IOException;
 
 /**
  *
@@ -118,19 +119,15 @@ public class TaskBuilder {
     }
     
     private int generateID() {
-        File taskCounterFile = getCounterFile(bot, guildID);
-        Integer number = IOUtils.readGson(taskCounterFile, Integer.class);
-        int counter = 0;
-        
-        if (number != null) {
-            try {
-                counter = number;
-            } catch (Exception e) {
-            }
+        try {
+            File taskCounterFile = getCounterFile(bot, guildID);
+            Integer counter = IOUtils.readGson(taskCounterFile, Integer.class);
+            IOUtils.writeGson(taskCounterFile, ++counter);
+            return counter;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
         }
-        
-        IOUtils.writeGson(taskCounterFile, ++counter);
-        return counter;
     }
     
 }

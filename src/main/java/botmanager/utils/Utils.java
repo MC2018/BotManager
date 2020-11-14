@@ -24,19 +24,19 @@ public class Utils {
     }
 
     public static String buildCSV(String[] array) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < array.length; i++) {
             if (array[i] != null) {
-                result += array[i];
+                result.append(array[i]);
             }
 
             if (i + 1 < array.length) {
-                result += ",";
+                result.append(",");
             }
         }
 
-        return result;
+        return result.toString();
     }
 
     public static boolean isNullOrEmpty(String s) {
@@ -55,7 +55,7 @@ public class Utils {
         Emoji emoji = EmojiManager.getForAlias(potentialAlias);
         
         if (emoji == null) {
-        ArrayList<Emoji> emojis = new ArrayList(EmojiManager.getAll());
+        ArrayList<Emoji> emojis = new ArrayList<>(EmojiManager.getAll());
         double similarity = 0;
         
             for (Emoji potentialEmoji : emojis) {
@@ -150,7 +150,7 @@ public class Utils {
     public static Date parseDate(String potentialDate, ArrayList<String> dateFormats) {
         DateTimeParser[] dateParsers = new DateTimeParser[dateFormats.size()];
         DateTimeFormatter dateFormatter;
-                
+
         for (int i = 0; i < dateParsers.length; i++) {
             dateParsers[i] = DateTimeFormat.forPattern(dateFormats.get(i)).getParser();
         }
@@ -162,6 +162,16 @@ public class Utils {
     public static String formatDate(Date date, String dateFormat) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         return sdf.format(date);
+    }
+
+    public static String startsWithReplace(String str, String[] comparisons) {
+        for (String comparison : comparisons) {
+            if (str.toLowerCase().startsWith(comparison)) {
+                return str.substring(comparison.length());
+            }
+        }
+
+        return null;
     }
     
 }

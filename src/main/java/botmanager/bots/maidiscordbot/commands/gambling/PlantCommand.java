@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import java.io.File;
+import java.io.IOException;
 
 public class PlantCommand extends MaiDiscordBotCommandBase {
 
@@ -68,7 +69,7 @@ public class PlantCommand extends MaiDiscordBotCommandBase {
         try {
             String info = IOUtils.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/plant.csv"));
             totalPlantAmount = Integer.parseInt(Utils.getCSVValueAtIndex(info, 0));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             totalPlantAmount = 0;
             bot.updatePlant(event.getGuild(), totalPlantAmount);
         }

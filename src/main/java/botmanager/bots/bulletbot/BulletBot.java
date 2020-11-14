@@ -7,12 +7,10 @@ import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
 import botmanager.generic.commands.PMRepeaterCommand;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import botmanager.utils.JDAUtils;
 import net.dv8tion.jda.api.entities.Activity;
@@ -69,12 +67,17 @@ public class BulletBot extends BotBase {
     
     public void loadDirtyWords() {
         File file = new File("data/" + getName() + "/dirty_words.txt");
-        
-        if (!file.exists()) {
-            IOUtils.write(file, "");
+
+        try {
+            if (!file.exists()) {
+                IOUtils.write(file, "");
+            }
+
+            dirtyWords = IOUtils.readLines(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            dirtyWords = new ArrayList<>();
         }
-        
-        dirtyWords = IOUtils.readLines(file);
     }
 
     private void startTimer() {

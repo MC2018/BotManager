@@ -46,8 +46,10 @@ public class HelpCommand extends SpeedrunBotCommandBase {
                     }
                 }
             }
-            
+
             eb.addField("", "If you have any questions/comments/concerns,\nplease DM me and I will get back to you :ok_hand:.", false);
+            eb.addField("", "Unfortunately, sub-categories are not supported\nin SRC's API, so all times of a category will be\ngrouped together. " +
+                    "Sorry for the inconvenience.", false);
         } else {
             return;
         }

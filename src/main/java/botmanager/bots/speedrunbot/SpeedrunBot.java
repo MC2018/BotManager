@@ -1,10 +1,6 @@
 package botmanager.bots.speedrunbot;
 
-import botmanager.bots.speedrunbot.commands.PlaceCommand;
-import botmanager.bots.speedrunbot.commands.LeaderboardCommand;
-import botmanager.bots.speedrunbot.commands.RunCommand;
-import botmanager.bots.speedrunbot.commands.WorldRecordCommand;
-import botmanager.bots.speedrunbot.commands.HelpCommand;
+import botmanager.bots.speedrunbot.commands.*;
 import botmanager.generic.BotBase;
 import botmanager.utils.IOUtils;
 import botmanager.utils.Utils;
@@ -25,6 +21,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import botmanager.generic.ICommand;
 import botmanager.generic.commands.PMForwarderCommand;
@@ -44,10 +41,11 @@ public final class SpeedrunBot extends BotBase {
     private final WebDriverManager webDrivers = new WebDriverManager(10);
     private LinkedHashMap<String, String> gameSynonyms;
     private ArrayList<String> uniqueGameIds;
+    private ArrayList<String> popularGameNames;
     private final String separator = "/";
     private final String errorUrl = "https://i.imgur.com/OUBCmGA.png";
     private String prefix;
-    
+
     //look into making help button with embeds
     //add info command
     //idea: add (Tied for Xth place) in title of place/run
@@ -67,9 +65,13 @@ public final class SpeedrunBot extends BotBase {
             new PMRepeaterCommand(this),
             new PMForwarderCommand(this)
         });
-        
-        buildHashMap(IOUtils.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
-        
+
+        try {
+            buildHashMap(IOUtils.readLines(new File("data/" + name + "/game_name_shortcuts.csv")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -152,7 +154,7 @@ public final class SpeedrunBot extends BotBase {
         
         gameSynonyms = map;
     }
-    
+
     public ArrayList<String> getLeaderboardNames(Leaderboard lb, String url) {
         Document doc;
         Elements places;
@@ -164,7 +166,7 @@ public final class SpeedrunBot extends BotBase {
         for (int i = 0; i < places.size(); i++) {
             Elements names = places.get(i).getElementsByClass("username-light");
             StringBuilder nameset = new StringBuilder();
-            
+
             for (int j = 0; j < names.size(); j++) {
                 if (nameset.length() == 0) {
                     nameset = nameset.append(names.get(j).text());

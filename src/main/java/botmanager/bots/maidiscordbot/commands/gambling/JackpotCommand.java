@@ -5,6 +5,7 @@ import botmanager.generic.BotBase;
 import botmanager.utils.IOUtils;
 import botmanager.utils.Utils;
 import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -69,7 +70,7 @@ public class JackpotCommand extends MaiDiscordBotCommandBase {
             String info = IOUtils.read(new File("data/" + bot.getName() + "/guilds/" + event.getGuild().getId() + "/jackpot.csv"));
             jackpotCap = Integer.parseInt(Utils.getCSVValueAtIndex(info, 0));
             jackpotBalance = Integer.parseInt(Utils.getCSVValueAtIndex(info, 1));
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             jackpotCap = generateJackpotCap();
             jackpotBalance = 0;
             bot.updateJackpot(event.getGuild(), jackpotCap, jackpotBalance);

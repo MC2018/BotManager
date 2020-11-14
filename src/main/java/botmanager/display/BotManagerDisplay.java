@@ -7,6 +7,8 @@ import botmanager.bots.gitmanager.GitManager;
 import botmanager.bots.maidiscordbot.MaiDiscordBot;
 import botmanager.bots.speedrunbot.SpeedrunBot;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +21,14 @@ public class BotManagerDisplay extends javax.swing.JFrame {
     
     public BotManagerDisplay() {
         initComponents();
-        List<String> tokens = IOUtils.readLines(new File("data/botmanager_tokens.txt"));
+        List<String> tokens;
+
+        try {
+            tokens = IOUtils.readLines(new File("data/botmanager_tokens.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            tokens = new ArrayList<String>();
+        }
         
         bots = new BotBase[] {
             new MaiDiscordBot(tokens.get(0), "MaiDiscordBot"),

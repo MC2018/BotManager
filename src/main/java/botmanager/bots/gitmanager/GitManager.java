@@ -10,6 +10,7 @@ import botmanager.bots.gitmanager.commands.*;
 import botmanager.bots.gitmanager.commands.meetings.*;
 import botmanager.bots.gitmanager.objects.*;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -309,16 +310,25 @@ public class GitManager extends BotBase {
     }
     
     private GuildSettings readGuildSettings(long guildID) {
-        File file = GuildSettings.getFile(this, guildID);
-        GuildSettings guildSettings = IOUtils.readGson(file, GuildSettings.class);
-        
-        guildSettings.clean();
-        return guildSettings;
+        try {
+            File file = GuildSettings.getFile(this, guildID);
+            GuildSettings guildSettings = IOUtils.readGson(file, GuildSettings.class);
+
+            guildSettings.clean();
+            return guildSettings;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     public void writeGuildSettings(GuildSettings guildSettings) {
-        File file = GuildSettings.getFile(this, guildSettings.getID());
-        IOUtils.writeGson(file, guildSettings, true);
+        try {
+            File file = GuildSettings.getFile(this, guildSettings.getID());
+            IOUtils.writeGson(file, guildSettings, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public Log getLog(long guildID, long logID) {
@@ -332,14 +342,23 @@ public class GitManager extends BotBase {
     }
 
     private Log readLog(long guildID, long logID) {
-        File file = Log.getFile(this, guildID, logID);
-        Log log = IOUtils.readGson(file, Log.class);
-        return log;
+        try {
+            File file = Log.getFile(this, guildID, logID);
+            Log log = IOUtils.readGson(file, Log.class);
+            return log;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public void writeLog(Log log) {
-        File file = Log.getFile(this, log.getGuildID(), log.getID());
-        IOUtils.writeGson(file, log, true);
+        try {
+            File file = Log.getFile(this, log.getGuildID(), log.getID());
+            IOUtils.writeGson(file, log, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void addLogReactions(Message message, GuildSettings gs) {
@@ -387,13 +406,22 @@ public class GitManager extends BotBase {
     }
 
     private Task readTask(long guildID, long taskID) {
-        File file = Task.getFile(this, guildID, taskID);
-        return IOUtils.readGson(file, Task.class);
+        try {
+            File file = Task.getFile(this, guildID, taskID);
+            return IOUtils.readGson(file, Task.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     public void writeTask(Task task) {
-        File file = Task.getFile(this, task.getGuildID(), task.getID());
-        IOUtils.writeGson(file, task, true);
+        try {
+            File file = Task.getFile(this, task.getGuildID(), task.getID());
+            IOUtils.writeGson(file, task, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public MessageEmbed generateTaskEmbed(Task task) {
@@ -422,9 +450,11 @@ public class GitManager extends BotBase {
         File taskCounterFile = TaskBuilder.getCounterFile(this, guildID);
         Guild guild = getJDA().getGuildById(guildID);
         Date date = new Date();
-        Integer taskCount = IOUtils.readGson(taskCounterFile, Integer.class);
+        int taskCount;
 
-        if (taskCount == null) {
+        try {
+            taskCount = IOUtils.readGson(taskCounterFile, Integer.class);
+        } catch (IOException e) {
             return;
         }
 
@@ -442,9 +472,15 @@ public class GitManager extends BotBase {
             try {
                 guild.getTextChannelById(task.getChannelID()).retrieveMessageById(task.getMessageID()).complete().delete().complete();
             } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            IOUtils.writeGson(restoreFile, task);
+            try {
+                IOUtils.writeGson(restoreFile, task);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             taskFile.delete();
         }
 
@@ -488,12 +524,21 @@ public class GitManager extends BotBase {
             return generateUserSettings(getJDA().getUserById(userID));
         }
 
-        return IOUtils.readGson(file, UserSettings.class);
+        try {
+            return IOUtils.readGson(file, UserSettings.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     public void writeUserSettings(UserSettings userSettings) {
-        File file = UserSettings.getFile(this, userSettings.getID());
-        IOUtils.writeGson(file, userSettings, true);
+        try {
+            File file = UserSettings.getFile(this, userSettings.getID());
+            IOUtils.writeGson(file, userSettings, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
 }

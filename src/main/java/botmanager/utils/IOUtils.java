@@ -18,59 +18,46 @@ import java.util.List;
  */
 public class IOUtils {
     
-    public static String read(File file) {
-        StringBuilder result = new StringBuilder("");
+    public static String read(File file) throws IOException {
+        StringBuilder result = new StringBuilder();
+        FileReader fr = new FileReader(file);
+        BufferedReader br = new BufferedReader(fr);
+        String buffer;
 
-        try {
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String buffer;
-
-            while ((buffer = br.readLine()) != null) {
-                result.append(buffer);
-            }
-
-            br.close();
-            fr.close();
-            return result.toString();
-        } catch (IOException e) {
-            return result.toString();
+        while ((buffer = br.readLine()) != null) {
+            result.append(buffer);
         }
+
+        br.close();
+        fr.close();
+        return result.toString();
     }
 
-    public static List<String> readLines(File file) {
-        try {
-            return Files.readLines(file, Charsets.UTF_8);
-        } catch (Exception e) {
-            return null;
-        }
+    public static List<String> readLines(File file) throws IOException {
+        return Files.readLines(file, Charsets.UTF_8);
     }
 
-    public static void write(File file, String info) {
+    public static void write(File file, String info) throws IOException {
         verifyFilePathExists(file);
 
-        try {
-            FileWriter fw = new FileWriter(file, false);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(info);
-            bw.close();
-            fw.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e.getLocalizedMessage());
-        }
+        FileWriter fw = new FileWriter(file, false);
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write(info);
+        bw.close();
+        fw.close();
     }
 
-    public static <T>T readGson(File file, Class<T> objClass) {
+    public static <T>T readGson(File file, Class<T> objClass) throws IOException {
         Gson gson = new GsonBuilder().serializeNulls().create();
         return gson.fromJson(read(file), objClass);
     }
     
-    public static <T>void writeGson(File file, T obj) {
+    public static <T>void writeGson(File file, T obj) throws IOException {
         Gson gson = new GsonBuilder().serializeNulls().create();
         write(file, gson.toJson(obj));
     }
     
-    public static <T>void writeGson(File file, T obj, boolean prettyPrinting) {
+    public static <T>void writeGson(File file, T obj, boolean prettyPrinting) throws IOException {
         Gson gson;
         
         if (prettyPrinting) {
@@ -78,7 +65,7 @@ public class IOUtils {
         } else {
             gson = new GsonBuilder().serializeNulls().create();
         }
-        
+
         write(file, gson.toJson(obj));
     }
     
