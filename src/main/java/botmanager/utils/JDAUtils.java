@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.restaction.MessageAction;
 
@@ -134,7 +136,7 @@ public class JDAUtils {
         return sentMessage;
     }
 
-    public static String findUserId(Guild guild, String potentialName) {
+    public static String findMemberID(Guild guild, String potentialName) {
         ArrayList<Member> names = new ArrayList<>();
 
         names.addAll(guild.getMembersByName(potentialName, true));

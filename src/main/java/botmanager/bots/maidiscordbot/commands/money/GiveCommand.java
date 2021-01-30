@@ -63,7 +63,7 @@ public class GiveCommand extends MaiDiscordBotCommandBase {
         }
         
         name = combineArrayStopAtIndex(words, words.length - 1);
-        id = JDAUtils.findUserId(event.getGuild(), name);
+        id = JDAUtils.findMemberID(event.getGuild(), name);
         
         if (id == null) {
             JDAUtils.sendGuildMessage(event.getChannel(), "I could not find the user'" + name + "'.");

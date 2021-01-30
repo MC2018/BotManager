@@ -2,6 +2,7 @@ package botmanager.bots.bulletbot.commands;
 
 import botmanager.bots.bulletbot.BulletBot;
 import botmanager.bots.bulletbot.generic.BulletBotCommandBase;
+import botmanager.generic.commands.IGuildBanCommand;
 import botmanager.utils.JDAUtils;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
@@ -9,25 +10,15 @@ import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.requests.restaction.pagination.AuditLogPaginationAction;
 
-public class BanLogCommand extends BulletBotCommandBase {
+public class BanLogCommand extends BulletBotCommandBase implements IGuildBanCommand {
 
     public BanLogCommand(BulletBot bot) {
         super(bot);
     }
 
-    @Override
-    public void run(Event genericEvent) {
-        GuildBanEvent event;
-        AuditLogPaginationAction auditLogEntries;
-        AuditLogEntry entry;
-
-        if (!(genericEvent instanceof GuildBanEvent)) {
-            return;
-        }
-
-        event = (GuildBanEvent) genericEvent;
-        auditLogEntries = event.getGuild().retrieveAuditLogs();
-        entry = auditLogEntries.getLast();
+    public void runOnGuildBan(GuildBanEvent event) {
+        AuditLogPaginationAction auditLogEntries = event.getGuild().retrieveAuditLogs();
+        AuditLogEntry entry = auditLogEntries.getLast();
 
         if (entry.getType() == ActionType.BAN && !entry.getUser().isBot()) {
             JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("bulletbot-logs", true).get(0),

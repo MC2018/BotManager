@@ -37,7 +37,7 @@ public abstract class SpeedrunBotCommandBase {
     public MessageEmbed getConnectionFailureEmbed() {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setThumbnail(bot.getErrorUrl());
-        eb.addField("Search Failed", "Either there was a problem connecting to Speedrun.com's API, or the game/category you were searching for"
+        eb.addField("Search Failed", "Either there was a problem connecting to Speedrun.com's API, or the game/category you were searching for "
                 + "isn't properly supported.", false);
         eb.setColor(SpeedrunBot.getEmbedFailureColor());
         return eb.build();

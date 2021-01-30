@@ -55,7 +55,7 @@ public class BalanceCommand extends MaiDiscordBotCommandBase {
         }
         
         if (message.length() > 0) {
-            id = JDAUtils.findUserId(event.getGuild(), message);
+            id = JDAUtils.findMemberID(event.getGuild(), message);
         }
         
         if (id == null) {

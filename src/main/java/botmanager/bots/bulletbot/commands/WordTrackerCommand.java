@@ -1,10 +1,12 @@
 package botmanager.bots.bulletbot.commands;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.bulletbot.BulletBot;
 import botmanager.bots.bulletbot.generic.BulletBotCommandBase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
@@ -12,7 +14,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class WordTrackerCommand extends BulletBotCommandBase {
+public class WordTrackerCommand extends BulletBotCommandBase implements IMessageReceivedCommand {
 
     String[][] characterReplacements = {
         {"1", "i"},
@@ -28,17 +30,10 @@ public class WordTrackerCommand extends BulletBotCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent event;
+    public void runOnMessage(MessageReceivedEvent event) {
         EmbedBuilder eb;
         String message;
         boolean found = false;
-        
-        if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
-            return;
-        }
-
-        event = (GuildMessageReceivedEvent) genericEvent;
         message = event.getMessage().getContentRaw().toLowerCase();
         
         for (String[] characterReplacement : characterReplacements) {
@@ -69,7 +64,7 @@ public class WordTrackerCommand extends BulletBotCommandBase {
         eb.setTitle("Dirty Word Usage");
         eb.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
         eb.addField("User and Channel", event.getAuthor().getAsMention()
-                + ", " + event.getChannel().getAsMention()
+                + ", " + event.getTextChannel().getAsMention()
                 + "\n(" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ")", false);
         
         if (JDAUtils.hasRole(event.getMember(), "Punishment")) {

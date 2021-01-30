@@ -5,6 +5,7 @@ package botmanager.bots.bulletbot.commands;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.bulletbot.BulletBot;
 import botmanager.bots.bulletbot.generic.BulletBotCommandBase;
@@ -15,28 +16,26 @@ import java.util.Date;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class NewbieCommand extends BulletBotCommandBase {
+public class NewbieCommand extends BulletBotCommandBase implements IMessageReceivedCommand {
     
     public NewbieCommand(BulletBot bot) {
         super(bot);
     }
 
-    @Override
-    public void run(Event genericEvent) {
-        GuildMemberJoinEvent event;
+    public void runOnMessage(MessageReceivedEvent event) {
         Date userCreationDate;
         Date lastTwoDays = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 2));
         Date lastFiveDays = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 5));
         Date lastMonth = Date.from(Instant.now().minusSeconds(60 * 60 * 24 * 30));
         SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy");
-        
-        if (!(genericEvent instanceof GuildMemberJoinEvent)) {
+
+        if (!event.isFromGuild()) {
             return;
         }
-        
-        event = (GuildMemberJoinEvent) genericEvent;
-        userCreationDate = Date.from(event.getUser().getTimeCreated().toInstant());
+
+        userCreationDate = Date.from(event.getAuthor().getTimeCreated().toInstant());
 
         if (userCreationDate.after(lastFiveDays)) {
             Role role = JDAUtils.findRole(event.getGuild(),"New Account");

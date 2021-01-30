@@ -45,7 +45,7 @@ public class WebDriverManager {
     
     private String getPageSource(String url, int attempts) {
         try {
-            System.out.println(webDrivers.stream().filter(wd -> !wd.isOccupied()).count());
+            //System.out.println(webDrivers.stream().filter(wd -> !wd.isOccupied()).count());
             CustomChromeDriver usableDriver = webDrivers.stream().filter(wd -> !wd.isOccupied()).findFirst().get();
             
             return usableDriver.getPageSource(url);

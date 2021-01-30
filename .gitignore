@@ -55,3 +55,7 @@ data/
 src/main/java/botmanager/display/Test.java
 out/
 mergedtesting/
+bin/
+.classpath
+.project
+.settings/

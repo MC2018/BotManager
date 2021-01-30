@@ -92,7 +92,7 @@ public class BulletBot extends BotBase {
     }
 
     private void checkNewMembers() {
-        String primaryGuildID = "551565232867246080"; // TODO: very malpractice
+        String primaryGuildID = "551565232867246080"; // TODO: very malpractice (but this is also a bot only designed with in one server in mind?)
         Guild guild = getJDA().getGuildById(primaryGuildID);
         Role role = JDAUtils.findRole(guild,"New Account");
         List<Member> members = guild.getMembersWithRoles(role);

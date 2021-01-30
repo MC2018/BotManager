@@ -1,20 +1,23 @@
 package botmanager.bots.bulletbot.commands;
 
+import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.bulletbot.BulletBot;
 import botmanager.bots.bulletbot.generic.BulletBotCommandBase;
 import java.text.SimpleDateFormat;
 import java.util.List;
+
+import botmanager.utils.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class JoinDateCommand extends BulletBotCommandBase {
+public class JoinDateCommand extends BulletBotCommandBase implements IMessageReceivedCommand {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "jd",
@@ -27,40 +30,13 @@ public class JoinDateCommand extends BulletBotCommandBase {
     }
 
     @Override
-    public void run(Event genericEvent) {
-        GuildMessageReceivedEvent event;
-        String message;
+    public void runOnMessage(MessageReceivedEvent event) {
+        String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         String result = "";
         String userID;
-        SimpleDateFormat sdf = new SimpleDateFormat("MMMMM d, yyyy");
-        boolean found = false;
         List<Member> mentionedMembers;
         
-        if (!(genericEvent instanceof GuildMessageReceivedEvent)) {
-            return;
-        }
-        
-        event = (GuildMessageReceivedEvent) genericEvent;
-        
-        if (!JDAUtils.hasRole(event.getMember(), "Mod")) {
-            return;
-        }
-        
-        message = event.getMessage().getContentRaw();
-        
-        for (String keyword : KEYWORDS) {
-            if (message.startsWith(keyword + " ")) {
-                message = message.replace(keyword + " ", "");
-                found = true;
-                break;
-            } else if (message.startsWith(keyword)) {
-                message = message.replace(keyword, "");
-                found = true;
-                break;
-            }
-        }
-        
-        if (!found) {
+        if (message != null || !event.isFromGuild() || !JDAUtils.hasRole(event.getMember(), "Mod")) {
             return;
         }
         
@@ -72,7 +48,7 @@ public class JoinDateCommand extends BulletBotCommandBase {
                         + JDAUtils.getFormattedUserTimeJoined(member, "MMMMM d, yyyy") + ".";
             }
         } else {
-            userID = JDAUtils.findUserId(event.getGuild(), message);
+            userID = JDAUtils.findMemberID(event.getGuild(), message);
 
             if (userID != null) {
                 result = "The account '" + event.getJDA().getUserById(userID).getName()
@@ -85,7 +61,7 @@ public class JoinDateCommand extends BulletBotCommandBase {
             }
         }
         
-        JDAUtils.sendGuildMessage(event.getChannel(), result);
+        JDAUtils.sendGuildMessage(event.getTextChannel(), result);
     }
     
     @Override
