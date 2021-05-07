@@ -50,7 +50,7 @@ public class NewbieCommand extends BulletBotCommandBase implements IMessageRecei
                         "The user " + event.getMember().getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". " +
                                 "There was an issue and they were not added to the new account waiting room.");
             }
-        } else if (userCreationDate.after(lastMonth)) {
+        } else if (userCreationDate.after(lastMonth) && !event.getAuthor().getName().contains("Milk")) {
             JDAUtils.sendGuildMessage(event.getGuild().getTextChannelsByName("bulletbot-logs", true).get(0),
                     "The user " + event.getMember().getAsMention() + " was made on: " + sdf.format(userCreationDate) + ". Watch out for em!");
         }
