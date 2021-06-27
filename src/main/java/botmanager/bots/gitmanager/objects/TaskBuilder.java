@@ -121,6 +121,12 @@ public class TaskBuilder {
     private int generateID() {
         try {
             File taskCounterFile = getCounterFile(bot, guildID);
+
+            if (!taskCounterFile.exists()) {
+                taskCounterFile.createNewFile();
+                IOUtils.writeGson(taskCounterFile, 0);
+            }
+
             Integer counter = IOUtils.readGson(taskCounterFile, Integer.class);
             IOUtils.writeGson(taskCounterFile, ++counter);
             return counter;

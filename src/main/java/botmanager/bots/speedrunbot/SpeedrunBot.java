@@ -19,6 +19,8 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.internal.utils.tuple.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,6 +48,7 @@ public final class SpeedrunBot extends BotBase {
     private final String separator = "/";
     private final String errorUrl = "https://i.imgur.com/OUBCmGA.png";
     private String prefix;
+    private static int intents = GatewayIntent.ALL_INTENTS ^ GatewayIntent.GUILD_PRESENCES.getRawValue() ^ GatewayIntent.GUILD_MEMBERS.getRawValue();
 
     //look into making help button with embeds
     //add info command
@@ -53,7 +56,7 @@ public final class SpeedrunBot extends BotBase {
     //idea: for efficiency, organize gameSynonyms by length, only search for objects in range of similarity percentage
     //idea: keep top 10-100 most frequented games always queued up? refresh every day perhaps
     public SpeedrunBot(String botToken, String name) {
-        super(botToken, name);
+        super(botToken, name, intents, MemberCachePolicy.DEFAULT);
         prefix = "$";
         getJDA().getPresence().setActivity(Activity.playing(prefix + "help for info"));
         
