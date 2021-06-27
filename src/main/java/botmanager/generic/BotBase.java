@@ -29,6 +29,10 @@ public abstract class BotBase extends ListenerAdapter {
         this(botToken, name, GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS), MemberCachePolicy.ALL, new ArrayList());
     }
 
+    public BotBase(String botToken, String name, int gatewayIntents, MemberCachePolicy memberCachePolicy) {
+        this(botToken, name, GatewayIntent.getIntents(gatewayIntents), memberCachePolicy, new ArrayList());
+    }
+
     public BotBase(String botToken, String name, Collection<GatewayIntent> gatewayIntents, MemberCachePolicy memberCachePolicy) {
         this(botToken, name, gatewayIntents, memberCachePolicy, new ArrayList());
     }
