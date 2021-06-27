@@ -28,7 +28,11 @@ public class MuteCommand extends NSFWPoliceCommandBase {
         event = (GuildMessageReceivedEvent) genericEvent;
         
         if (JDAUtils.hasRole(event.getMember(), "Muted")) {
-            event.getMessage().delete().queue();
+            try {
+                event.getMessage().delete().queue();
+            } catch (Exception e) {
+
+            }
         }
     }
 

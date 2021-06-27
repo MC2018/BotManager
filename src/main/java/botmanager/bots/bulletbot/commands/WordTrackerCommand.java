@@ -1,5 +1,6 @@
 package botmanager.bots.bulletbot.commands;
 
+import botmanager.generic.commands.IGuildMessageReceivedCommand;
 import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.bulletbot.BulletBot;
@@ -14,7 +15,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class WordTrackerCommand extends BulletBotCommandBase implements IMessageReceivedCommand {
+public class WordTrackerCommand extends BulletBotCommandBase implements IGuildMessageReceivedCommand {
 
     String[][] characterReplacements = {
         {"1", "i"},
@@ -30,7 +31,7 @@ public class WordTrackerCommand extends BulletBotCommandBase implements IMessage
     }
 
     @Override
-    public void runOnMessage(MessageReceivedEvent event) {
+    public void runOnGuildMessage(GuildMessageReceivedEvent event) {
         EmbedBuilder eb;
         String message;
         boolean found = false;
@@ -64,7 +65,7 @@ public class WordTrackerCommand extends BulletBotCommandBase implements IMessage
         eb.setTitle("Dirty Word Usage");
         eb.setThumbnail(event.getAuthor().getEffectiveAvatarUrl());
         eb.addField("User and Channel", event.getAuthor().getAsMention()
-                + ", " + event.getTextChannel().getAsMention()
+                + ", " + event.getChannel().getAsMention()
                 + "\n(" + event.getAuthor().getName() + "#" + event.getAuthor().getDiscriminator() + ")", false);
         
         if (JDAUtils.hasRole(event.getMember(), "Punishment")) {

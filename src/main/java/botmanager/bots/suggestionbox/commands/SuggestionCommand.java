@@ -37,26 +37,30 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
         event = (GuildMessageReceivedEvent) genericEvent;
         message = event.getMessage().getContentStripped();
 
-        if (message.split(" ").length == 1 && message.startsWith(bot.getPrefix() + "suggest") && event.getChannel().getName().equalsIgnoreCase("bot-commands")) {
+        if (event.getChannel().getId().equals("555419413235630121")) {
+            return;
+        }
+
+        if (message.split(" ").length == 1 && message.startsWith(bot.getPrefix() + "suggest")) {
             JDAUtils.sendGuildMessage(event.getChannel(), "Please include a message to go along with the suggestion.");
             return;
         }
         
-        if (!message.startsWith(bot.getPrefix() + "suggest ") || !event.getChannel().getName().equalsIgnoreCase("bot-commands")) {
+        if (!message.startsWith(bot.getPrefix() + "suggest ")) {
             return;
         }
 
         roles = event.getMember().getRoles();
 
         for (Role role : roles) {
-            if (role.getName().equalsIgnoreCase("Suggestion-Ban")) {
+            if (role.getId().equals("664301501367320592")) {
                 return;
             }
         }
 
         message = message.replaceFirst(bot.getPrefix() + "suggest ", "");
         message = "**Suggestion by " + event.getMember().getAsMention() + ":**\n```" + message + "```";
-        channel = (TextChannel) JDAUtils.findChannelByName(event.getGuild(), "user-suggestions");
+        channel = event.getGuild().getTextChannelById("570661939819315230");
 
         if (channel == null) {
             return;
@@ -75,10 +79,12 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
                 tempFile.mkdirs();
                 tempFile = new File(tempFile.getAbsolutePath() + "/" + attachments.get(0).getFileName());
                 attachments.get(0).downloadToFile(tempFile).get();
-                channel = (TextChannel) JDAUtils.findChannelByName(event.getGuild(), event.getGuild().getId().equals("551565232867246080") ? "user-suggestions" : "emote-suggestions");
+                channel = event.getGuild().getTextChannelById("570661939819315230");
+
                 if (channel == null) {
                     return;
                 }
+
                 JDAUtils.sendGuildMessage(channel, message, reactionNames, tempFile);
             } catch (Exception e) {
                 e.printStackTrace();

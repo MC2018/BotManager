@@ -30,7 +30,7 @@ public class ReactionManagerCommand extends SuggestionBoxCommandBase {
         event = (GuildMessageReactionAddEvent) genericEvent;
         emoteName = event.getReactionEmote().getName();
         
-        if (!event.getChannel().getName().equalsIgnoreCase("user-suggestions") && !event.getChannel().getName().equalsIgnoreCase("emote-suggestions")) {
+        if (!event.getChannel().getId().equals("570661939819315230")) {
             return;
         }
         

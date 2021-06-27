@@ -1,12 +1,13 @@
 plugins {
     id "java"
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
 sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 if (!hasProperty('mainClass')) {
-    ext.mainClass = 'botmanager.display.BotManagerDisplay'
+    ext.mainClass = 'botmanager.MainCLI'
 }
 
 repositories {
@@ -23,6 +24,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'joda-time:joda-time:2.10.6'
     implementation 'systems.manifold:manifold-ext:2020.1.27'
+    implementation 'io.github.bonigarcia:webdrivermanager:4.4.3'
     implementation files('libs/Speedrun4J.jar')
 }
 
@@ -31,4 +33,12 @@ task(debug, dependsOn: 'classes', type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     args 'server'
     debug true
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'botmanager.MainCLI'
+        )
+    }
 }

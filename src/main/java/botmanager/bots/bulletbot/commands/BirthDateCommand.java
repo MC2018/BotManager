@@ -1,22 +1,26 @@
 package botmanager.bots.bulletbot.commands;
 
+import botmanager.generic.commands.IGuildMessageReceivedCommand;
 import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.bulletbot.BulletBot;
 import botmanager.bots.bulletbot.generic.BulletBotCommandBase;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import botmanager.utils.Utils;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class BirthDateCommand extends BulletBotCommandBase implements IMessageReceivedCommand {
+public class BirthDateCommand extends BulletBotCommandBase implements IGuildMessageReceivedCommand {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "bd",
@@ -32,13 +36,13 @@ public class BirthDateCommand extends BulletBotCommandBase implements IMessageRe
     }
 
     @Override
-    public void runOnMessage(MessageReceivedEvent event) {
+    public void runOnGuildMessage(GuildMessageReceivedEvent event) {
         String input = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         String result = "";
         String userID;
         List<User> mentionedUsers;
-        
-        if (input == null || !event.isFromGuild() || !JDAUtils.hasRole(event.getMember(), "Mod")) {
+
+        if (input == null || !event.getMember().getRoles().stream().anyMatch(x -> x.getId().equals("555303556572250114"))) {
             return;
         }
 
@@ -62,7 +66,7 @@ public class BirthDateCommand extends BulletBotCommandBase implements IMessageRe
             }
         }
         
-        JDAUtils.sendGuildMessage(event.getTextChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
     
     @Override

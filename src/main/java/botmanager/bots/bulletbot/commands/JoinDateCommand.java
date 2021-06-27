@@ -1,5 +1,6 @@
 package botmanager.bots.bulletbot.commands;
 
+import botmanager.generic.commands.IGuildMessageReceivedCommand;
 import botmanager.generic.commands.IMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.bots.bulletbot.BulletBot;
@@ -11,13 +12,14 @@ import botmanager.utils.Utils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.Event;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 /**
  *
  * @author MC_2018 <mc2018.git@gmail.com>
  */
 
-public class JoinDateCommand extends BulletBotCommandBase implements IMessageReceivedCommand {
+public class JoinDateCommand extends BulletBotCommandBase implements IGuildMessageReceivedCommand {
 
     final String[] KEYWORDS = {
         bot.getPrefix() + "jd",
@@ -30,13 +32,13 @@ public class JoinDateCommand extends BulletBotCommandBase implements IMessageRec
     }
 
     @Override
-    public void runOnMessage(MessageReceivedEvent event) {
+    public void runOnGuildMessage(GuildMessageReceivedEvent event) {
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         String result = "";
         String userID;
         List<Member> mentionedMembers;
         
-        if (message != null || !event.isFromGuild() || !JDAUtils.hasRole(event.getMember(), "Mod")) {
+        if (message == null || !event.getMember().getRoles().stream().anyMatch(x -> x.getId().equals("555303556572250114"))) {
             return;
         }
         
@@ -61,7 +63,7 @@ public class JoinDateCommand extends BulletBotCommandBase implements IMessageRec
             }
         }
         
-        JDAUtils.sendGuildMessage(event.getTextChannel(), result);
+        JDAUtils.sendGuildMessage(event.getChannel(), result);
     }
     
     @Override
