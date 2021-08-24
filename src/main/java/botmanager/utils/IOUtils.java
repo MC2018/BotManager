@@ -48,12 +48,12 @@ public class IOUtils {
     }
 
     public static <T>T readGson(File file, Class<T> objClass) throws IOException {
-        Gson gson = new GsonBuilder().serializeNulls().create();
+        Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
         return gson.fromJson(read(file), objClass);
     }
     
     public static <T>void writeGson(File file, T obj) throws IOException {
-        Gson gson = new GsonBuilder().serializeNulls().create();
+        Gson gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
         write(file, gson.toJson(obj));
     }
     
@@ -61,9 +61,9 @@ public class IOUtils {
         Gson gson;
         
         if (prettyPrinting) {
-            gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+            gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").setPrettyPrinting().create();
         } else {
-            gson = new GsonBuilder().serializeNulls().create();
+            gson = new GsonBuilder().serializeNulls().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
         }
 
         write(file, gson.toJson(obj));

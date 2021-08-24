@@ -13,10 +13,14 @@ if (!hasProperty('mainClass')) {
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:4.2.0_214'
+    implementation 'net.dv8tion:JDA:4.3.0_310'
     implementation 'org.seleniumhq.selenium:selenium-java:3.141.59'
     implementation 'org.jsoup:jsoup:1.12.2'
     implementation 'com.vdurmont:emoji-java:5.1.1'
@@ -25,6 +29,7 @@ dependencies {
     implementation 'joda-time:joda-time:2.10.6'
     implementation 'systems.manifold:manifold-ext:2020.1.27'
     implementation 'io.github.bonigarcia:webdrivermanager:4.4.3'
+    implementation 'org.apache.poi:poi:5.0.0'
     implementation files('libs/Speedrun4J.jar')
 }
 
