@@ -69,8 +69,8 @@ public class MaiDiscordBot extends BotBase {
             new JackpotCommand(this),
             new DeadCommand(this),
             new AlltimeBaltopCommand(this),
-            new PlantCommand(this),
-            new HarvestCommand(this),
+            //new PlantCommand(this),
+            //new HarvestCommand(this),
             new PMRepeaterCommand(this),
             new PMForwarderCommand(this)
         });
