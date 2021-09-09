@@ -136,8 +136,9 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
             }
         } else {
             EmbedBuilder builder = new EmbedBuilder();
+            String comment = "";
             int[] results;
-            int participantCount = 0, totalComments = 0;
+            int participantCount = 0, commentOnlyParticipantCount = 0, totalComments = 0;
 
             pollUserData = poll.getUserDataCopy();
             options = poll.getOptions();
@@ -152,21 +153,29 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
                             results[j]++;
                         }
                     }
+                } else if (!pollUserData.get(i).comments.isEmpty()) {
+                    commentOnlyParticipantCount++;
                 }
 
                 totalComments += pollUserData.get(i).comments.size();
             }
 
+            if (commentOnlyParticipantCount > 0) {
+                comment = "\n(" + commentOnlyParticipantCount + " of which commented w/o voting)";
+            }
+
             builder.setTitle("Poll " + pollID + " Simple Stats");
             builder.setDescription(poll.getQuestion());
-            builder.addField("Total Responses", participantCount + " out of " + pollUserData.size(), false);
+            builder.addField("Total Responses",
+                    (participantCount + commentOnlyParticipantCount) + " out of " + pollUserData.size() + " user" + (pollUserData.size() == 1 ? "" : "s") + comment,
+                    false);
 
             for (int i = 0; i < options.size(); i++) {
                 builder.addField(options.get(i), "" + results[i], false);
             }
 
             if (totalComments > 0) {
-                builder.addField("", totalComments + " Comment" + (totalComments > 1 ? "s" : ""), false);
+                builder.addField("", totalComments + " Comment" + (totalComments == 1 ? "" : "s"), false);
             }
 
             channel = event.getAuthor().openPrivateChannel().complete();

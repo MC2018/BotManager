@@ -59,7 +59,7 @@ public class ResendCommand extends MassPollCommandBase implements IPrivateMessag
             JDAUtils.sendPrivateMessage(event.getAuthor(), "Re-notifying and/or resending polls out to people.");
 
             for (Poll.PollUserData userData : pollUserData) {
-                if (userData.votes != 0) {
+                if (userData.votes != 0 || !userData.comments.isEmpty()) {
                     continue;
                 }
 

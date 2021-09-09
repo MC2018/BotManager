@@ -313,7 +313,8 @@ public class Poll {
             optionsBuilder.append(NUMBER_EMOTES[i] + " " + options.get(i) + "\n");
         }
 
-        builder.addField(question, optionsBuilder.toString(), false);
+        builder.setDescription(question);
+        builder.addField("", optionsBuilder.toString(), false);
         builder.addField("", "Reply to this message to add a comment.", false);
 
         if (isDefinite) {
@@ -360,7 +361,6 @@ public class Poll {
         }
 
         rows.add(ActionRow.of(currentRow));
-
         return rows;
     }
 
