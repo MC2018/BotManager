@@ -10,6 +10,8 @@ import botmanager.bots.masspoll.objects.Poll;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,6 +20,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MassPoll extends BotBase {
 
@@ -40,7 +43,9 @@ public class MassPoll extends BotBase {
                 new CommentCommand(this),
                 new ResendCommand(this),
                 new PollDataCommand(this),
-                new SelectRolesCommand(this)
+                new SelectRolesCommand(this),
+                new AddMemberCommand(this),
+                new RemoveMemberCommand(this)
         });
     }
 

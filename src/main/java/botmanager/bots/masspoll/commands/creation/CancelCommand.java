@@ -26,11 +26,10 @@ public class CancelCommand extends MassPollCommandBase implements IPrivateMessag
             return;
         }
 
-        user = event.getAuthor();
-        channel = user.openPrivateChannel().complete();
+        channel = event.getChannel();
 
-        if (!poll.getLastCreatorMessageID().equals("0")) {
-            channel.deleteMessageById(poll.getLastCreatorMessageID()).complete();
+        if (!poll.getTestPollMessageID().equals("0")) {
+            channel.deleteMessageById(poll.getTestPollMessageID()).queue();
         }
 
         bot.pollsBeingCreated.remove(event.getAuthor().getId());

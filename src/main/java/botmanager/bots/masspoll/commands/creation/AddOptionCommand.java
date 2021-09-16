@@ -6,7 +6,9 @@ import botmanager.bots.masspoll.objects.Poll;
 import botmanager.generic.commands.IPrivateMessageReceivedCommand;
 import botmanager.utils.JDAUtils;
 import botmanager.utils.Utils;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 public class AddOptionCommand extends MassPollCommandBase implements IPrivateMessageReceivedCommand {
@@ -24,10 +26,12 @@ public class AddOptionCommand extends MassPollCommandBase implements IPrivateMes
     public void runOnPrivateMessage(PrivateMessageReceivedEvent event) {
         Poll poll = bot.pollsBeingCreated.get(event.getAuthor().getId());
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
+        MessageChannel channel;
+        Guild guild;
 
-        if (message == null || poll == null) {
+        if (Utils.isNullOrEmpty(message) || poll == null) {
             return;
-        } else if (poll.getOptionsLength() + message.length() + 1 > Message.MAX_CONTENT_LENGTH) {
+        } else if (poll.getOptionsLength() + message.length() + 1 > MessageEmbed.VALUE_MAX_LENGTH) {
             JDAUtils.sendPrivateMessage(event.getAuthor(), "You are using too many characters amongst all of your options.");
         } else {
             try {
@@ -37,6 +41,8 @@ public class AddOptionCommand extends MassPollCommandBase implements IPrivateMes
             }
         }
 
-        poll.sendExampleMessageEmbed(bot, event.getAuthor());
+        guild = event.getJDA().getGuildById(poll.getGuildID());
+        channel = event.getChannel();
+        poll.sendTestPollMessage(guild, channel);
     }
 }

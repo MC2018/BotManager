@@ -3,7 +3,6 @@ package botmanager.bots.masspoll.commands.creation;
 import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.ButtonSelectionType;
-import botmanager.bots.masspoll.objects.GuildSettings;
 import botmanager.bots.masspoll.objects.Poll;
 import botmanager.generic.commands.IPrivateMessageReceivedCommand;
 import botmanager.utils.IOUtils;
@@ -45,10 +44,10 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
 
         user = event.getAuthor();
         member = bot.getJDA().getGuildById(poll.getGuildID()).getMember(user);
-        channel = user.openPrivateChannel().complete();
+        channel = event.getChannel();
 
-        if (poll.getRolesToMention().isEmpty()) {
-            channel.sendMessage("You forgot to select at least one role to include in this poll!").queue();
+        if (poll.getRolesToMention().isEmpty() && poll.getMembersToPoll().isEmpty()) {
+            channel.sendMessage("You forgot to select at least one role or one member to include in this poll!").queue();
             return;
         } else if (!member.getVoiceState().inVoiceChannel() && poll.isVoiceRestricted()) {
             channel.sendMessage("You enabled voice restrictions, but left the voice channel!").queue();
@@ -65,8 +64,9 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
             Guild guild = event.getJDA().getGuildById(poll.getGuildID());
             ArrayList<String> roleIDs = poll.getRolesToMention();
             HashMap<String, Member> membersToMessage = new HashMap<>();
-            MessageEmbed embed = poll.generateMessageEmbed(bot);
+            MessageEmbed embed = poll.generatePollEmbed(guild);
             Iterator<Member> memberList;
+            Iterator<Poll.MemberToPoll> individualMembers = new ArrayList<>(poll.getMembersToPoll()).iterator();
             Member memberToMessage = null;
             String[] emotes = new String[poll.getOptionsSize()];
 
@@ -89,9 +89,8 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
                     for (Member memberWithRole : membersWithRole) {
                         String memberID = memberWithRole.getId();
 
-                        if (!membersToMessage.containsKey(memberID)
-                            && (!poll.isVoiceRestricted() || memberIDsInVoice.contains(memberWithRole.getId()))) {
-
+                        if (!membersToMessage.containsKey(memberID) && !poll.membersToPollContains(memberID)
+                            && (!poll.isVoiceRestricted() || memberIDsInVoice.contains(memberID))) {
                             membersToMessage.put(memberID, memberWithRole);
                         }
                     }
@@ -104,15 +103,24 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
 
             memberList = membersToMessage.values().iterator();
 
-            while (memberList.hasNext()) {
+            while (memberList.hasNext() || individualMembers.hasNext()) {
                 Message messageToSend = null;
                 boolean messageable = true;
 
-                memberToMessage = memberList.next();
+                if (memberList.hasNext()) {
+                    memberToMessage = memberList.next();
+                } else {
+                    Poll.MemberToPoll memberToPoll = individualMembers.next();
+                    memberToMessage = guild.getMemberById(memberToPoll.userID);
+
+                    if (membersToMessage == null) {
+                        continue;
+                    }
+                }
 
                 if (memberToMessage.getId().equals(user.getId())) {
                     isUserPolled = true;
-                    channel.deleteMessageById(poll.getLastCreatorMessageID()).queue();
+                    channel.deleteMessageById(poll.getTestPollMessageID()).queue();
                     channel.sendMessageEmbeds(generatePollDataCommandEmbed(poll)).queue();
                 }
 
@@ -155,7 +163,7 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
         bot.pollsInProcess.remove(poll.getPollID());
 
         if (!isUserPolled) {
-            channel.deleteMessageById(poll.getLastCreatorMessageID()).queue();
+            channel.deleteMessageById(poll.getTestPollMessageID()).queue();
             channel.sendMessageEmbeds(generatePollDataCommandEmbed(poll)).queue();
         }
 
@@ -184,12 +192,12 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
 
         builder.setTitle("Poll Sent! Poll ID: " + poll.getPollID());
         builder.addField("The following commands can now be used:", "", false);
-        builder.addField("Resend", "Sends a message to people who haven't replied.\n" +
-                "Usage: **resend " + poll.getPollID() + "**", false);
-        builder.addField("Polldata", "Returns the results of the poll and total responses.\n" +
-                "Usage: **polldata " + poll.getPollID() + "**", false);
-        builder.addField("Polldata Excel", "Returns an Excel sheet with names and specific responses.\n" +
-                "Usage: **polldata excel " + poll.getPollID() + "**", false);
+        builder.addField("Resend", "Sends a message to people who haven't replied.\n"
+                + "Usage: `resend " + poll.getPollID() + "`", false);
+        builder.addField("Polldata", "Returns the results of the poll and total responses.\n"
+                + "Usage: `polldata " + poll.getPollID() + "`", false);
+        builder.addField("Polldata Excel", "Returns an Excel sheet with names and specific responses.\n"
+                + "Usage: `polldata excel " + poll.getPollID() + "`", false);
 
         return builder.build();
     }

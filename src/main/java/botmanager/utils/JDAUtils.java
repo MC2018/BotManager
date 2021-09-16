@@ -225,5 +225,59 @@ public class JDAUtils {
             message.addReaction(Utils.getEmoji(potentialName).getUnicode()).queue();
         }
     }
-    
+
+    public static Member findSimilarMemberWithName(Guild guild, String nameToSearch) {
+        List<Member> members = guild.getMembers();
+        double bestSimilarity = -1;
+        int bestSimilarityIndex = 0;
+        boolean hasDiscriminator = nameToSearch.matches(".*#[0-9]{1,4}$");
+
+        for (int i = 0; i < members.size(); i++) {
+            String username;
+            double similarity;
+
+            if (members.get(i).getUser().isBot()) {
+                continue;
+            } else if (members.get(i).getId().equals(nameToSearch)) {
+                return members.get(i);
+            }
+
+            if (hasDiscriminator) {
+                username = members.get(i).getUser().getAsTag();
+            } else {
+                username = members.get(i).getUser().getName();
+            }
+
+            similarity = Utils.similarity(username, nameToSearch) + 0.001;
+
+            if (members.get(i).getNickname() != null) {
+                double secondSimilarity = Utils.similarity(members.get(i).getNickname(), nameToSearch);
+                similarity = similarity > secondSimilarity ? similarity : secondSimilarity;
+            }
+
+            if (similarity >= 1) {
+                return members.get(i);
+            }
+
+            if (similarity > bestSimilarity) {
+                bestSimilarity = similarity;
+                bestSimilarityIndex = i;
+            }
+        }
+
+        return members.get(bestSimilarityIndex);
+    }
+
+    public static ArrayList<Role> roleIDsToRoles(Guild guild, ArrayList<String> roleIDs) {
+        ArrayList<Role> roles = new ArrayList<>(guild.getRoles());
+
+        for (int i = 0; i < roles.size(); i++) {
+            if (!roleIDs.contains(roles.get(i).getId())) {
+                roles.remove(i--);
+            }
+        }
+
+        return roles;
+    }
+
 }

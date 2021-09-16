@@ -23,7 +23,7 @@ public abstract class BotBase extends ListenerAdapter {
     private final JDA JDA_INSTANCE;
     private final String BOT_TOKEN;
     private String name;
-    private ICommand[] commands;
+    private ICommand[] commands = {};
 
     public BotBase(String botToken, String name) {
         this(botToken, name, GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS), MemberCachePolicy.ALL, new ArrayList());

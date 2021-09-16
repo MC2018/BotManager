@@ -109,7 +109,7 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
             }
 
             try {
-                channel = event.getAuthor().openPrivateChannel().complete();
+                channel = event.getChannel();
 
                 baos = new ByteArrayOutputStream();
                 workbook.write(baos);

@@ -34,30 +34,29 @@ public class Poll {
     private long pollID;
     private String uuid;
     private Date timeStarted;
-    private Date timeFirstPolled;
-    private Date timeLastPolled;
+    private Date timeFirstPolled = new Date(0);
+    private Date timeLastPolled = new Date(0);
     private String guildID;
     private String creatorID;
-    private String lastCreatorMessageID = "0";
-    private int rolesToMention;
+    private String testPollMessageID = "0";
+    private String roleSelectorMessageID = "0";
+    private int rolesToMention = 0;
     private ArrayList<String> rolesToChooseFrom;
+    private ArrayList<MemberToPoll> membersToPoll;
     private ArrayList<PollUserData> pollUserData;
-    private String question;
+    private String question = "";
     private ArrayList<String> options;
     private boolean voiceRestrictedOption;
 
     public Poll(MassPoll bot, String creatorID, String guildID) {
         this.uuid = UUID.randomUUID().toString();
-        this.timeStarted = new Date();
-        this.timeFirstPolled = this.timeLastPolled = new Date(0);
+        timeStarted = new Date();
         this.pollID = generateID(bot);
         this.guildID = guildID;
         this.creatorID = creatorID;
-        this.lastCreatorMessageID = "0";
-        this.rolesToMention = 0;
         this.rolesToChooseFrom = new ArrayList<>();
+        this.membersToPoll = new ArrayList<>();
         this.pollUserData = new ArrayList<>();
-        this.question = "";
         this.options = new ArrayList<>();
     }
 
@@ -89,12 +88,20 @@ public class Poll {
         this.guildID = guildID;
     }
 
-    public String getLastCreatorMessageID() {
-        return lastCreatorMessageID;
+    public String getTestPollMessageID() {
+        return testPollMessageID;
     }
 
-    public void setLastCreatorMessageID(String messageID) {
-        lastCreatorMessageID = messageID;
+    public void setTestPollMessageID(String messageID) {
+        testPollMessageID = messageID;
+    }
+
+    public String getRoleSelectorMessageID() {
+        return roleSelectorMessageID;
+    }
+
+    public void setRoleSelectorMessageID(String messageID) {
+        roleSelectorMessageID = messageID;
     }
 
     public ArrayList<String> getRolesToMention() {
@@ -123,6 +130,44 @@ public class Poll {
 
     public void setRolesToChooseFrom(ArrayList<String> rolesToChooseFrom) {
         this.rolesToChooseFrom = rolesToChooseFrom;
+    }
+
+    public ArrayList<MemberToPoll> getMembersToPoll() {
+        return  membersToPoll;
+    }
+
+    public void addMemberToPoll(Member member) {
+        MemberToPoll memberToPoll = new MemberToPoll();
+
+        if (membersToPollContains(member.getId())) {
+            return;
+        }
+
+        memberToPoll.userID = member.getId();
+        memberToPoll.username = member.getUser().getName();
+        memberToPoll.nickname = member.getEffectiveName();
+        memberToPoll.tag = member.getUser().getAsTag();
+
+        membersToPoll.add(memberToPoll);
+    }
+
+    public void removeMemberToPoll(String id) {
+        for (int i = 0; i < membersToPoll.size(); i++) {
+            if (membersToPoll.get(i).userID.equals(id)) {
+                membersToPoll.remove(i);
+                return;
+            }
+        }
+    }
+
+    public boolean membersToPollContains(String id) {
+        for (int i = 0; i < membersToPoll.size(); i++) {
+            if (membersToPoll.get(i).userID.equals(id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public String getQuestion() {
@@ -297,13 +342,12 @@ public class Poll {
         }
     }
 
-    public MessageEmbed generateMessageEmbed(MassPoll bot) {
-        return generateMessageEmbed(bot, true);
+    public MessageEmbed generatePollEmbed(Guild guild) {
+        return generatePollEmbed(guild, true);
     }
 
-    private MessageEmbed generateMessageEmbed(MassPoll bot, boolean isDefinite) {
+    private MessageEmbed generatePollEmbed(Guild guild, boolean isDefinite) {
         EmbedBuilder builder = new EmbedBuilder();
-        Guild guild = bot.getJDA().getGuildById(guildID);
         StringBuilder optionsBuilder = new StringBuilder();
 
         builder.setTitle("Poll from " + guild.getName());
@@ -319,6 +363,40 @@ public class Poll {
 
         if (isDefinite) {
             builder.setFooter("ID " + pollID);
+        }
+
+        return builder.build();
+    }
+
+    public MessageEmbed generateRoleSelectorEmbed(ArrayList<Role> roles, boolean inVoiceChannel) {
+        EmbedBuilder builder = new EmbedBuilder();
+        String roleList = "";
+        String memberList = "";
+
+        builder.setTitle("Select Roles");
+        builder.setDescription("Select which roles the poll should send to.");
+
+        for (int i = 0; i < roles.size(); i++) {
+            roleList += Poll.NUMBER_EMOTES[i] + " " + roles.get(i).getName() + "\n";
+        }
+
+        for (MemberToPoll memberToPoll : membersToPoll) {
+            if (memberToPoll.username.equals(memberToPoll.nickname)) {
+                memberList += memberToPoll.tag + "\n";
+            } else {
+                memberList += memberToPoll.tag + " (" + memberToPoll.nickname + ")\n";
+            }
+        }
+
+        if (inVoiceChannel) {
+            roleList += Poll.NUMBER_EMOTES[roles.size()] + " *Apply only to people in the voice channel*\n";
+            setVoiceRestrictedOption(true);
+        }
+
+        builder.addField("Options", roleList, false);
+
+        if (!memberList.isEmpty()) {
+            builder.addField("Individual Members to Include", memberList, false);
         }
 
         return builder.build();
@@ -364,20 +442,35 @@ public class Poll {
         return rows;
     }
 
-    public void sendExampleMessageEmbed(MassPoll bot, User user) {
-        Message message;
+    public void sendTestPollMessage(Guild guild, MessageChannel channel) {
+        if (testPollMessageID.equals("0")) {
 
-        if (lastCreatorMessageID.equals("0")) {
-            MessageChannel channel = user.openPrivateChannel().complete();
-            message = channel.sendMessage("This is what your poll looks like so far.")
-                    .setEmbeds(generateMessageEmbed(bot, false))
-                    .complete();
-
-            lastCreatorMessageID = message.getId();
+            channel.sendMessage("This is what your poll looks like so far.")
+                    .setEmbeds(generatePollEmbed(guild, false))
+                    .queue(response -> {
+                        testPollMessageID = response.getId();
+                    });
         } else {
-            user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.editMessageEmbedsById(lastCreatorMessageID, generateMessageEmbed(bot, false)).queue();
-            });
+            channel.editMessageEmbedsById(testPollMessageID, generatePollEmbed(guild, false)).queue();
+        }
+    }
+
+    public void sendRoleSelectorMessage(Member member, ArrayList<Role> roles, MessageChannel channel) {
+        int buttonCount = roles.size();
+        boolean inVoiceChannel = member.getVoiceState().inVoiceChannel();
+
+        if (inVoiceChannel) {
+            buttonCount++;
+        }
+
+        if (roleSelectorMessageID.equals("0")) {
+            channel.sendMessageEmbeds(generateRoleSelectorEmbed(roles, inVoiceChannel))
+                    .setActionRows(generateActionRows(0, buttonCount, ButtonSelectionType.RoleSelection))
+                    .queue(response -> {
+                        roleSelectorMessageID = response.getId();
+                    });
+        } else {
+            channel.editMessageEmbedsById(roleSelectorMessageID, generateRoleSelectorEmbed(roles, inVoiceChannel)).queue();
         }
     }
 
@@ -389,6 +482,13 @@ public class Poll {
         public int votes;
         public ArrayList<String> comments = new ArrayList<>();
         public boolean messageable;
+    }
+
+    public class MemberToPoll {
+        public String userID;
+        public String username;
+        public String nickname;
+        public String tag;
     }
 
 }

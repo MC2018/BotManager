@@ -50,12 +50,7 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
         if (event.isFromGuild()) {
             guild = event.getGuild();
             member = event.getMember();
-
-            try {
-                event.getMessage().delete().queue();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            event.getMessage().delete().queue();
         } else {
             List<Guild> mutualGuilds = event.getAuthor().getMutualGuilds();
 
@@ -90,7 +85,7 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
             return;
         }
 
-        if (settings.rolesToMention.isEmpty()) {
+        if (settings.mentionableRoles.isEmpty()) {
             JDAUtils.sendPrivateMessage(member.getUser(), "Permissions for the server have not been set up yet!");
             return;
         } else if (settings.whitelistedUsers.contains(member.getId()) || member.hasPermission(Permission.ADMINISTRATOR)) {
@@ -125,49 +120,23 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
 
         try {
             MessageChannel channel = event.getAuthor().openPrivateChannel().complete();
-            ArrayList<Role> rolesToMention = new ArrayList<>(guild.getRoles());
+            ArrayList<Role> roles = new ArrayList<>(member.getGuild().getRoles());
 
-            for (int i = 0; i < rolesToMention.size(); i++) {
-                if (!settings.rolesToMention.contains(rolesToMention.get(i).getId())) {
-                    rolesToMention.remove(i);
+            for (int i = 0; i < roles.size(); i++) {
+                if (!settings.mentionableRoles.contains(roles.get(i).getId())) {
+                    roles.remove(i);
                     i--;
                 }
             }
 
-            if (rolesToMention.isEmpty()) {
-                return;
+            if (roles.isEmpty()) {
+                JDAUtils.sendPrivateMessage(member.getUser(), "There are no roles to mention found for this guild.");
             }
 
             channel.sendMessageEmbeds(generateCommandsEmbed()).queue();
-            poll.setRolesToChooseFrom(settings.rolesToMention);
-
-            if (rolesToMention.size() > 1 || member.getVoiceState().inVoiceChannel()) {
-                EmbedBuilder builder = new EmbedBuilder();
-                String roleList = "";
-                int buttonCount = rolesToMention.size();
-
-                builder.setTitle("Select Roles");
-                builder.setDescription("Select which roles the poll should send to.");
-
-                for (int i = 0; i < rolesToMention.size(); i++) {
-                    roleList += Poll.NUMBER_EMOTES[i] + " " + rolesToMention.get(i).getName() + "\n";
-                }
-
-                if (member.getVoiceState().inVoiceChannel()) {
-                    roleList += Poll.NUMBER_EMOTES[rolesToMention.size()] + " *Apply only to people in the voice channel*\n";
-                    poll.setVoiceRestrictedOption(true);
-                    buttonCount++;
-                }
-
-                builder.addField("Options", roleList, false);
-                channel.sendMessageEmbeds(builder.build())
-                        .setActionRows(poll.generateActionRows(0, buttonCount, ButtonSelectionType.RoleSelection))
-                        .queue();
-            } else {
-                poll.updateRolesToMention(0, true);
-            }
-
-            poll.sendExampleMessageEmbed(bot, member.getUser());
+            poll.setRolesToChooseFrom(settings.mentionableRoles);
+            poll.sendRoleSelectorMessage(member, roles, channel);
+            poll.sendTestPollMessage(guild, channel);
         } catch (ErrorResponseException e) {
             if (e.getErrorCode() == 50007) {
                 System.out.println("Someone (ID " + member.getId() + ") tried to create a poll, but they have DMs closed.");
@@ -182,20 +151,18 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
 
         builder.setTitle("Instructions");
         builder.setDescription("Run a combination of these commands to generate your poll.");
-        builder.addField("Set Question", "Sets the question for your poll.\n" +
-                "Usage: **set question What should we do?**", false);
-        builder.addField("Add Option", "Adds a poll option.\n" +
-                "Usage: **add option Get pizza**", false);
-        builder.addField("Remove Option", "Removes an option based on its number.\n" +
-                "Usage: **remove option 1**", false);
-        builder.addField("Cancel", "Cancels the poll.\n" +
-                "Usage: **cancel**", false);
-        builder.addField("Send", "Sends the poll out to people.\n" +
-                "Usage: **send**", false);
-        builder.addField("", "**Things to be aware of:**\n" +
-                "Once sent, you can't cancel/modify the poll.\n" +
-                "Add a way to abstain so everyone will reply.\n" +
-                "People can comment by replying to the poll's message.", false);
+        builder.addField("Set the Question", "Usage: `set question Should we get pizza?`", false);
+        builder.addField("Add or Remove an Option", "Usage: `add option Yes!`\n"
+                + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `remove option 1`", false);
+        builder.addField("Add or Remove an Individual Member", "Works w/an ID or partial username/nickname\n"
+                + "Usage: `add member TedNugent_420`\n"
+                + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `remove member GunterFan1`", false);
+        builder.addField("Cancel the Poll", "Usage: `cancel`", false);
+        builder.addField("Send the Poll", "Usage: `send`", false);
+        builder.addField("", "**Things to be aware of:**\n"
+                + "Add a way to abstain so everyone will reply.\n"
+                + "Once sent, you can't cancel/modify the poll.\n"
+                + "People can comment by replying to the poll's message.", false);
 
         return builder.build();
     }

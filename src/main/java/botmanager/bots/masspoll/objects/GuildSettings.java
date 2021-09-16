@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class GuildSettings {
 
     public String guildID;
-    public ArrayList<String> rolesToMention = new ArrayList<>();
+    public ArrayList<String> mentionableRoles = new ArrayList<>();
     public ArrayList<String> rolesToPoll = new ArrayList<>();
     public ArrayList<String> whitelistedUsers = new ArrayList<>();
     public ArrayList<String> blacklistedUsers = new ArrayList<>();

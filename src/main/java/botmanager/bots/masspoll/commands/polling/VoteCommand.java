@@ -5,19 +5,9 @@ import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.ButtonSelectionType;
 import botmanager.bots.masspoll.objects.Poll;
 import botmanager.generic.commands.IButtonClickCommand;
-import botmanager.generic.commands.IMessageReactionAddCommand;
-import botmanager.generic.commands.IMessageReactionRemoveCommand;
 import botmanager.utils.IOUtils;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
-import net.dv8tion.jda.api.interactions.components.Button;
-import net.dv8tion.jda.api.interactions.components.Component;
-
-import java.util.List;
 
 public class VoteCommand extends MassPollCommandBase implements IButtonClickCommand {
 
@@ -72,7 +62,11 @@ public class VoteCommand extends MassPollCommandBase implements IButtonClickComm
 
             poll.updateUserVote(event.getUser().getId(), index, turnToUpvote);
             IOUtils.writeGson(Poll.getFileLocation(bot, pollID), poll, true);
-            message.editMessageEmbeds(poll.generateMessageEmbed(bot)).setActionRows(poll.generateActionRows(event.getUser().getId(), poll.getOptionsSize(), ButtonSelectionType.PollSelection)).queue();
+            message.editMessageEmbeds(
+                    poll.generatePollEmbed(event.getJDA().getGuildById(poll.getGuildID()))).setActionRows(poll.generateActionRows(event.getUser().getId(),
+                    poll.getOptionsSize(),
+                    ButtonSelectionType.PollSelection)
+            ).queue();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -12,8 +12,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
-import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -55,7 +53,7 @@ public class ResendCommand extends MassPollCommandBase implements IPrivateMessag
             }
 
             pollUserData = poll.getUserDataCopy();
-            embed = poll.generateMessageEmbed(bot);
+            embed = poll.generatePollEmbed(event.getJDA().getGuildById(poll.getGuildID()));
             JDAUtils.sendPrivateMessage(event.getAuthor(), "Re-notifying and/or resending polls out to people.");
 
             for (Poll.PollUserData userData : pollUserData) {
