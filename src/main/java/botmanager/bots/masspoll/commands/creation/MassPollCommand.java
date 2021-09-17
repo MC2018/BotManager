@@ -38,7 +38,7 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
         Poll poll;
         int guildNumber = 0;
 
-        if (message == null) {
+        if (message == null || ((event.isFromGuild() && !message.equals("")))) {
             return;
         }
 
