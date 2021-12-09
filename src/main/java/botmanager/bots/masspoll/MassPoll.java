@@ -29,7 +29,7 @@ public class MassPoll extends BotBase {
 
     public MassPoll(String botToken, String name) {
         super(botToken, name);
-        getJDA().getPresence().setActivity(Activity.watching("for \"masspoll\" anywhere!"));
+        getJDA().getPresence().setActivity(Activity.playing("send 'masspoll' in DM"));
 
         setCommands(new ICommand[] {
                 new GuildJoinCommand(this),
@@ -51,8 +51,6 @@ public class MassPoll extends BotBase {
 
     @Override
     public void onButtonClick(ButtonClickEvent event) {
-        event.deferEdit().queue();
-
         for (ICommand command : getCommands()) {
             command.run(event);
         }

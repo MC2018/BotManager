@@ -22,7 +22,7 @@ import java.util.List;
 public class MassPollCommand extends MassPollCommandBase implements IMessageReceivedCommand {
 
     public final String[] KEYWORDS = {
-            "masspoll"
+            "-masspoll"
     };
 
     public MassPollCommand(MassPoll bot) {
@@ -117,25 +117,18 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
 
         poll = new Poll(bot, member.getId(), guild.getId());
         bot.pollsBeingCreated.put(member.getId(), poll);
+        poll.setRolesToChooseFrom(settings.mentionableRoles);
+
+        if (poll.getRolesToChooseFrom().isEmpty()) {
+            JDAUtils.sendPrivateMessage(member.getUser(), "There are no roles to mention found for this guild.");
+            return;
+        }
 
         try {
             MessageChannel channel = event.getAuthor().openPrivateChannel().complete();
-            ArrayList<Role> roles = new ArrayList<>(member.getGuild().getRoles());
-
-            for (int i = 0; i < roles.size(); i++) {
-                if (!settings.mentionableRoles.contains(roles.get(i).getId())) {
-                    roles.remove(i);
-                    i--;
-                }
-            }
-
-            if (roles.isEmpty()) {
-                JDAUtils.sendPrivateMessage(member.getUser(), "There are no roles to mention found for this guild.");
-            }
 
             channel.sendMessageEmbeds(generateCommandsEmbed()).queue();
-            poll.setRolesToChooseFrom(settings.mentionableRoles);
-            poll.sendRoleSelectorMessage(member, roles, channel);
+            poll.sendRoleSelectorMessage(member, JDAUtils.roleIDsToRoles(guild, poll.getRolesToChooseFrom()), channel);
             poll.sendTestPollMessage(guild, channel);
         } catch (ErrorResponseException e) {
             if (e.getErrorCode() == 50007) {

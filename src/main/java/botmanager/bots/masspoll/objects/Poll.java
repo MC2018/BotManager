@@ -88,6 +88,10 @@ public class Poll {
         this.guildID = guildID;
     }
 
+    public String getCreatorID() {
+        return creatorID;
+    }
+
     public String getTestPollMessageID() {
         return testPollMessageID;
     }

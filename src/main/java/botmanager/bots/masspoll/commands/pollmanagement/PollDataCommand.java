@@ -70,6 +70,10 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
 
         bot.pollsInProcess.remove(pollID);
 
+        if (!poll.getCreatorID().equals(event.getAuthor().getId())) {
+            return;
+        }
+
         if (makeSpreadsheet) {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("Data");

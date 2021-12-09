@@ -93,20 +93,20 @@ public class Utils {
         String longer = s1, shorter = s2;
         int longerLength;
         double result;
-        
+
         if (s1.length() < s2.length()) {
             longer = s2;
             shorter = s1;
         }
-        
+
         longerLength = longer.length();
-        
+
         if (longerLength == 0) {
             return 1.0;
         }
 
         result = (longerLength - editDistance(longer, shorter)) / (double) longerLength;
-        
+
         if (s1.contains(s2) || s2.contains(s1)) {
             result += (1 - result) / 2;
         }

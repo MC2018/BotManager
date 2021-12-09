@@ -49,6 +49,8 @@ Test.java
 *.lock
 build/
 data/
+dataa/
+data from failed instance/
 .gradle
 #git rm --cached .gradle -r
 .nb-gradle/

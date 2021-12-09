@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.*;
@@ -269,15 +270,24 @@ public class JDAUtils {
     }
 
     public static ArrayList<Role> roleIDsToRoles(Guild guild, ArrayList<String> roleIDs) {
-        ArrayList<Role> roles = new ArrayList<>(guild.getRoles());
+        ArrayList<Role> sortedRoles = new ArrayList<>();
+        ArrayList<Role> unsortedRoles = new ArrayList<Role>(
+                guild.getRoles().stream()
+                        .filter(x -> roleIDs.contains(x.getId()))
+                        .sorted()
+                        .collect(Collectors.toList())
+        );
 
-        for (int i = 0; i < roles.size(); i++) {
-            if (!roleIDs.contains(roles.get(i).getId())) {
-                roles.remove(i--);
+        for (int i = 0; i < roleIDs.size(); i++) {
+            for (int j = 0; j < unsortedRoles.size(); j++) {
+                if (roleIDs.get(i).equals(unsortedRoles.get(j).getId())) {
+                    sortedRoles.add(unsortedRoles.get(j));
+                    break;
+                }
             }
         }
 
-        return roles;
+        return sortedRoles;
     }
 
 }
