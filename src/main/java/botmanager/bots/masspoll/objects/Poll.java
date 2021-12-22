@@ -31,6 +31,7 @@ public class Poll {
             "\u0039\u20E3"
     };
 
+    private final int OPTION_SIZE_BUFFER = 4;
     private long pollID;
     private String uuid;
     private Date timeStarted;
@@ -190,8 +191,25 @@ public class Poll {
         options.add(option);
     }
 
+    public void editOption(int index, String option) throws Exception {
+        if (index >= options.size()) {
+            throw new IndexOutOfBoundsException("There are not " + (index + 1) + " options.");
+        }
+
+        if (getOptionsLengthWithout(index) + option.length() + OPTION_SIZE_BUFFER > MessageEmbed.VALUE_MAX_LENGTH) {
+            throw new Exception("You are using too many characters amongst all of your options.");
+        }
+
+        options.remove(index);
+        options.add(index, option);
+    }
+
     public void removeOption(int index) {
         options.remove(index);
+    }
+
+    public void reorderOption(int oldIndex, int newIndex) {
+        options.add(newIndex, options.remove(oldIndex));
     }
 
     public int getOptionsSize() {
@@ -202,10 +220,16 @@ public class Poll {
         int length = 0;
 
         for (String option : options) {
-            length += option.length() + 4; // 4 should be a good buffer
+            length += option.length() + OPTION_SIZE_BUFFER; // to make sure it doesn't go over size
         }
 
         return length;
+    }
+
+    public int getOptionsLengthWithout(int index) {
+        int length = getOptionsLength();
+
+        return length - OPTION_SIZE_BUFFER - options.get(index).length();
     }
 
     public ArrayList<String> getOptions() {

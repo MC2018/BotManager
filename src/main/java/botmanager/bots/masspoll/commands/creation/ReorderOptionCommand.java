@@ -11,14 +11,16 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
-public class AddOptionCommand extends MassPollCommandBase implements IPrivateMessageReceivedCommand {
+public class ReorderOptionCommand extends MassPollCommandBase implements IPrivateMessageReceivedCommand {
 
     final String[] KEYWORDS = {
-            "add option",
-            "addoption"
+            "order option",
+            "orderoption",
+            "reorder option",
+            "reorderoption",
     };
 
-    public AddOptionCommand(MassPoll bot) {
+    public ReorderOptionCommand(MassPoll bot) {
         super(bot);
     }
 
@@ -28,18 +30,20 @@ public class AddOptionCommand extends MassPollCommandBase implements IPrivateMes
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         MessageChannel channel;
         Guild guild;
+        int oldIndex, newIndex;
 
-        if (Utils.isNullOrEmpty(message) || poll == null) {
-            return;
-        } else if (poll.getOptionsLength() + message.length() + 1 > MessageEmbed.VALUE_MAX_LENGTH) {
-            JDAUtils.sendPrivateMessage(event.getAuthor(), "You are using too many characters amongst all of your options.");
+        if (message == null || poll == null) {
             return;
         }
 
         try {
-            poll.addOption(message);
-        } catch (IndexOutOfBoundsException e) {
-            JDAUtils.sendPrivateMessage(event.getAuthor(), e.getMessage());
+            oldIndex = Integer.parseInt(message.split(" ")[0]) - 1;
+            newIndex = Integer.parseInt(message.split(" ")[1]) - 1;
+
+            poll.reorderOption(oldIndex, newIndex);
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            JDAUtils.sendPrivateMessage(event.getAuthor(), "You sent an option number that doesn't exist!");
+            return;
         }
 
         guild = event.getJDA().getGuildById(poll.getGuildID());

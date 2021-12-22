@@ -22,7 +22,7 @@ import java.util.List;
 public class MassPollCommand extends MassPollCommandBase implements IMessageReceivedCommand {
 
     public final String[] KEYWORDS = {
-            "-masspoll"
+            "masspoll"
     };
 
     public MassPollCommand(MassPoll bot) {
@@ -145,8 +145,10 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
         builder.setTitle("Instructions");
         builder.setDescription("Run a combination of these commands to generate your poll.");
         builder.addField("Set the Question", "Usage: `set question Should we get pizza?`", false);
-        builder.addField("Add or Remove an Option", "Usage: `add option Yes!`\n"
-                + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `remove option 1`", false);
+        builder.addField("Add/Remove/Edit/Reorder an Option", "Usage: `add option Yes!`\n"
+                + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `remove option 1`\n"
+                + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `edit option 1 Of course!`\n"
+                + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `reorder option 1 2`", false);
         builder.addField("Add or Remove an Individual Member", "Works w/an ID or partial username/nickname\n"
                 + "Usage: `add member TedNugent_420`\n"
                 + "\u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B \u200B `remove member GunterFan1`", false);

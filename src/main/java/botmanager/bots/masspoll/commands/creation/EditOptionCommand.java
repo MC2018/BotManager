@@ -11,14 +11,18 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
-public class AddOptionCommand extends MassPollCommandBase implements IPrivateMessageReceivedCommand {
+public class EditOptionCommand extends MassPollCommandBase implements IPrivateMessageReceivedCommand {
 
     final String[] KEYWORDS = {
-            "add option",
-            "addoption"
+            "edit option",
+            "editoption",
+            "change option",
+            "changeoption",
+            "set option",
+            "setoption"
     };
 
-    public AddOptionCommand(MassPoll bot) {
+    public EditOptionCommand(MassPoll bot) {
         super(bot);
     }
 
@@ -28,18 +32,27 @@ public class AddOptionCommand extends MassPollCommandBase implements IPrivateMes
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         MessageChannel channel;
         Guild guild;
+        int index;
 
         if (Utils.isNullOrEmpty(message) || poll == null) {
-            return;
-        } else if (poll.getOptionsLength() + message.length() + 1 > MessageEmbed.VALUE_MAX_LENGTH) {
-            JDAUtils.sendPrivateMessage(event.getAuthor(), "You are using too many characters amongst all of your options.");
             return;
         }
 
         try {
-            poll.addOption(message);
-        } catch (IndexOutOfBoundsException e) {
+            int number = Integer.parseInt(message.split(" ")[0]);
+
+            index = number - 1;
+            message = message.replaceFirst(number + " ", "");
+        } catch (NumberFormatException e) {
+            JDAUtils.sendPrivateMessage(event.getAuthor(), "You used the command incorrectly.");
+            return;
+        }
+
+        try {
+            poll.editOption(index, message);
+        } catch (Exception e) {
             JDAUtils.sendPrivateMessage(event.getAuthor(), e.getMessage());
+            return;
         }
 
         guild = event.getJDA().getGuildById(poll.getGuildID());

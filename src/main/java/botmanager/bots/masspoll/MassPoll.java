@@ -45,7 +45,9 @@ public class MassPoll extends BotBase {
                 new PollDataCommand(this),
                 new SelectRolesCommand(this),
                 new AddMemberCommand(this),
-                new RemoveMemberCommand(this)
+                new RemoveMemberCommand(this),
+                new EditOptionCommand(this),
+                new ReorderOptionCommand(this)
         });
     }
 
