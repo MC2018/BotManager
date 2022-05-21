@@ -27,7 +27,7 @@ public class SuggestionCommand extends SuggestionBoxCommandBase {
         TextChannel channel;
         List<Role> roles;
         List<Attachment> attachments;
-        String[] reactionNames = {"upvote", "downvote"};
+        String[] reactionNames = {"thumbsup", "thumbsdown"};
         String message;
 
         if (!(genericEvent instanceof GuildMessageReceivedEvent)) {

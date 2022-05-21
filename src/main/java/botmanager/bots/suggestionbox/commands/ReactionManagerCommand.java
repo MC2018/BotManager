@@ -47,7 +47,7 @@ public class ReactionManagerCommand extends SuggestionBoxCommandBase {
             return;
         }
         
-        if (emoteName.equalsIgnoreCase("upvote") || emoteName.equalsIgnoreCase("downvote")) {
+        if (emoteName.equalsIgnoreCase("thumbsup") || emoteName.equalsIgnoreCase("thumbsdown")) {
             return;
         }
         

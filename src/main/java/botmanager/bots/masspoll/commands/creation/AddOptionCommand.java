@@ -24,7 +24,7 @@ public class AddOptionCommand extends MassPollCommandBase implements IPrivateMes
 
     @Override
     public void runOnPrivateMessage(PrivateMessageReceivedEvent event) {
-        Poll poll = bot.pollsBeingCreated.get(event.getAuthor().getId());
+        Poll poll = bot.POLLS_BEING_CREATED.get(event.getAuthor().getId());
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         MessageChannel channel;
         Guild guild;

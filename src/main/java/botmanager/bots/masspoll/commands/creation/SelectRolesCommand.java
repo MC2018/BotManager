@@ -45,18 +45,10 @@ public class SelectRolesCommand extends MassPollCommandBase implements IButtonCl
             return;
         }
 
-        // wait until saving has completed
-        // bad, ik, but I want to make sure no data is lost w/the tools I'm using
-        while (bot.pollsInProcess.contains(pollID)) {
-        }
-
-        bot.pollsInProcess.add(pollID);
-
         try {
-            Poll poll = bot.pollsBeingCreated.get(event.getUser().getId());
+            Poll poll = bot.POLLS_BEING_CREATED.get(event.getUser().getId());
 
             if (!poll.getUUID().equals(uuid)) {
-                bot.pollsInProcess.remove(pollID);
                 return;
             }
 
@@ -66,8 +58,6 @@ public class SelectRolesCommand extends MassPollCommandBase implements IButtonCl
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        bot.pollsInProcess.remove(pollID);
     }
 
 }

@@ -4,6 +4,7 @@ import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.ButtonSelectionType;
 import botmanager.bots.masspoll.objects.Poll;
+import botmanager.bots.masspoll.objects.PollAccessor;
 import botmanager.generic.commands.IPrivateMessageReceivedCommand;
 import botmanager.utils.IOUtils;
 import botmanager.utils.JDAUtils;
@@ -12,6 +13,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,7 +28,7 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
     public void runOnPrivateMessage(PrivateMessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         MessageChannel channel;
-        Poll poll = bot.pollsBeingCreated.get(event.getAuthor().getId());
+        Poll poll = bot.POLLS_BEING_CREATED.get(event.getAuthor().getId());
         boolean isUserPolled = false;
         String nonMessageableList = "", failureList = "";
         Member member;
@@ -56,21 +58,14 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
 
         channel.sendMessage("The poll is being sent.").queue();
 
-        if (!bot.pollsInProcess.contains(poll.getPollID())) {
-            bot.pollsInProcess.add(poll.getPollID());
-        }
-
-        try {
+        try (PollAccessor pollAccesser = new PollAccessor(bot, poll.getPollID(), PollAccessor.PollAccessType.SEND)) {
             Guild guild = event.getJDA().getGuildById(poll.getGuildID());
             ArrayList<String> roleIDs = poll.getRolesToMention();
             HashMap<String, Member> membersToMessage = new HashMap<>();
             MessageEmbed embed = poll.generatePollEmbed(guild);
             Iterator<Member> memberList;
             Iterator<Poll.MemberToPoll> individualMembers = new ArrayList<>(poll.getMembersToPoll()).iterator();
-            Member memberToMessage = null;
-            String[] emotes = new String[poll.getOptionsSize()];
-
-            System.arraycopy(Poll.NUMBER_EMOTES, 0, emotes, 0, emotes.length);
+            Member memberToMessage;
 
             for (String roleID : roleIDs) {
                 try {
@@ -128,7 +123,7 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
                     MessageChannel memberChannel = memberToMessage.getUser().openPrivateChannel().complete();
                     messageToSend = memberChannel.sendMessageEmbeds(embed).setActionRows(poll.generateActionRows(0, poll.getOptionsSize(), ButtonSelectionType.PollSelection)).complete();
                 } catch (ErrorResponseException e) {
-                    if (e.getErrorCode() == 50007) {
+                    if (e.getErrorResponse().equals(ErrorResponse.CANNOT_SEND_TO_USER)) {
                         nonMessageableList += memberToMessage.getEffectiveName() + " (ID " + memberToMessage.getId() + ")\n";
                         System.out.println("Someone getting DM'd (ID " + memberToMessage.getId() + ") has DMs closed.");
                         messageable = false;
@@ -147,20 +142,16 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
 
             poll.setTimeFirstPolled(new Date());
             IOUtils.writeGson(Poll.getFileLocation(bot, poll.getPollID()), poll, true);
-            bot.pollsBeingCreated.remove(user.getId());
+            bot.POLLS_BEING_CREATED.remove(user.getId());
         } catch (IOException e) {
-            channel.sendMessage("There was a problem with saving. Please let MC_2018#9481 know of this issue.");
-            bot.pollsInProcess.remove(poll.getPollID());
+            channel.sendMessage("There was a problem with saving. Please let " + bot.DEV_NAME + " know of this issue.");
             e.printStackTrace();
             return;
         } catch (Exception e) {
-            channel.sendMessage("There was a problem with the execution. Please let MC_2018#9481 know of this issue.");
-            bot.pollsInProcess.remove(poll.getPollID());
+            channel.sendMessage("There was a problem with the execution. Please let " + bot.DEV_NAME + " know of this issue.");
             e.printStackTrace();
             return;
         }
-
-        bot.pollsInProcess.remove(poll.getPollID());
 
         if (!isUserPolled) {
             channel.deleteMessageById(poll.getTestPollMessageID()).queue();
@@ -180,7 +171,7 @@ public class SendCommand extends MassPollCommandBase implements IPrivateMessageR
             if (!failureList.isEmpty()) {
                 messageToSend += "These members didn't receive the poll, and we're not too sure why.\n"
                         + failureList + "\n"
-                        + "Please let MC_2018#9481 know about this so he can try to figure it out.";
+                        + "Please let " + bot.DEV_NAME + " know about this so he can try to figure it out.";
             }
 
             channel.sendMessage(messageToSend).queue();

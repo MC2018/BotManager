@@ -19,7 +19,7 @@ public class CancelCommand extends MassPollCommandBase implements IPrivateMessag
     public void runOnPrivateMessage(PrivateMessageReceivedEvent event) {
         String message = event.getMessage().getContentRaw();
         MessageChannel channel;
-        Poll poll = bot.pollsBeingCreated.get(event.getAuthor().getId());
+        Poll poll = bot.POLLS_BEING_CREATED.get(event.getAuthor().getId());
         User user;
 
         if (!message.equalsIgnoreCase("cancel") || poll == null) {
@@ -32,7 +32,7 @@ public class CancelCommand extends MassPollCommandBase implements IPrivateMessag
             channel.deleteMessageById(poll.getTestPollMessageID()).queue();
         }
 
-        bot.pollsBeingCreated.remove(event.getAuthor().getId());
+        bot.POLLS_BEING_CREATED.remove(event.getAuthor().getId());
         JDAUtils.sendMessage(channel, "The poll has been cancelled.", null, null, null, false);
     }
 }

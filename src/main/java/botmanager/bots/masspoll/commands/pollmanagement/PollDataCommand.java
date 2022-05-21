@@ -3,16 +3,15 @@ package botmanager.bots.masspoll.commands.pollmanagement;
 import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.Poll;
+import botmanager.bots.masspoll.objects.PollAccessor;
 import botmanager.generic.commands.IPrivateMessageReceivedCommand;
-import botmanager.utils.IOUtils;
 import botmanager.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -56,19 +55,11 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
             }
         }
 
-        while (bot.pollsInProcess.contains(pollID)) {
-        }
-
-        bot.pollsInProcess.add(pollID);
-
-        try {
-            poll = IOUtils.readGson(Poll.getFileLocation(bot, pollID), Poll.class);
-        } catch (IOException e) {
-            bot.pollsInProcess.remove(pollID);
+        try (PollAccessor pollAccesser = new PollAccessor(bot, pollID, PollAccessor.PollAccessType.POLL_CREATOR_ID, event.getAuthor().getId())) {
+            poll = pollAccesser.getPoll();
+        } catch (Exception e) {
             return;
         }
-
-        bot.pollsInProcess.remove(pollID);
 
         if (!poll.getCreatorID().equals(event.getAuthor().getId())) {
             return;
@@ -77,23 +68,34 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
         if (makeSpreadsheet) {
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("Data");
+            HSSFCellStyle yesStyle = workbook.createCellStyle(), noStyle = workbook.createCellStyle(), boldStyle = workbook.createCellStyle();
+            HSSFFont boldFont = workbook.createFont();
             ByteArrayOutputStream baos = null;
             InputStream is = null;
-            HSSFRow headRow;
+            HSSFRow headerRow, footerRow;
+            HSSFCell cell;
+            int[] resultsCounter = new int[poll.getOptionsSize()];
             int rowIndex = 0, columnIndex = 0;
 
             pollUserData = poll.getUserDataCopy();
             options = poll.getOptions();
 
-            headRow = sheet.createRow(rowIndex++);
-            headRow.createCell(columnIndex++).setCellValue("Username");
-            headRow.createCell(columnIndex++).setCellValue("Nickname");
+            yesStyle.setFillForegroundColor(IndexedColors.LIME.getIndex());
+            yesStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            noStyle.setFillForegroundColor(IndexedColors.CORAL.getIndex());
+            noStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            boldFont.setBold(true);
+            boldStyle.setFont(boldFont);
+
+            headerRow = sheet.createRow(rowIndex++);
+            headerRow.createCell(columnIndex++).setCellValue("Username");
+            headerRow.createCell(columnIndex++).setCellValue("Nickname");
 
             for (int i = 0; i < poll.getOptionsSize(); i++) {
-                headRow.createCell(columnIndex++).setCellValue(options.get(i));
+                headerRow.createCell(columnIndex++).setCellValue(options.get(i));
             }
 
-            headRow.createCell(columnIndex++).setCellValue("Comments");
+            headerRow.createCell(columnIndex++).setCellValue("Comments");
 
             for (int i = 0; i < pollUserData.size(); i++) {
                 Poll.PollUserData userData = pollUserData.get(i);
@@ -104,12 +106,35 @@ public class PollDataCommand extends MassPollCommandBase implements IPrivateMess
                 row.createCell(columnIndex++).setCellValue(userData.nickname);
 
                 for (int j = 0; j < poll.getOptionsSize(); j++) {
-                    row.createCell(columnIndex++).setCellValue((userData.votes & (1 << j)) > 0 ? "Yes" : "");
+                    boolean votedYes = (userData.votes & (1 << j)) > 0;
+
+                    cell = row.createCell(columnIndex++);
+                    cell.setCellValue(votedYes ? "Yes" : "No");
+                    cell.setCellStyle(votedYes ? yesStyle : noStyle);
+
+                    if (votedYes) {
+                        resultsCounter[j]++;
+                    }
                 }
 
                 for (int j = 0; j < userData.comments.size(); j++) {
                     row.createCell(columnIndex++).setCellValue(userData.comments.get(j));
                 }
+            }
+
+            footerRow = sheet.createRow(rowIndex++);
+            cell = footerRow.createCell(0);
+            cell.setCellValue("Total:");
+            cell.setCellStyle(boldStyle);
+            cell = footerRow.createCell(1);
+            cell.setCellValue(poll.getUserDataCopy().size());
+            cell.setCellStyle(boldStyle);
+            columnIndex = 2;
+
+            for (int i = 0; i < poll.getOptionsSize(); i++) {
+                cell = footerRow.createCell(columnIndex++);
+                cell.setCellStyle(boldStyle);
+                cell.setCellValue(resultsCounter[i]);
             }
 
             try {

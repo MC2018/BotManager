@@ -2,7 +2,6 @@ package botmanager.bots.masspoll.commands.creation;
 
 import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
-import botmanager.bots.masspoll.objects.ButtonSelectionType;
 import botmanager.bots.masspoll.objects.GuildSettings;
 import botmanager.bots.masspoll.objects.Poll;
 import botmanager.generic.commands.IMessageReceivedCommand;
@@ -10,13 +9,12 @@ import botmanager.utils.IOUtils;
 import botmanager.utils.JDAUtils;
 import botmanager.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MassPollCommand extends MassPollCommandBase implements IMessageReceivedCommand {
@@ -36,6 +34,7 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
         GuildSettings settings;
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         Poll poll;
+        List<Role> memberRoles;
         int guildNumber = 0;
 
         if (message == null || ((event.isFromGuild() && !message.equals("")))) {
@@ -85,39 +84,29 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
             return;
         }
 
-        if (settings.mentionableRoles.isEmpty()) {
+        if (settings.permissionGroups.isEmpty()) {
             JDAUtils.sendPrivateMessage(member.getUser(), "Permissions for the server have not been set up yet!");
             return;
-        } else if (settings.whitelistedUsers.contains(member.getId()) || member.hasPermission(Permission.ADMINISTRATOR)) {
-            // continue
         } else if (settings.blacklistedUsers.contains(member.getId())) {
             JDAUtils.sendPrivateMessage(member.getUser(), "You are blacklisted from sending polls!");
             return;
-        } else {
-            List<Role> memberRoles = member.getRoles();
-            boolean roleFound = false;
-
-            for (Role role : memberRoles) {
-                if (settings.rolesToPoll.contains(role.getId())) {
-                    roleFound = true;
-                    break;
-                }
-            }
-
-            if (!roleFound) {
-                JDAUtils.sendPrivateMessage(member.getUser(), "Your roles don't permit you to make a poll!");
-                return;
-            }
         }
 
-        if (bot.pollsBeingCreated.get(member.getId()) != null) {
+        memberRoles = member.getRoles();
+
+        if (!settings.canCreatePoll(memberRoles)) {
+            JDAUtils.sendPrivateMessage(member.getUser(), "Your roles don't permit you to make a poll!");
+            return;
+        }
+
+        if (bot.POLLS_BEING_CREATED.get(member.getId()) != null) {
             JDAUtils.sendPrivateMessage(member.getUser(), "Send or cancel your current poll before starting again!");
             return;
         }
 
         poll = new Poll(bot, member.getId(), guild.getId());
-        bot.pollsBeingCreated.put(member.getId(), poll);
-        poll.setRolesToChooseFrom(settings.mentionableRoles);
+        bot.POLLS_BEING_CREATED.put(member.getId(), poll);
+        poll.setRolesToChooseFrom(settings.findMentionableRoles(memberRoles));
 
         if (poll.getRolesToChooseFrom().isEmpty()) {
             JDAUtils.sendPrivateMessage(member.getUser(), "There are no roles to mention found for this guild.");
@@ -131,7 +120,7 @@ public class MassPollCommand extends MassPollCommandBase implements IMessageRece
             poll.sendRoleSelectorMessage(member, JDAUtils.roleIDsToRoles(guild, poll.getRolesToChooseFrom()), channel);
             poll.sendTestPollMessage(guild, channel);
         } catch (ErrorResponseException e) {
-            if (e.getErrorCode() == 50007) {
+            if (e.getErrorResponse().equals(ErrorResponse.CANNOT_SEND_TO_USER)) {
                 System.out.println("Someone (ID " + member.getId() + ") tried to create a poll, but they have DMs closed.");
             } else {
                 e.printStackTrace();

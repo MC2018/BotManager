@@ -4,6 +4,7 @@ import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.ButtonSelectionType;
 import botmanager.bots.masspoll.objects.Poll;
+import botmanager.bots.masspoll.objects.PollAccessor;
 import botmanager.generic.commands.IButtonClickCommand;
 import botmanager.utils.IOUtils;
 import net.dv8tion.jda.api.entities.Message;
@@ -20,8 +21,8 @@ public class VoteCommand extends MassPollCommandBase implements IButtonClickComm
         Message message;
         String uuid, typeString;
         String[] buttonIdentifiers;
-        long pollID = 0;
-        int index = -1;
+        long pollID;
+        int index;
         boolean turnToUpvote;
 
         if (event.isFromGuild()) {
@@ -45,20 +46,8 @@ public class VoteCommand extends MassPollCommandBase implements IButtonClickComm
             return;
         }
 
-        // wait until saving has completed
-        // bad, ik, but I want to make sure no data is lost w/the tools I'm using
-        while (bot.pollsInProcess.contains(pollID)) {
-        }
-
-        bot.pollsInProcess.add(pollID);
-
-        try {
-            Poll poll = IOUtils.readGson(Poll.getFileLocation(bot, pollID), Poll.class);
-
-            if (!poll.getUUID().equals(uuid)) {
-                bot.pollsInProcess.remove(pollID);
-                return;
-            }
+        try (PollAccessor pollAccessor = new PollAccessor(bot, pollID, PollAccessor.PollAccessType.UUID, uuid)) {
+            Poll poll = pollAccessor.getPoll();
 
             poll.updateUserVote(event.getUser().getId(), index, turnToUpvote);
             IOUtils.writeGson(Poll.getFileLocation(bot, pollID), poll, true);
@@ -70,8 +59,6 @@ public class VoteCommand extends MassPollCommandBase implements IButtonClickComm
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        bot.pollsInProcess.remove(pollID);
     }
 
 }

@@ -4,6 +4,7 @@ import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.ButtonSelectionType;
 import botmanager.bots.masspoll.objects.Poll;
+import botmanager.bots.masspoll.objects.PollAccessor;
 import botmanager.generic.commands.IPrivateMessageReceivedCommand;
 import botmanager.utils.IOUtils;
 import botmanager.utils.JDAUtils;
@@ -11,6 +12,7 @@ import botmanager.utils.Utils;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
+import net.dv8tion.jda.api.requests.ErrorResponse;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,8 +46,8 @@ public class ResendCommand extends MassPollCommandBase implements IPrivateMessag
             return;
         }
 
-        try {
-            poll = IOUtils.readGson(Poll.getFileLocation(bot, pollID), Poll.class);
+        try (PollAccessor pollAccesser = new PollAccessor(bot, pollID, PollAccessor.PollAccessType.POLL_CREATOR_ID, event.getAuthor().getId())) {
+            poll = pollAccesser.getPoll();
 
             if (Date.from(poll.getTimeLastPolled().toInstant().plusSeconds(60 * 60 * 3)).after(new Date())) {
                 JDAUtils.sendPrivateMessage(event.getAuthor(), "Please wait 3 hours before resending a poll.");
@@ -78,7 +80,7 @@ public class ResendCommand extends MassPollCommandBase implements IPrivateMessag
                             MessageChannel memberChannel = memberToMessage.getUser().openPrivateChannel().complete();
                             returnMessage = memberChannel.sendMessageEmbeds(embed).setActionRows(poll.generateActionRows(0, poll.getOptionsSize(), ButtonSelectionType.PollSelection)).complete();
                         } catch (ErrorResponseException e) {
-                            if (e.getErrorCode() == 50007) {
+                            if (e.getErrorResponse().equals(ErrorResponse.CANNOT_SEND_TO_USER)) {
                                 nonMessageableList += memberToMessage.getEffectiveName() + " (ID " + memberToMessage.getId() + ")\n";
                                 System.out.println("Someone getting DM'd (ID " + memberToMessage.getId() + ") has DMs closed.");
                                 messageable = false;
@@ -109,8 +111,6 @@ public class ResendCommand extends MassPollCommandBase implements IPrivateMessag
             e.printStackTrace();
         }
 
-        bot.pollsInProcess.remove(pollID);
-
         if (!nonMessageableList.isEmpty() || !failureList.isEmpty()) {
             String messageToSend = "";
 
@@ -124,7 +124,7 @@ public class ResendCommand extends MassPollCommandBase implements IPrivateMessag
             if (!failureList.isEmpty()) {
                 messageToSend += "These members didn't receive the poll, and we're not too sure why.\n"
                         + failureList + "\n"
-                        + "Please let MC_2018#9481 know about this so he can try to figure it out.";
+                        + "Please let " + bot.DEV_NAME + " know about this so he can try to figure it out.";
             }
 
             JDAUtils.sendPrivateMessage(event.getAuthor(), messageToSend);

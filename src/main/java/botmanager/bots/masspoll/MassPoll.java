@@ -9,27 +9,21 @@ import botmanager.bots.masspoll.commands.pollmanagement.ResendCommand;
 import botmanager.bots.masspoll.objects.Poll;
 import botmanager.generic.BotBase;
 import botmanager.generic.ICommand;
-import botmanager.utils.IOUtils;
-import botmanager.utils.JDAUtils;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 public class MassPoll extends BotBase {
 
-    final public HashMap<String, Poll> pollsBeingCreated = new HashMap<>();
-    final public ArrayList<Long> pollsInProcess = new ArrayList<>();
+    final public String DEV_NAME = "MC_2018#9481";
+    final public HashMap<String, Poll> POLLS_BEING_CREATED = new HashMap<>();
+    final private ArrayList<Long> POLLS_IN_PROCESS = new ArrayList<>();
 
     public MassPoll(String botToken, String name) {
         super(botToken, name);
@@ -57,7 +51,7 @@ public class MassPoll extends BotBase {
                 new PollDataCommand(this),
                 new ResendCommand(this),
 
-                // Other
+                // General
                 new GuildJoinCommand(this),
         });
     }
@@ -101,6 +95,18 @@ public class MassPoll extends BotBase {
         for (ICommand command : getCommands()) {
             command.run(event);
         }
+    }
+
+    public boolean isPollInProcess(long pollID) {
+        return POLLS_IN_PROCESS.contains(pollID);
+    }
+
+    public void addPollInProcess(long pollID) {
+        POLLS_IN_PROCESS.add(pollID);
+    }
+
+    public void removePollInProcess(long pollID) {
+        POLLS_IN_PROCESS.remove(pollID);
     }
 
 }

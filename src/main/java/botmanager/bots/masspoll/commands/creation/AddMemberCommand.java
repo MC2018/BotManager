@@ -8,7 +8,6 @@ import botmanager.utils.JDAUtils;
 import botmanager.utils.Utils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 public class AddMemberCommand extends MassPollCommandBase implements IPrivateMessageReceivedCommand {
@@ -26,7 +25,7 @@ public class AddMemberCommand extends MassPollCommandBase implements IPrivateMes
 
     @Override
     public void runOnPrivateMessage(PrivateMessageReceivedEvent event) {
-        Poll poll = bot.pollsBeingCreated.get(event.getAuthor().getId());
+        Poll poll = bot.POLLS_BEING_CREATED.get(event.getAuthor().getId());
         String message = Utils.startsWithReplace(event.getMessage().getContentRaw(), KEYWORDS);
         Guild guild;
         Member member, memberToPoll;

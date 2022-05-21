@@ -3,16 +3,12 @@ package botmanager.bots.masspoll.commands.polling;
 import botmanager.bots.masspoll.MassPoll;
 import botmanager.bots.masspoll.generic.MassPollCommandBase;
 import botmanager.bots.masspoll.objects.Poll;
-import botmanager.generic.commands.IMessageReactionAddCommand;
-import botmanager.generic.commands.IMessageReactionRemoveCommand;
+import botmanager.bots.masspoll.objects.PollAccessor;
 import botmanager.generic.commands.IPrivateMessageReceivedCommand;
 import botmanager.utils.IOUtils;
 import botmanager.utils.JDAUtils;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 
 import java.util.List;
@@ -57,23 +53,9 @@ public class CommentCommand extends MassPollCommandBase implements IPrivateMessa
             return;
         }
 
-        // wait until saving has completed
-        // bad, ik, but I want to make sure no data is lost w/the tools I'm using
-        while (bot.pollsInProcess.contains(pollID)) {
-        }
-
-        bot.pollsInProcess.add(pollID);
-
-        try {
-            Poll poll = IOUtils.readGson(Poll.getFileLocation(bot, pollID), Poll.class);
-            String messageContent;
-
-            if (!poll.getUUID().equals(uuid)) {
-                bot.pollsInProcess.remove(pollID);
-                return;
-            }
-
-            messageContent = message.getContentRaw();
+        try (PollAccessor pollAccesser = new PollAccessor(bot, pollID, PollAccessor.PollAccessType.UUID, uuid)) {
+            Poll poll = pollAccesser.getPoll();
+            String messageContent = message.getContentRaw();
 
             if (messageContent == null) {
                 messageContent = "";
@@ -87,8 +69,6 @@ public class CommentCommand extends MassPollCommandBase implements IPrivateMessa
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        bot.pollsInProcess.remove(pollID);
     }
     
 }
