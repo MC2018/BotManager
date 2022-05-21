@@ -62,3 +62,8 @@ bin/
 .project
 .settings/
 .vs/
+groovy.png
+masspoll.pdn
+masspoll.png
+testing data/
+*.iml
